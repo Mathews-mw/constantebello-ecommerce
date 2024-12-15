@@ -1,17 +1,23 @@
 import './globals.css';
 
 import type { Metadata } from 'next';
-import { Baloo_2 } from 'next/font/google';
 import { twMerge } from 'tailwind-merge';
+import localFont from 'next/font/local';
 
-const baloo = Baloo_2({
-	subsets: ['latin'],
-	weight: ['400', '500', '600', '700', '800'],
+const satoshiFont = localFont({
+	src: [
+		{
+			path: '../fonts/Satoshi-Variable.woff2',
+			weight: '300 900',
+			style: 'normal',
+		},
+	],
+	variable: '--font-satoshi',
 	display: 'swap',
 });
 
 export const metadata: Metadata = {
-	title: 'Constante Bello ',
+	title: 'Costante Bello ',
 	description: 'E-commerce Constante Bello',
 };
 
@@ -22,7 +28,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={twMerge('min-h-screen bg-background antialiased', baloo.className)}>
+			<body className={twMerge('min-h-screen bg-background antialiased', satoshiFont.variable)}>
 				{children}
 			</body>
 		</html>
