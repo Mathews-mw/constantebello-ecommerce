@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ChevronRight, Minus, Plus, Star } from 'lucide-react';
 import Image from 'next/image';
+import { ProductTabs } from './product-tabs';
 
 interface IProductDetailsPageProps {
 	params: {
@@ -157,6 +158,10 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 					</div>
 				</div>
 			</div>
+
+			<Separator />
+
+			<ProductTabs />
 		</div>
 	);
 }

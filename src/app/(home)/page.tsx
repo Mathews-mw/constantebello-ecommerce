@@ -1,6 +1,8 @@
 import { ProductCard } from '@/components/product-card';
+import { ReviewCard } from '@/components/review-card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { MoveLeft, MoveRight } from 'lucide-react';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
@@ -98,8 +100,26 @@ export default function HomePage() {
 
 				<Separator />
 
-				<div>
-					<h1 className="mb-4 text-2xl font-bold">DEPOIMENTOS DE CLIENTES</h1>
+				<div className="space-y-8">
+					<div className="flex w-full items-center justify-between">
+						<h1 className="mb-4 text-2xl font-bold">DEPOIMENTOS DE CLIENTES</h1>
+
+						<div className="flex items-center gap-2">
+							<Button size="icon" variant="secondary">
+								<MoveLeft className="h-5 w-5" />
+							</Button>
+							<Button size="icon" variant="secondary">
+								<MoveRight className="h-5 w-5" />
+							</Button>
+						</div>
+					</div>
+
+					<div className="flex gap-4">
+						<ReviewCard />
+						<ReviewCard />
+						<ReviewCard />
+						<ReviewCard />
+					</div>
 				</div>
 			</div>
 		</div>
