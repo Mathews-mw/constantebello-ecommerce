@@ -8,14 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { listingToSetupCheckout } from '@/app/api/@requests/products/listing-to-setup-checkout';
 
-import { ArrowRight, ChevronRight, ShoppingCart } from 'lucide-react';
+import { ArrowRight, ChevronRight, ShoppingCart, Trash2 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PageTitle } from '@/components/page-title';
 
 export default function CartPage() {
-	const { items } = useCart();
+	const { items, clearCart } = useCart();
 
 	const [productsId, setProductsId] = useState<string[]>([]);
 
@@ -50,7 +51,19 @@ export default function CartPage() {
 			</div>
 
 			<div className="space-y-4">
-				<h1 className="text-2xl font-black">SEU CARRINHO</h1>
+				<div className="grid grid-cols-3 items-center justify-between">
+					<div className="col-span-2 flex w-full items-center justify-between">
+						<PageTitle title="SEU CARRINHO" />
+						<Button
+							variant="outline"
+							onClick={clearCart}
+							disabled={items.length <= 0}
+							className="border-destructive text-destructive hover:text-rose-600"
+						>
+							<Trash2 /> Remover todos os produtos
+						</Button>
+					</div>
+				</div>
 
 				<div className="grid grid-cols-3 gap-6">
 					{items.length > 0 ? (
@@ -131,9 +144,11 @@ export default function CartPage() {
 						</div>
 
 						<div className="w-full">
-							<Button className="w-full" disabled={items.length <= 0}>
-								Ir para o Checkout
-								<ArrowRight className="h-6 w-6" />
+							<Button asChild className="w-full" disabled={items.length <= 0}>
+								<Link href="/checkout">
+									Ir para o Checkout
+									<ArrowRight className="h-6 w-6" />
+								</Link>
 							</Button>
 						</div>
 					</div>

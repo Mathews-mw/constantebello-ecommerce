@@ -9,6 +9,7 @@ interface ICartItems {
 
 interface CartContextType {
 	items: ICartItems[];
+	clearCart: () => void;
 	addToCart: (productId: string) => void;
 	removeFromCart: (productId: string) => void;
 	decrementProductFromCart: (productId: string) => void;
@@ -61,6 +62,10 @@ export function CartContextProvider({ children }: { children: React.ReactNode })
 		});
 	}
 
+	function clearCart() {
+		setCartItems([]);
+	}
+
 	// Atualiza o localStorage apenas quando o carrinho já foi inicializado
 	useEffect(() => {
 		if (cartItems.length > 0 || localStorage.getItem('cart') !== null) {
@@ -85,7 +90,13 @@ export function CartContextProvider({ children }: { children: React.ReactNode })
 
 	return (
 		<CartContext.Provider
-			value={{ items: cartItems, addToCart, removeFromCart, decrementProductFromCart }}
+			value={{
+				items: cartItems,
+				clearCart,
+				addToCart,
+				removeFromCart,
+				decrementProductFromCart,
+			}}
 		>
 			{children}
 		</CartContext.Provider>

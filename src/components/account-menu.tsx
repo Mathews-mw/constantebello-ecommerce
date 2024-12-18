@@ -1,3 +1,5 @@
+'use client';
+
 import { twMerge } from 'tailwind-merge';
 
 import { LogOut } from 'lucide-react';
@@ -23,21 +25,24 @@ import {
 	DialogClose,
 } from './ui/dialog';
 import { generateUserBadge } from '@/app/utils/generate-user-badge';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { useSession } from 'next-auth/react';
 
 export function AccountMenu() {
+	const { data, status } = useSession();
+
 	const isFetchingEmployeeData = false;
 
 	const userName = 'Mathews Araújo';
 
 	const { initials, color } = generateUserBadge(userName);
-	console.log('color: ', color);
 
 	return (
 		<Dialog>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Avatar className="hover:cursor-pointer">
+						{data && data.user && data.user.image && <AvatarImage src={data.user.image} />}
 						<AvatarFallback>{initials}</AvatarFallback>
 					</Avatar>
 				</DropdownMenuTrigger>
