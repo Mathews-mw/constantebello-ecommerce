@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
 				protocol: 'https',
 				hostname: 'plus.unsplash.com',
 			},
+			{
+				protocol: 'https',
+				hostname: 'a-static.mlcdn.com.br',
+			},
 		],
 	},
 };

@@ -3,6 +3,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { twMerge } from 'tailwind-merge';
 import localFont from 'next/font/local';
+import { TanstackQueryClientProvider } from '@/providers/tanstack-query-client-provider';
+import { CartContextProvider } from '@/context/cart-context';
 
 const satoshiFont = localFont({
 	src: [
@@ -29,7 +31,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={twMerge('min-h-screen bg-background antialiased', satoshiFont.variable)}>
-				{children}
+				<TanstackQueryClientProvider>
+					<CartContextProvider>{children}</CartContextProvider>
+				</TanstackQueryClientProvider>
 			</body>
 		</html>
 	);

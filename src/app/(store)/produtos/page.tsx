@@ -1,10 +1,24 @@
-import { Separator } from '@/components/ui/separator';
-import { ChevronRight, ListFilter } from 'lucide-react';
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+
 import { ProductsFilters } from './products-filters';
 import { ProductCard } from '../../../components/product-card';
+import { listingProducts } from '@/app/api/@requests/products/listing-products';
+
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+
+import { ChevronRight, ListFilter } from 'lucide-react';
 
 export default function ProductsPage() {
+	const { data: products, isFetching } = useQuery({
+		queryKey: ['products'],
+		queryFn: listingProducts,
+	});
+
+	console.log('products: ', products);
+
 	return (
 		<div className="space-y-8">
 			<div className="flex items-center text-sm text-muted-foreground">
@@ -38,13 +52,9 @@ export default function ProductsPage() {
 							gridTemplateColumns: 'repeat(auto-fit, minmax(325px, 1fr))',
 						}}
 					>
-						<ProductCard productId="1" />
-						<ProductCard productId="2" />
-						<ProductCard productId="3" />
-						<ProductCard productId="4" />
-						<ProductCard productId="5" />
-						<ProductCard productId="6" />
-						<ProductCard productId="7" />
+						{products?.map((product) => {
+							return <ProductCard key={product.id} product={product} />;
+						})}
 					</div>
 				</div>
 			</div>

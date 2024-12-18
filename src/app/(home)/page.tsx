@@ -24,10 +24,10 @@ export default function HomePage() {
 					<h1 className="text-center text-2xl font-bold">RECÉM CHEGADOS</h1>
 
 					<div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+						{/* <ProductCard />
 						<ProductCard />
 						<ProductCard />
-						<ProductCard />
-						<ProductCard />
+						<ProductCard /> */}
 					</div>
 
 					<div className="flex w-full justify-center">
@@ -41,10 +41,10 @@ export default function HomePage() {
 					<h1 className="text-center text-2xl font-bold">MAIS VENDIDOS</h1>
 
 					<div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+						{/* <ProductCard />
 						<ProductCard />
 						<ProductCard />
-						<ProductCard />
-						<ProductCard />
+						<ProductCard /> */}
 					</div>
 
 					<div className="flex w-full justify-center">
