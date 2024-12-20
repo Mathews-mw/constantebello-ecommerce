@@ -7,18 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(uuid())
   name          String?
   email         String    @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
+  password      String?
+  role          UserRole  @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  customerInfos CustomerInfo?
 
   @@map("users")
 }
@@ -47,7 +54,7 @@ model Account {
 
 model Session {
   sessionToken String   @unique @map("session_token")
-  userId       String
+  userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -64,6 +71,41 @@ model VerificationToken {
 
   @@id([identifier, token])
   @@map("verification_tokens")
+}
+
+model CustomerInfo {
+  id                 String   @id @default(uuid())
+  userId             String   @unique @map("user_id")
+  phone              String
+  cpf                String   @unique
+  birthday           String
+  policyConsent      Boolean  @default(false) @map("policy_consent")
+  advertisingConsent Boolean  @default(false) @map("advertising_consent")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customerAddress CustomerAddress[]
+
+  @@map("customers_infos")
+}
+
+model CustomerAddress {
+  id                String   @id @default(uuid())
+  customerId        String   @map("customer_id")
+  cep               String
+  street            String
+  number            String
+  neighborhood      String
+  addressComplement String?  @map("address_complement")
+  addressReference  String?  @map("address_reference")
+  city              String
+  state             String
+  isPrincipal       Boolean? @default(false) @map("is_principal")
+
+  customerInfo CustomerInfo @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("customer_addresses")
 }
 
 model Product {

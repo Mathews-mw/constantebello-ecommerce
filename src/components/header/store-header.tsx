@@ -1,8 +1,8 @@
 import { Logo } from '@/components/logo';
 import { Separator } from '@/components/ui/separator';
-import { AccountMenu } from '@/components/account-menu';
 import { NavLink } from '@/components/nav-link/nav-link';
 import { NavIconsLink } from '../nav-link/nav-icons-link';
+import { HeaderUserAccount } from './components/header-user-account';
 
 export function StoreHeader() {
 	return (
@@ -19,7 +19,7 @@ export function StoreHeader() {
 
 					<Separator orientation="vertical" className="h-8" />
 
-					<AccountMenu />
+					<HeaderUserAccount />
 				</div>
 			</div>
 		</header>

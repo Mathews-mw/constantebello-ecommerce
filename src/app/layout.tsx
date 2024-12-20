@@ -1,11 +1,12 @@
 import './globals.css';
 
+import { Toaster } from 'sonner';
 import type { Metadata } from 'next';
-import { twMerge } from 'tailwind-merge';
 import localFont from 'next/font/local';
-import { TanstackQueryClientProvider } from '@/providers/tanstack-query-client-provider';
+import { twMerge } from 'tailwind-merge';
 import { CartContextProvider } from '@/context/cart-context';
 import { NextAuthSessionProvider } from '@/providers/SessionProvider';
+import { TanstackQueryClientProvider } from '@/providers/tanstack-query-client-provider';
 
 const satoshiFont = localFont({
 	src: [
@@ -37,6 +38,8 @@ export default function RootLayout({
 						<CartContextProvider>{children}</CartContextProvider>
 					</NextAuthSessionProvider>
 				</TanstackQueryClientProvider>
+
+				<Toaster richColors closeButton />
 			</body>
 		</html>
 	);

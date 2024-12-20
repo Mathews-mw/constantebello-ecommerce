@@ -5,6 +5,8 @@ import { Separator } from '@/components/ui/separator';
 import { MoveLeft, MoveRight } from 'lucide-react';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
+import { NewArrivalsSection } from './new-arrivals-secition';
+import { BestSellingSection } from './best-selling-section';
 
 export default function HomePage() {
 	return (
@@ -20,37 +22,11 @@ export default function HomePage() {
 			</div>
 
 			<div className="mx-auto mb-0 mt-8 w-full max-w-screen-2xl flex-grow space-y-12 px-20 py-0">
-				<div>
-					<h1 className="text-center text-2xl font-bold">RECÉM CHEGADOS</h1>
-
-					<div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-						{/* <ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard /> */}
-					</div>
-
-					<div className="flex w-full justify-center">
-						<Button variant="outline">Ver todos</Button>
-					</div>
-				</div>
+				<NewArrivalsSection />
 
 				<Separator />
 
-				<div>
-					<h1 className="text-center text-2xl font-bold">MAIS VENDIDOS</h1>
-
-					<div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-						{/* <ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard /> */}
-					</div>
-
-					<div className="flex w-full justify-center">
-						<Button variant="outline">Ver todos</Button>
-					</div>
-				</div>
+				<BestSellingSection />
 
 				<Separator />
 

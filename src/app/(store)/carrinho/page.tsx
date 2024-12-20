@@ -1,21 +1,25 @@
 'use client';
 
+import Link from 'next/link';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
+
+import { useCart } from '@/context/cart-context';
+import { listingProductsToSetupCheckout } from '@/app/api/@requests/products/listing-products-to-setup-checkout';
 
 import { CartItem } from './cart-item';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { PageTitle } from '@/components/page-title';
 import { Separator } from '@/components/ui/separator';
-import { listingToSetupCheckout } from '@/app/api/@requests/products/listing-to-setup-checkout';
 
 import { ArrowRight, ChevronRight, ShoppingCart, Trash2 } from 'lucide-react';
-import { useCart } from '@/context/cart-context';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { PageTitle } from '@/components/page-title';
+import { LoginAlert } from './login-alert';
 
 export default function CartPage() {
+	const { status } = useSession();
 	const { items, clearCart } = useCart();
 
 	const [productsId, setProductsId] = useState<string[]>([]);
@@ -23,7 +27,7 @@ export default function CartPage() {
 	const { data: products } = useQuery({
 		queryKey: ['products', 'to-checkout', productsId],
 		queryFn: async () =>
-			listingToSetupCheckout({
+			listingProductsToSetupCheckout({
 				productIds: productsId,
 			}),
 		enabled: productsId.length > 0,
@@ -144,12 +148,16 @@ export default function CartPage() {
 						</div>
 
 						<div className="w-full">
-							<Button asChild className="w-full" disabled={items.length <= 0}>
-								<Link href="/checkout">
-									Ir para o Checkout
-									<ArrowRight className="h-6 w-6" />
-								</Link>
-							</Button>
+							{status === 'authenticated' ? (
+								<Button asChild className="w-full" disabled={items.length <= 0}>
+									<Link href="/checkout">
+										Ir para o Checkout
+										<ArrowRight className="h-6 w-6" />
+									</Link>
+								</Button>
+							) : (
+								<LoginAlert disabled={items.length <= 0} />
+							)}
 						</div>
 					</div>
 				</div>

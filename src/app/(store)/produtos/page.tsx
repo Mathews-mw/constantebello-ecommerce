@@ -17,8 +17,6 @@ export default function ProductsPage() {
 		queryFn: listingProducts,
 	});
 
-	console.log('products: ', products);
-
 	return (
 		<div className="space-y-8">
 			<div className="flex items-center text-sm text-muted-foreground">

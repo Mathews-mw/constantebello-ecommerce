@@ -1,14 +1,17 @@
 'use client';
 
-import { twMerge } from 'tailwind-merge';
+import { useRouter } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 
-import { LogOut } from 'lucide-react';
+import { generateUserBadge } from '@/app/utils/generate-user-badge';
 
 import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -24,18 +27,16 @@ import {
 	DialogTrigger,
 	DialogClose,
 } from './ui/dialog';
-import { generateUserBadge } from '@/app/utils/generate-user-badge';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { useSession } from 'next-auth/react';
+
+import { Bell, Heart, LogOut, MessagesSquare, Package, ThumbsUp, User } from 'lucide-react';
 
 export function AccountMenu() {
 	const { data, status } = useSession();
+	const router = useRouter();
 
-	const isFetchingEmployeeData = false;
+	const userName = data?.user?.name ?? 'Nao informado';
 
-	const userName = 'Mathews Araújo';
-
-	const { initials, color } = generateUserBadge(userName);
+	const { initials } = generateUserBadge(userName);
 
 	return (
 		<Dialog>
@@ -47,20 +48,61 @@ export function AccountMenu() {
 					</Avatar>
 				</DropdownMenuTrigger>
 
-				<DropdownMenuContent align="end" className="w-56">
+				<DropdownMenuContent align="end">
 					<DropdownMenuLabel className="flex flex-col">
-						{isFetchingEmployeeData ? (
+						{status === 'loading' ? (
 							<div className="space-y-1.5">
 								<Skeleton className="h-4 w-32" />
 								<Skeleton className="h-3 w-24" />
 							</div>
 						) : (
 							<>
-								<span className="text-xs text-muted-foreground">Mathews</span>
-								<span className="text-xs text-muted-foreground">mathews.mw@gmail.com</span>
+								<span className="text-xs text-muted-foreground">{data?.user?.name}</span>
+								<span className="text-xs text-muted-foreground">{data?.user?.email}</span>
 							</>
 						)}
 					</DropdownMenuLabel>
+
+					<DropdownMenuSeparator />
+
+					<DropdownMenuGroup>
+						<DropdownMenuItem asChild>
+							<button className="w-full" onClick={() => router.push('/conta/meus-dados')}>
+								<User className="mr-2 h-4 w-4" />
+								<span>Meus dados</span>
+							</button>
+						</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<button className="w-full" onClick={() => router.push('/conta/meus-dados')}>
+								<Package className="mr-2 h-4 w-4" />
+								<span>Meus pedidos</span>
+							</button>
+						</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<button className="w-full">
+								<ThumbsUp className="mr-2 h-4 w-4" />
+								<span>Avaliações</span>
+							</button>
+						</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<button className="w-full">
+								<Heart className="mr-2 h-4 w-4" />
+								<span>Favoritos</span>
+							</button>
+						</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<button className="w-full">
+								<Bell className="mr-2 h-4 w-4" />
+								<span>Notificações</span>
+							</button>
+						</DropdownMenuItem>
+						<DropdownMenuItem asChild>
+							<button className="w-full">
+								<MessagesSquare className="mr-2 h-4 w-4" />
+								<span>Protocolos de atendimentos</span>
+							</button>
+						</DropdownMenuItem>
+					</DropdownMenuGroup>
 
 					<DropdownMenuSeparator />
 
@@ -82,8 +124,8 @@ export function AccountMenu() {
 				</DialogHeader>
 				<DialogFooter>
 					<div className="flex items-center justify-end gap-4">
-						<DialogClose>Cancel</DialogClose>
-						<Button onClick={() => {}}>Continue</Button>
+						<DialogClose>Não</DialogClose>
+						<Button onClick={() => signOut({ callbackUrl: '/' })}>Sair</Button>
 					</div>
 				</DialogFooter>
 			</DialogContent>

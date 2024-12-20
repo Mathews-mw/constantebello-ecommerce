@@ -1,5 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
+import { z } from 'zod';
+
+const queryParamsSchema = z.object({
+	take: z.optional(z.coerce.number()),
+});
 
 export async function GET(request: NextRequest) {
 	if (request.method !== 'GET') {
@@ -10,6 +15,12 @@ export async function GET(request: NextRequest) {
 			{ status: 405 }
 		);
 	}
+
+	const { searchParams } = request.nextUrl;
+
+	const { take } = queryParamsSchema.parse({
+		take: searchParams.get('take'),
+	});
 
 	try {
 		const products = await prisma.product.findMany();
