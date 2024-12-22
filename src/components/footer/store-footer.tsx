@@ -35,7 +35,7 @@ export function StoreFooter() {
 
 						<ul className="space-y-2 text-sm text-muted-foreground">
 							<li>Sobre</li>
-							<li>A Constante bello</li>
+							<li>A Costante Bello</li>
 							<li>Trabalhos</li>
 						</ul>
 					</div>
@@ -71,7 +71,7 @@ export function StoreFooter() {
 						</div>
 						<div className="flex items-center gap-2 text-sm text-muted-foreground">
 							<AtSign className="h-4 w-4" />
-							<span>constante@bello.com.br</span>
+							<span>costante@bello.com.br</span>
 						</div>
 					</div>
 				</div>
@@ -80,7 +80,7 @@ export function StoreFooter() {
 
 				<div>
 					<span className="text-sm text-muted-foreground">
-						Constante Bello © {new Date().getFullYear()}, Todos os direitos reservados
+						Costante Bello © {new Date().getFullYear()}, Todos os direitos reservados
 					</span>
 				</div>
 			</div>

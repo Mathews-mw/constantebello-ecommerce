@@ -1,34 +1,53 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useQuery } from '@tanstack/react-query';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { listingCustomerFavoriteProducts } from '@/app/api/@requests/customers/listing-customer-favorite-products';
 
 interface IFavoriteProductsContextType {
 	favoriteProducts: Array<string>;
+	isLoadingFavoriteProducts: boolean;
 }
 
 export const FavoriteProductsContext = createContext({} as IFavoriteProductsContextType);
 
 export function FavoriteProductsContextProvider({ children }: { children: React.ReactNode }) {
 	const [favoriteProducts, setFavoriteProducts] = useState<string[]>([]);
+	const [isLoadingFavoriteProducts, setIsLoadingFavoriteProducts] = useState(false);
 
 	const { data, status } = useSession();
 
-	const { data: favoriteProductsResponse, isFetching } = useQuery({
-		queryKey: ['favorite-products', data?.user.id],
-		queryFn: async () => {
-			const response = await listingCustomerFavoriteProducts({ id: data ? data.user.id : '' });
+	console.log('favorite products: ', favoriteProducts);
 
-			setFavoriteProducts(response.map((item) => item.productId));
-			return response;
-		},
-		enabled: status === 'authenticated',
-	});
+	useEffect(() => {
+		async function loadingFavoriteProducts() {
+			setIsLoadingFavoriteProducts(true);
 
-	return <FavoriteProductsContext.Provider value={{ favoriteProducts }}>{children}</FavoriteProductsContext.Provider>;
+			if (status === 'authenticated') {
+				console.log('user session status: ', status);
+				if (data && data.user) {
+					const response = await listingCustomerFavoriteProducts({
+						id: data.user.id,
+					});
+
+					setFavoriteProducts(response.map((item) => item.productId));
+				}
+			}
+
+			if (status !== 'loading') {
+				setIsLoadingFavoriteProducts(false);
+			}
+		}
+
+		loadingFavoriteProducts();
+	}, [status]);
+
+	return (
+		<FavoriteProductsContext.Provider value={{ favoriteProducts, isLoadingFavoriteProducts }}>
+			{children}
+		</FavoriteProductsContext.Provider>
+	);
 }
 
 export const useFavoriteProducts = () => useContext(FavoriteProductsContext);

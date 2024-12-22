@@ -2,16 +2,32 @@
 
 import Image from 'next/image';
 import { Product } from '@prisma/client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { Heart } from 'lucide-react';
+import { unmarkProductAsFavorite } from '@/app/api/@requests/customers/unmark-customer-favorite-product';
+
 import { Button } from '@/components/ui/button';
 import { StarsRating } from '@/components/stars-rating';
 
+import { Heart, Loader2 } from 'lucide-react';
+
 interface IFavoriteCardProps {
 	product: Product;
+	userId: string;
 }
 
-export function FavoriteCard({ product }: IFavoriteCardProps) {
+export function FavoriteCard({ product, userId }: IFavoriteCardProps) {
+	const queryClient = useQueryClient();
+
+	const { mutateAsync: unmarkProductAsFavoriteFn, isPending } = useMutation({
+		mutationFn: async () => unmarkProductAsFavorite({ userId, productId: product.id }),
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({
+				queryKey: ['products', 'favorite-products'],
+			});
+		},
+	});
+
 	return (
 		<div className="flex w-full justify-between gap-8 rounded-lg border bg-background p-4 shadow-sm">
 			<div className="flex flex-grow gap-8">
@@ -34,8 +50,12 @@ export function FavoriteCard({ product }: IFavoriteCardProps) {
 					<span className="text-nowrap text-lg font-black">
 						{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
 					</span>
-					<Button variant="ghost" size="xs">
-						<Heart className="h-6 w-6 fill-primary text-primary" />
+					<Button variant="ghost" size="xs" onClick={() => unmarkProductAsFavoriteFn()}>
+						{isPending ? (
+							<Loader2 className="animate-spin text-primary" />
+						) : (
+							<Heart className="h-6 w-6 fill-primary text-primary" />
+						)}
 					</Button>
 				</div>
 

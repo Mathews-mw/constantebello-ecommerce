@@ -3,7 +3,7 @@
   "rules": {
     "prettier/prettier": ["error", {
       "singleQuote": true,
-      "printWidth": 120,
+      "printWidth": 100,
       "tabWidth": 2,
       "useTabs": true,
       "semi": true,

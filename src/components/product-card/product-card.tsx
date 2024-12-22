@@ -27,7 +27,8 @@ export function ProductCard({ product, isFavorite = false }: IProductCardProps) 
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: markProductAsFavoriteFn, isPending } = useMutation({
-		mutationFn: async () => markProductAsFavorite({ userId: data ? data.user.id : '', productId: product.id }),
+		mutationFn: async () =>
+			markProductAsFavorite({ userId: data ? data.user.id : '', productId: product.id }),
 		onSuccess: async () => {
 			await queryClient.invalidateQueries({
 				queryKey: ['favorite-products'],
@@ -36,7 +37,8 @@ export function ProductCard({ product, isFavorite = false }: IProductCardProps) 
 	});
 
 	const { mutateAsync: unmarkProductAsFavoriteFn, isPending: unMarkPending } = useMutation({
-		mutationFn: async () => unmarkProductAsFavorite({ userId: data ? data.user.id : '', productId: product.id }),
+		mutationFn: async () =>
+			unmarkProductAsFavorite({ userId: data ? data.user.id : '', productId: product.id }),
 		onSuccess: async () => {
 			await queryClient.invalidateQueries({
 				queryKey: ['favorite-products'],
@@ -67,7 +69,10 @@ export function ProductCard({ product, isFavorite = false }: IProductCardProps) 
 					) : (
 						<Heart
 							strokeWidth={3}
-							className={twMerge(['h-6 w-6 text-primary/70', `${isFavorite ? 'fill-primary/70' : 'fill-none'}`])}
+							className={twMerge([
+								'h-6 w-6 text-primary/70',
+								`${isFavorite ? 'fill-primary/70' : 'fill-none'}`,
+							])}
 						/>
 					)}
 				</Button>

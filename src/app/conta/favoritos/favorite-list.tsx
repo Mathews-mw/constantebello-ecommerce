@@ -1,10 +1,13 @@
 'use client';
 
-import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { FavoriteCard } from './favorite-card';
-import { useQuery } from '@tanstack/react-query';
-import { listingCustomerFavoriteProductsDetails } from '@/app/api/@requests/customers/listing-customer-favorite-produts-details';
 import { useSession } from 'next-auth/react';
+import { useQuery } from '@tanstack/react-query';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+
+import { listingCustomerFavoriteProductsDetails } from '@/app/api/@requests/customers/listing-customer-favorite-products-details';
+
+import { FavoriteCard } from './favorite-card';
+import { FavoriteCardSkeleton } from './favorite-card-skeleton';
 
 export function FavoriteList() {
 	const { status, data } = useSession();
@@ -17,10 +20,20 @@ export function FavoriteList() {
 	});
 
 	return (
-		<div ref={parent} className="space-y-2.5">
-			{favoriteProducts?.map((product) => {
-				return <FavoriteCard key={product.id} product={product} />;
-			})}
-		</div>
+		<>
+			{favoriteProducts ? (
+				<div ref={parent} className="space-y-2.5">
+					{favoriteProducts?.map((product) => {
+						return <FavoriteCard key={product.id} product={product} userId={data ? data.user.id : ''} />;
+					})}
+				</div>
+			) : (
+				<div className="space-y-2.5">
+					{Array.from([1, 2, 3]).map((_, i) => {
+						return <FavoriteCardSkeleton key={i} />;
+					})}
+				</div>
+			)}
+		</>
 	);
 }
