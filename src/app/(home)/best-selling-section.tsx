@@ -6,10 +6,13 @@ import { useQuery } from '@tanstack/react-query';
 import { listingNewArrivalsProducts } from '../api/@requests/products/listing-new-arrivals-products';
 
 import { Button } from '@/components/ui/button';
-import { ProductCard } from '@/components/product-card';
+import { ProductCard } from '@/components/product-card/product-card';
 import { ProductCardSkeleton } from '@/components/product-card-skeleton';
+import { useFavoriteProducts } from '@/context/favorite-products-context';
 
 export function BestSellingSection() {
+	const { favoriteProducts } = useFavoriteProducts();
+
 	const { data: products, isFetching } = useQuery({
 		queryKey: ['products', 'best-selling'],
 		queryFn: listingNewArrivalsProducts,
@@ -23,7 +26,9 @@ export function BestSellingSection() {
 				{products ? (
 					<>
 						{products.map((product) => {
-							return <ProductCard key={product.id} product={product} />;
+							return (
+								<ProductCard key={product.id} product={product} isFavorite={favoriteProducts.includes(product.id)} />
+							);
 						})}
 					</>
 				) : (

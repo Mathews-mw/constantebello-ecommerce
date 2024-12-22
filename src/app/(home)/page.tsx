@@ -1,4 +1,4 @@
-import { ProductCard } from '@/components/product-card';
+import { ProductCard } from '@/components/product-card/product-card';
 import { ReviewCard } from '@/components/review-card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';

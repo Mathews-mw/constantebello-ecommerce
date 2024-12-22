@@ -69,14 +69,7 @@ export function UpdateUserInfosForm({ user }: IProps) {
 					name="advertisingConsent"
 					control={control}
 					render={({ field }) => {
-						return (
-							<Checkbox
-								id="terms"
-								className="mt-2"
-								checked={field.value}
-								onCheckedChange={field.onChange}
-							/>
-						);
+						return <Checkbox id="terms" className="mt-2" checked={field.value} onCheckedChange={field.onChange} />;
 					}}
 				/>
 

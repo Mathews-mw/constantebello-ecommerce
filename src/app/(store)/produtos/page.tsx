@@ -1,20 +1,36 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 
-import { ProductsFilters } from './products-filters';
-import { ProductCard } from '../../../components/product-card';
+import { useFavoriteProducts } from '@/context/favorite-products-context';
 import { listingProducts } from '@/app/api/@requests/products/listing-products';
 
-import { Button } from '@/components/ui/button';
+import { OrderByFilter } from './order-by-filter';
+import { ProductsFilters } from './products-filters';
 import { Separator } from '@/components/ui/separator';
+import { ProductCard } from '../../../components/product-card/product-card';
 
-import { ChevronRight, ListFilter } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 export default function ProductsPage() {
-	const { data: products, isFetching } = useQuery({
-		queryKey: ['products'],
-		queryFn: listingProducts,
+	const searchParams = useSearchParams();
+	const { favoriteProducts } = useFavoriteProducts();
+
+	const orderByParams = searchParams.get('orderBy') ?? undefined;
+	const minPriceParams = searchParams.get('minPrice') ?? undefined;
+	const maxPriceParams = searchParams.get('maxPrice') ?? undefined;
+	const departmentsParams = searchParams.get('departments') ?? undefined;
+
+	const { data: productsResponse } = useQuery({
+		queryKey: ['products', minPriceParams, maxPriceParams, orderByParams, departmentsParams],
+		queryFn: async () =>
+			listingProducts({
+				orderBy: orderByParams,
+				minPrice: minPriceParams,
+				maxPrice: maxPriceParams,
+				departments: departmentsParams ? departmentsParams.split(',') : undefined,
+			}),
 	});
 
 	return (
@@ -31,13 +47,7 @@ export default function ProductsPage() {
 					<div className="flex items-center justify-between">
 						<h2 className="text-xl font-semibold">Todos os móveis</h2>
 
-						<Button
-							variant="outline"
-							className="flex items-center gap-2 text-sm text-muted-foreground"
-						>
-							<ListFilter className="h-4 w-4" />
-							<span>Ordenar: Relevância</span>
-						</Button>
+						<OrderByFilter />
 					</div>
 
 					<Separator />
@@ -50,9 +60,15 @@ export default function ProductsPage() {
 							gridTemplateColumns: 'repeat(auto-fit, minmax(325px, 1fr))',
 						}}
 					>
-						{products?.map((product) => {
-							return <ProductCard key={product.id} product={product} />;
+						{productsResponse?.products?.map((product) => {
+							return (
+								<ProductCard key={product.id} product={product} isFavorite={favoriteProducts.includes(product.id)} />
+							);
 						})}
+					</div>
+
+					<div className="flex w-full justify-end">
+						<span className="text-sm text-muted-foreground">Qtd. Produtos: {productsResponse?.amount}</span>
 					</div>
 				</div>
 			</div>

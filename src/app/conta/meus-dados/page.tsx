@@ -31,7 +31,7 @@ export default function UserPersonalDataPage() {
 			</div>
 
 			<div className="flex w-full flex-wrap gap-8">
-				<div className="h-min flex-grow space-y-4 rounded border p-4 shadow-sm">
+				<div className="h-min flex-grow space-y-4 rounded border bg-background p-4 shadow-sm">
 					<div className="flex items-center gap-2">
 						<FileText className="fill-primary text-white" />
 						<h2 className="text-lg font-semibold">Dados de cadastro</h2>
@@ -40,19 +40,14 @@ export default function UserPersonalDataPage() {
 					{customer ? <UpdateUserInfosForm user={customer} /> : <UpdateUserInfosFormSkeleton />}
 				</div>
 
-				<div className="h-min flex-grow space-y-4 rounded border p-4 shadow-sm">
+				<div className="h-min flex-grow space-y-4 rounded border bg-background p-4 shadow-sm">
 					<div className="flex w-full items-center justify-between">
 						<div className="flex items-center gap-2">
 							<MapPinHouse className="fill-white text-primary" />
 							<h2 className="text-lg font-semibold">Endereços cadastrados</h2>
 						</div>
 
-						{customer && (
-							<AddNewAddressDialog
-								userId={customer.id}
-								customerId={customer.customerInfos.id}
-							/>
-						)}
+						{customer && <AddNewAddressDialog userId={customer.id} customerId={customer.customerInfos.id} />}
 					</div>
 
 					{customer && (

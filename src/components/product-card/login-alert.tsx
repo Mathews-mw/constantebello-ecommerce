@@ -1,6 +1,6 @@
+import { Button } from '@/components/ui/button';
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
@@ -9,20 +9,15 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 
-interface ILoginAlert {
-	disabled?: boolean;
-}
+import { Heart } from 'lucide-react';
 
-export function LoginAlert({ disabled }: ILoginAlert) {
+export function LoginAlert() {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant="secondary" className="w-full" disabled={disabled}>
-					Ir para o Checkout
-					<ArrowRight className="h-6 w-6" />
+				<Button size="icon" variant="ghost" className="absolute right-2 top-2 z-10">
+					<Heart strokeWidth={3} className="h-6 w-6 text-primary/70" />
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
@@ -30,9 +25,10 @@ export function LoginAlert({ disabled }: ILoginAlert) {
 					<div className="flex w-full items-center justify-center">
 						<img src="/alert-animated.gif" />
 					</div>
-					<AlertDialogTitle>Faça o login para prosseguir</AlertDialogTitle>
-					<AlertDialogDescription>
-						Por favor, faça o seu login para prosseguir com o seu checkout e concluir o seu pagamento.
+					<AlertDialogTitle className="text-center">Faça o login</AlertDialogTitle>
+					<AlertDialogDescription className="text-justify">
+						Por favor, faça o seu login para marcar como favorito os produtos que gostar. Além disso, ao fazer o login,
+						você pode aproveitar da melhor forma possível todos os recursos da plataforma.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>

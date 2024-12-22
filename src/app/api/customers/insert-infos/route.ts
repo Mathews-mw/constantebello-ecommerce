@@ -29,8 +29,7 @@ export async function POST(request: NextRequest) {
 	if (!dataParse.success) {
 		return NextResponse.json(
 			{
-				message:
-					'Erro ao preencher formulário. Por favor, verifique os dados e tente novamente.',
+				message: 'Erro ao preencher formulário. Por favor, verifique os dados e tente novamente.',
 				error: dataParse.error.issues,
 			},
 			{ status: 400 }
@@ -69,9 +68,6 @@ export async function POST(request: NextRequest) {
 		);
 	} catch (error) {
 		console.log('create customer infos route error: ', error);
-		return NextResponse.json(
-			{ message: 'Erro durante o cadastro das informações do usuário.' },
-			{ status: 400 }
-		);
+		return NextResponse.json({ message: 'Erro durante o cadastro das informações do usuário.' }, { status: 400 });
 	}
 }

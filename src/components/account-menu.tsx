@@ -73,7 +73,7 @@ export function AccountMenu() {
 							</button>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
-							<button className="w-full" onClick={() => router.push('/conta/meus-dados')}>
+							<button className="w-full">
 								<Package className="mr-2 h-4 w-4" />
 								<span>Meus pedidos</span>
 							</button>
@@ -85,7 +85,7 @@ export function AccountMenu() {
 							</button>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
-							<button className="w-full">
+							<button className="w-full" onClick={() => router.push('/conta/favoritos')}>
 								<Heart className="mr-2 h-4 w-4" />
 								<span>Favoritos</span>
 							</button>

@@ -1,9 +1,17 @@
-import { prisma } from '@/lib/prisma';
-import { NextRequest } from 'next/server';
 import { z } from 'zod';
+import { NextRequest } from 'next/server';
+import { Prisma, ProductDepartment } from '@prisma/client';
+
+import { prisma } from '@/lib/prisma';
 
 const queryParamsSchema = z.object({
-	take: z.optional(z.coerce.number()),
+	orderBy: z
+		.optional(z.enum(['relevance', 'lowestPrice', 'highPrice', 'az', 'za']))
+		.nullish()
+		.default('relevance'),
+	minPrice: z.optional(z.coerce.number()),
+	maxPrice: z.optional(z.coerce.number()),
+	departments: z.optional(z.array(z.nativeEnum(ProductDepartment))).nullish(),
 });
 
 export async function GET(request: NextRequest) {
@@ -18,14 +26,70 @@ export async function GET(request: NextRequest) {
 
 	const { searchParams } = request.nextUrl;
 
-	const { take } = queryParamsSchema.parse({
-		take: searchParams.get('take'),
+	const { orderBy, minPrice, maxPrice, departments } = queryParamsSchema.parse({
+		orderBy: searchParams.get('orderBy'),
+		minPrice: searchParams.get('minPrice'),
+		maxPrice: searchParams.get('maxPrice'),
+		departments: searchParams.getAll('departments[]'),
 	});
 
 	try {
-		const products = await prisma.product.findMany();
+		let orderByQuery: Prisma.ProductOrderByWithAggregationInput | undefined = { name: 'desc' };
 
-		return Response.json(products);
+		switch (orderBy) {
+			case 'az':
+				orderByQuery = { name: 'asc' };
+				break;
+			case 'za':
+				orderByQuery = { name: 'desc' };
+				break;
+			case 'lowestPrice':
+				orderByQuery = { price: 'asc' };
+				break;
+			case 'highPrice':
+				orderByQuery = { price: 'desc' };
+				break;
+			case 'relevance':
+				orderByQuery = undefined;
+				break;
+			default:
+				orderByQuery = undefined;
+		}
+
+		const query: Prisma.ProductFindManyArgs = {
+			where: {
+				price:
+					minPrice && maxPrice
+						? {
+								gte: minPrice,
+								lte: maxPrice,
+							}
+						: undefined,
+				productDetails:
+					departments && departments.length >= 1
+						? {
+								some: {
+									department: {
+										in: departments,
+									},
+								},
+							}
+						: undefined,
+			},
+		};
+
+		const [products, amount] = await prisma.$transaction([
+			prisma.product.findMany({
+				where: query.where,
+				orderBy: orderByQuery,
+			}),
+			prisma.product.count({ where: query.where }),
+		]);
+
+		return Response.json({
+			products,
+			amount,
+		});
 	} catch (error) {
 		console.error('Listing products route error: ', error);
 

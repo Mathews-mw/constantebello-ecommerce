@@ -1,13 +1,31 @@
+import qs from 'qs';
 import { api } from '@/lib/axios';
 import { Product } from '@prisma/client';
 
 interface IRequest {
-	cursor?: string;
-	skip?: number;
+	orderBy?: string;
+	minPrice?: string;
+	maxPrice?: string;
+	departments?: Array<string>;
 }
 
-export async function listingProducts(): Promise<Product[]> {
-	const { data: response } = await api.get('/products');
+interface IResponse {
+	products: Array<Product>;
+	amount: number;
+}
+
+export async function listingProducts(query: IRequest): Promise<IResponse> {
+	const { data: response } = await api.get('/products', {
+		params: {
+			orderBy: query.orderBy,
+			minPrice: query.minPrice,
+			maxPrice: query.maxPrice,
+			departments: query.departments,
+		},
+		paramsSerializer: (params) => {
+			return qs.stringify(params, { arrayFormat: 'brackets' });
+		},
+	});
 
 	return response;
 }

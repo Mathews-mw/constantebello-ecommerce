@@ -1,6 +1,5 @@
 import { Logo } from '@/components/logo';
 import { Separator } from '@/components/ui/separator';
-import { NavLink } from '@/components/nav-link/nav-link';
 import { NavIconsLink } from '../nav-link/nav-icons-link';
 import { HeaderUserAccount } from './components/header-user-account';
 

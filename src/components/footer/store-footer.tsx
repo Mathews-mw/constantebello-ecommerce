@@ -5,15 +5,14 @@ import { Separator } from '../ui/separator';
 
 export function StoreFooter() {
 	return (
-		<footer className="mt-8 bg-secondary">
+		<footer className="mt-8 border-t bg-background">
 			<div className="mx-auto w-full max-w-screen-2xl space-y-4 px-20 py-4">
 				<div className="flex justify-between">
 					<div className="max-w-[248px] space-y-4">
 						<Logo />
 
 						<p className="text-sm text-muted-foreground">
-							Nós temos os móveis ideais para o seu ambiente e nós teremos orgulho de produzi-lo
-							para você.
+							Nós temos os móveis ideais para o seu ambiente e nós teremos orgulho de produzi-lo para você.
 						</p>
 
 						<div className="space-x-3">

@@ -20,12 +20,13 @@ model User {
   image         String?
   password      String?
   role          UserRole  @default(CUSTOMER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
-  accounts      Account[]
-  sessions      Session[]
-  customerInfos CustomerInfo?
+  accounts                 Account[]
+  sessions                 Session[]
+  customerInfos            CustomerInfo?
+  customerFavoriteProducts CustomerFavoriteProduct[]
 
   @@map("users")
 }
@@ -43,8 +44,8 @@ model Account {
   id_token          String?
   session_state     String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -58,8 +59,8 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("sessions")
 }
@@ -81,8 +82,8 @@ model CustomerInfo {
   birthday           String
   policyConsent      Boolean  @default(false) @map("policy_consent")
   advertisingConsent Boolean  @default(false) @map("advertising_consent")
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
 
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   customerAddress CustomerAddress[]
@@ -116,8 +117,56 @@ model Product {
   imageUrl    String    @map("image_url")
   price       Float
   available   Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @map("updated_at")
+
+  productDetails           ProductDetail[]
+  customerFavoriteProducts CustomerFavoriteProduct[]
 
   @@map("products")
+}
+
+enum ProductDepartment {
+  GENERICO
+  COZINHA
+  ESCRITORIO
+  QUARTO
+  SALA
+  SALA_JANTA
+}
+
+model ProductDetail {
+  id                String            @id @default(uuid())
+  productId         String            @map("product_id")
+  quantityAvailable Int               @map("quantity_available")
+  color             String
+  width             Float
+  height            Float
+  length            Float
+  weight            Float
+  depth             Float?
+  supportedLoad     Float?            @map("supported_load")
+  requiresAssembly  Boolean?          @default(false)
+  discount          Float?
+  addition          Float?
+  details           String?
+  specifications    String?
+  department        ProductDepartment @default(GENERICO)
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime?         @map("updated_at")
+
+  product Product @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@map("product_details")
+}
+
+model CustomerFavoriteProduct {
+  userId    String @map("user_id")
+  productId String @map("product_id")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("customer_favorite_products")
 }

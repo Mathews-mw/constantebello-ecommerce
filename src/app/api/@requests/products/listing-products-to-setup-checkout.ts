@@ -7,9 +7,7 @@ interface IRequest {
 	productIds: Array<string>;
 }
 
-export async function listingProductsToSetupCheckout({
-	productIds,
-}: IRequest): Promise<Product[]> {
+export async function listingProductsToSetupCheckout({ productIds }: IRequest): Promise<Product[]> {
 	const { data: response } = await api.get('/products/listing-to-setup-checkout', {
 		params: {
 			productIds,

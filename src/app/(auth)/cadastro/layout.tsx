@@ -1,7 +1,8 @@
-import { StoreFooter } from '@/components/footer/store-footer';
-import { SigInDialog } from '@/components/header/sigin-dialog';
-import { Logo } from '@/components/logo';
 import { ReactNode } from 'react';
+
+import { Logo } from '@/components/logo';
+import { SigInDialog } from '@/components/sigin-dialog';
+import { StoreFooter } from '@/components/footer/store-footer';
 
 export default function SignUpLayout({ children }: { children: ReactNode }) {
 	return (
@@ -16,9 +17,7 @@ export default function SignUpLayout({ children }: { children: ReactNode }) {
 				</div>
 			</header>
 
-			<main className="mx-auto mb-0 mt-8 w-full max-w-screen-lg flex-grow px-20 py-0">
-				{children}
-			</main>
+			<main className="mx-auto mb-0 mt-8 w-full max-w-screen-lg flex-grow px-20 py-0">{children}</main>
 
 			<StoreFooter />
 		</div>

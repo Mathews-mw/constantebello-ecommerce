@@ -1,13 +1,17 @@
+import { ReactNode } from 'react';
+
 import { StoreFooter } from '@/components/footer/store-footer';
 import { StoreHeader } from '@/components/header/store-header';
-import { ReactNode } from 'react';
+import { FavoriteProductsContextProvider } from '@/context/favorite-products-context';
 
 export default function HomeLayout({ children }: { children: ReactNode }) {
 	return (
-		<div className="flex min-h-screen flex-col font-sans">
+		<div className="flex min-h-screen flex-col bg-secondary font-sans">
 			<StoreHeader />
 
-			<main className="flex-grow">{children}</main>
+			<main className="flex-grow">
+				<FavoriteProductsContextProvider>{children}</FavoriteProductsContextProvider>
+			</main>
 
 			<StoreFooter />
 		</div>
