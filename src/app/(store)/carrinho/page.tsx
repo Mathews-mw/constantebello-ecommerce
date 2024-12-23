@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -10,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { LoginAlert } from './login-alert';
 import { useCart } from '@/context/cart-context';
 import { GeneratingOrderAlert } from './generating-order-alert';
+import { getCustomerById } from '@/app/api/@requests/customers/get-customer-by-id';
 import { listingProductsToSetupCheckout } from '@/app/api/@requests/products/listing-products-to-setup-checkout';
 
 import { CartItem } from './cart-item';
@@ -17,20 +19,18 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/page-title';
 import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
-import { getCustomerById } from '@/app/api/@requests/customers/get-customer-by-id';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function CartPage() {
 	const { status, data } = useSession();
 	const { items, clearCart } = useCart();
 	const router = useRouter();
 
-	const [productsId, setProductsId] = useState<string[]>([]);
 	const [isOpen, setIsOpen] = useState(false);
+	const [productsId, setProductsId] = useState<string[]>([]);
+	const [selectedAddress, setSelectedAddress] = useState('');
 
 	const { data: products } = useQuery({
 		queryKey: ['products', 'to-checkout', productsId],
@@ -69,6 +69,13 @@ export default function CartPage() {
 
 		setProductsId(productsId);
 	}, [items]);
+
+	useEffect(() => {
+		if (customer) {
+			const mainAddress = customer.customerInfos.customerAddress.find((address) => address.isPrincipal);
+			setSelectedAddress(mainAddress?.id ?? '');
+		}
+	}, [customer]);
 
 	return (
 		<>
@@ -176,51 +183,63 @@ export default function CartPage() {
 										Aplicar
 									</Button>
 								</div>
-
-								<div className="w-full">
-									{status === 'authenticated' ? (
-										<Button className="w-full" disabled={items.length <= 0} onClick={handleGenerateOrder}>
-											Ir para o Checkout
-											<ArrowRight className="h-6 w-6" />
-										</Button>
-									) : (
-										<LoginAlert disabled={items.length <= 0} />
-									)}
-								</div>
 							</div>
 
-							<div className="h-min space-y-8 rounded-xl border bg-background p-4 shadow-sm">
+							<div className="h-min space-y-4 rounded-xl border bg-background p-4 shadow-sm">
 								<div className="flex items-center gap-2">
 									<Truck className="text-primary" />
 									<h3 className="text-lg font-bold">Entrega</h3>
 								</div>
 
-								<div>
-									<RadioGroup defaultValue="comfortable" className="group">
-										{customer?.customerInfos.customerAddress.map((address) => {
-											return (
-												<div className="flex items-center space-x-2" key={address.id}>
-													<RadioGroupItem value={address.id} id={address.id} />
-													<label
-														htmlFor={address.id}
-														className="w-full rounded border border-l-4 p-2 group-data-[state=checked]:bg-primary"
-													>
-														<div className="flex flex-col gap-1">
-															<span>
-																{address.street}, {address.number}
-															</span>
-															<div>
-																{address.addressComplement && <span>{address.addressComplement} </span>}
-																{address.addressReference && <span>- {address.addressReference}</span>}
+								<p className="text-muted-foreground">Selecione o endereço que será feito a entrega do produto</p>
+
+								{customer && (
+									<div>
+										<RadioGroup value={selectedAddress} onValueChange={setSelectedAddress}>
+											{customer?.customerInfos.customerAddress.map((address) => {
+												return (
+													<div className="flex items-center space-x-2" key={address.id}>
+														<RadioGroupItem value={address.id} id={address.id} className="hidden" />
+														<label
+															htmlFor={address.id}
+															data-selected={selectedAddress === address.id}
+															className={twMerge([
+																'w-full cursor-pointer rounded border border-l-4 p-2',
+																'data-[selected=true]:border-primary data-[selected=true]:bg-primary/10',
+															])}
+														>
+															<div className="flex flex-col gap-1">
+																<span>
+																	{address.street}, {address.number}
+																</span>
+																<div>
+																	{address.addressComplement && <span>{address.addressComplement} </span>}
+																	{address.addressReference && <span>- {address.addressReference}</span>}
+																</div>
+																<span>CEP: {address.cep}</span>
 															</div>
-															<span>CEP: {address.cep}</span>
-														</div>
-													</label>
-												</div>
-											);
-										})}
-									</RadioGroup>
-								</div>
+														</label>
+													</div>
+												);
+											})}
+										</RadioGroup>
+									</div>
+								)}
+							</div>
+
+							<div className="space-y-4 rounded-xl border bg-background p-4 shadow-sm">
+								{status === 'authenticated' ? (
+									<Button className="w-full" disabled={items.length <= 0} onClick={handleGenerateOrder}>
+										Ir para o Checkout
+										<ArrowRight className="h-6 w-6" />
+									</Button>
+								) : (
+									<LoginAlert disabled={items.length <= 0} />
+								)}
+
+								<Button variant="outline" className="w-full">
+									Continuar comprando
+								</Button>
 							</div>
 						</div>
 					</div>
