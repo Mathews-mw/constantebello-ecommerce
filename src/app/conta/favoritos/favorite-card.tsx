@@ -1,10 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@prisma/client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { unmarkProductAsFavorite } from '@/app/api/@requests/customers/unmark-customer-favorite-product';
+import { useFavoriteProducts } from '@/context/favorite-products-context';
 
 import { Button } from '@/components/ui/button';
 import { StarsRating } from '@/components/stars-rating';
@@ -17,16 +18,16 @@ interface IFavoriteCardProps {
 }
 
 export function FavoriteCard({ product, userId }: IFavoriteCardProps) {
+	const { toggleFavoriteProduct, isLoadingFavoriteProducts } = useFavoriteProducts();
 	const queryClient = useQueryClient();
 
-	const { mutateAsync: unmarkProductAsFavoriteFn, isPending } = useMutation({
-		mutationFn: async () => unmarkProductAsFavorite({ userId, productId: product.id }),
-		onSuccess: async () => {
-			await queryClient.invalidateQueries({
-				queryKey: ['products', 'favorite-products'],
-			});
-		},
-	});
+	async function handleRemoveFavorite() {
+		await toggleFavoriteProduct(product.id);
+
+		await queryClient.invalidateQueries({
+			queryKey: ['favorite-products', 'details', userId],
+		});
+	}
 
 	return (
 		<div className="flex w-full justify-between gap-8 rounded-lg border bg-background p-4 shadow-sm">
@@ -50,8 +51,8 @@ export function FavoriteCard({ product, userId }: IFavoriteCardProps) {
 					<span className="text-nowrap text-lg font-black">
 						{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
 					</span>
-					<Button variant="ghost" size="xs" onClick={() => unmarkProductAsFavoriteFn()}>
-						{isPending ? (
+					<Button variant="ghost" size="xs" onClick={() => handleRemoveFavorite()}>
+						{isLoadingFavoriteProducts ? (
 							<Loader2 className="animate-spin text-primary" />
 						) : (
 							<Heart className="h-6 w-6 fill-primary text-primary" />
@@ -59,7 +60,9 @@ export function FavoriteCard({ product, userId }: IFavoriteCardProps) {
 					</Button>
 				</div>
 
-				<Button className="w-full">Comprar</Button>
+				<Button asChild className="w-full">
+					<Link href={`/produtos/${product.id}/detalhes`}>Comprar</Link>
+				</Button>
 			</div>
 		</div>
 	);

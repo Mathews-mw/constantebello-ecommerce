@@ -10,7 +10,9 @@ interface IParamsProps {
 }
 
 export async function GET(request: NextRequest, { params }: IParamsProps) {
-	const id = z.string().parse(params.id);
+	const { id } = await params;
+
+	z.string().parse(id);
 
 	try {
 		const favoriteProducts = await prisma.product.findMany({

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 interface ICartItems {
 	productId: string;
@@ -10,7 +10,7 @@ interface ICartItems {
 interface CartContextType {
 	items: ICartItems[];
 	clearCart: () => void;
-	addToCart: (productId: string) => void;
+	addToCart: (productId: string, quantity?: number) => void;
 	removeFromCart: (productId: string) => void;
 	decrementProductFromCart: (productId: string) => void;
 }
@@ -28,20 +28,20 @@ export function CartContextProvider({ children }: { children: React.ReactNode })
 		return [];
 	});
 
-	function addToCart(productId: string) {
+	function addToCart(productId: string, quantity?: number) {
 		setCartItems((state) => {
 			const productInCart = state.some((item) => item.productId === productId);
 
 			if (productInCart) {
 				return state.map((item) => {
 					if (item.productId === productId) {
-						return { ...item, quantity: item.quantity + 1 };
+						return { ...item, quantity: quantity ?? item.quantity + 1 };
 					} else {
 						return item;
 					}
 				});
 			} else {
-				return [...state, { productId, quantity: 1 }];
+				return [...state, { productId, quantity: quantity ?? 1 }];
 			}
 		});
 	}

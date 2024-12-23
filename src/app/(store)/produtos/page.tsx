@@ -62,19 +62,13 @@ export default function ProductsPage() {
 					>
 						{productsResponse?.products?.map((product) => {
 							return (
-								<ProductCard
-									key={product.id}
-									product={product}
-									isFavorite={favoriteProducts.includes(product.id)}
-								/>
+								<ProductCard key={product.id} product={product} isFavorite={favoriteProducts.includes(product.id)} />
 							);
 						})}
 					</div>
 
 					<div className="flex w-full justify-end">
-						<span className="text-sm text-muted-foreground">
-							Qtd. Produtos: {productsResponse?.amount}
-						</span>
+						<span className="text-sm text-muted-foreground">Qtd. Produtos: {productsResponse?.amount}</span>
 					</div>
 				</div>
 			</div>

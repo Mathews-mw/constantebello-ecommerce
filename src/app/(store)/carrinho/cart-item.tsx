@@ -55,7 +55,7 @@ export function CartItem({ product, quantity }: ICartItemProps) {
 					<Trash2 className="h-5 w-5 text-rose-500" />
 				</Button>
 
-				<div className="flex items-center gap-2 rounded-lg border bg-secondary px-4 py-1">
+				<div className="flex items-center gap-2 rounded-lg border px-4 py-1">
 					<Button
 						variant="ghost"
 						size="xs"

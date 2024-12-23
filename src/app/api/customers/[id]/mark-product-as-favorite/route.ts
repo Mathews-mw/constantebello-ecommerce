@@ -23,7 +23,9 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 		);
 	}
 
-	const id = z.string().parse(params.id);
+	const { id } = await params;
+
+	z.string().parse(id);
 
 	const data = await request.json();
 

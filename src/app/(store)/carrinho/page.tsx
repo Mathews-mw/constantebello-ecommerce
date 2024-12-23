@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 
+import { LoginAlert } from './login-alert';
 import { useCart } from '@/context/cart-context';
+import { GeneratingOrderAlert } from './generating-order-alert';
 import { listingProductsToSetupCheckout } from '@/app/api/@requests/products/listing-products-to-setup-checkout';
 
 import { CartItem } from './cart-item';
@@ -14,15 +17,20 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/page-title';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import { ArrowRight, ChevronRight, ShoppingCart, Trash2 } from 'lucide-react';
-import { LoginAlert } from './login-alert';
+import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
+import { getCustomerById } from '@/app/api/@requests/customers/get-customer-by-id';
+import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function CartPage() {
-	const { status } = useSession();
+	const { status, data } = useSession();
 	const { items, clearCart } = useCart();
+	const router = useRouter();
 
 	const [productsId, setProductsId] = useState<string[]>([]);
+	const [isOpen, setIsOpen] = useState(false);
 
 	const { data: products } = useQuery({
 		queryKey: ['products', 'to-checkout', productsId],
@@ -33,6 +41,12 @@ export default function CartPage() {
 		enabled: productsId.length > 0,
 	});
 
+	const { data: customer } = useQuery({
+		queryKey: ['user', data?.user.id],
+		queryFn: async () => getCustomerById({ id: data ? data.user.id : '' }),
+		enabled: !!data && status === 'authenticated',
+	});
+
 	const subtotal = products
 		? products.reduce((acc, product) => {
 				const quantity = items.find((item) => item.productId === product.id)?.quantity ?? 1;
@@ -41,6 +55,15 @@ export default function CartPage() {
 			}, 0)
 		: 0;
 
+	function handleGenerateOrder() {
+		setIsOpen(true);
+
+		setTimeout(() => {
+			setIsOpen(false);
+			router.push('/checkout');
+		}, 3000);
+	}
+
 	useEffect(() => {
 		const productsId = items.map((item) => item.productId);
 
@@ -48,120 +71,163 @@ export default function CartPage() {
 	}, [items]);
 
 	return (
-		<div className="space-y-8">
-			<div className="flex items-center text-sm text-muted-foreground">
-				<span>Home</span> <ChevronRight className="h-4 w-4" />{' '}
-				<span className="font-semibold text-primary">Carrinho</span>
-			</div>
-
-			<div className="space-y-4">
-				<div className="grid grid-cols-3 items-center justify-between">
-					<div className="col-span-2 flex w-full items-center justify-between">
-						<PageTitle title="SEU CARRINHO" />
-						<Button
-							variant="outline"
-							onClick={clearCart}
-							disabled={items.length <= 0}
-							className="border-destructive text-destructive hover:text-rose-600"
-						>
-							<Trash2 /> Remover todos os produtos
-						</Button>
-					</div>
+		<>
+			<div className="space-y-8">
+				<div className="flex items-center text-sm text-muted-foreground">
+					<span>Home</span> <ChevronRight className="h-4 w-4" />{' '}
+					<span className="font-semibold text-primary">Carrinho</span>
 				</div>
 
-				<div className="grid grid-cols-3 gap-6">
-					{items.length > 0 ? (
-						<ul
-							role="list"
-							className="col-span-2 h-min divide-y rounded-xl border p-4 shadow-sm"
-						>
-							{products?.map((product) => {
-								return (
-									<li key={product.id} className="py-4 first:pt-0 last:pb-0">
-										<CartItem
-											product={product}
-											quantity={
-												items.find((item) => item.productId === product.id)?.quantity ?? 1
-											}
-										/>
-									</li>
-								);
-							})}
-						</ul>
-					) : (
-						<div className="col-span-2 flex flex-col items-center justify-center rounded-xl border p-4 shadow-sm">
-							<div className="flex w-full flex-col items-center">
-								<span className="text-xl font-bold">Seu carrinho está vazio...</span>
-								<span className="text-sm">Que tal adicionar alguns produtos?</span>
-							</div>
-							<Image
-								src="/empty-cart.png"
-								width={1020}
-								height={1020}
-								alt="Carrinho vazio ilustração"
-								className="h-60 w-60"
-							/>
-
-							<Button asChild>
-								<Link href="/produtos">
-									<ShoppingCart />
-									Continuar comprando
-								</Link>
+				<div className="space-y-4">
+					<div className="grid grid-cols-3 items-center justify-between">
+						<div className="col-span-2 flex w-full items-center justify-between">
+							<PageTitle title="SEU CARRINHO" />
+							<Button
+								variant="ghost"
+								onClick={clearCart}
+								disabled={items.length <= 0}
+								className="border-destructive text-destructive hover:text-rose-600"
+							>
+								<Trash2 /> Remover todos os produtos
 							</Button>
 						</div>
-					)}
+					</div>
 
-					<div className="h-min space-y-8 rounded-xl border p-4 shadow-sm">
-						<h3 className="text-lg font-bold">Resumo do pedido</h3>
-
-						<div className="space-y-4">
-							<div className="flex w-full justify-between">
-								<span className="text-muted-foreground">Subtotal</span>
-								<span className="font-bold">
-									{subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-								</span>
-							</div>
-							<div className="flex w-full justify-between">
-								<span className="text-muted-foreground">Descontos</span>
-								<span className="font-bold">0,00</span>
-							</div>
-							<div className="flex w-full justify-between">
-								<span className="text-muted-foreground">Entrega</span>
-								<span className="font-bold">0,00</span>
+					<div className="grid grid-cols-3 gap-6">
+						<div className="col-span-2 h-min space-y-4 rounded-xl border bg-background p-4 shadow-sm">
+							<div className="flex items-center gap-2">
+								<ShoppingBasket className="text-primary" />
+								<h3 className="text-lg font-bold">Produtos</h3>
 							</div>
 
-							<Separator />
-
-							<div className="flex w-full justify-between">
-								<span className="text-muted-foreground">Total</span>
-								<span className="font-bold">
-									{subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-								</span>
-							</div>
-						</div>
-
-						<div className="flex gap-4">
-							<Input placeholder="Código promocional" disabled={items.length <= 0} />
-							<Button variant="outline" disabled={items.length <= 0}>
-								Aplicar
-							</Button>
-						</div>
-
-						<div className="w-full">
-							{status === 'authenticated' ? (
-								<Button asChild className="w-full" disabled={items.length <= 0}>
-									<Link href="/checkout">
-										Ir para o Checkout
-										<ArrowRight className="h-6 w-6" />
-									</Link>
-								</Button>
+							{items.length > 0 ? (
+								<ul role="list" className="divide-y">
+									{products?.map((product) => {
+										return (
+											<li key={product.id} className="py-4 first:pt-0 last:pb-0">
+												<CartItem
+													product={product}
+													quantity={items.find((item) => item.productId === product.id)?.quantity ?? 1}
+												/>
+											</li>
+										);
+									})}
+								</ul>
 							) : (
-								<LoginAlert disabled={items.length <= 0} />
+								<div className="flex flex-col items-center justify-center">
+									<div className="flex w-full flex-col items-center">
+										<span className="text-xl font-bold">Seu carrinho está vazio...</span>
+										<span className="text-sm">Que tal adicionar alguns produtos?</span>
+									</div>
+									<Image
+										src="/empty-cart.png"
+										width={1020}
+										height={1020}
+										alt="Carrinho vazio ilustração"
+										className="h-60 w-60"
+									/>
+
+									<Button asChild>
+										<Link href="/produtos">
+											<ShoppingCart />
+											Continuar comprando
+										</Link>
+									</Button>
+								</div>
 							)}
 						</div>
+
+						<div className="space-y-4">
+							<div className="h-min space-y-8 rounded-xl border bg-background p-4 shadow-sm">
+								<div className="flex items-center gap-2">
+									<FileSearch className="text-primary" />
+									<h3 className="text-lg font-bold">Resumo do pedido</h3>
+								</div>
+
+								<div className="space-y-4">
+									<div className="flex w-full justify-between">
+										<span className="text-muted-foreground">Subtotal</span>
+										<span className="font-bold">
+											{subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+										</span>
+									</div>
+									<div className="flex w-full justify-between">
+										<span className="text-muted-foreground">Descontos</span>
+										<span className="font-bold">0,00</span>
+									</div>
+									<div className="flex w-full justify-between">
+										<span className="text-muted-foreground">Entrega</span>
+										<span className="font-bold">0,00</span>
+									</div>
+
+									<Separator />
+
+									<div className="flex w-full justify-between">
+										<span className="text-muted-foreground">Total</span>
+										<span className="font-bold">
+											{subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+										</span>
+									</div>
+								</div>
+
+								<div className="flex gap-4">
+									<Input placeholder="Código promocional" disabled={items.length <= 0} />
+									<Button variant="outline" disabled={items.length <= 0}>
+										Aplicar
+									</Button>
+								</div>
+
+								<div className="w-full">
+									{status === 'authenticated' ? (
+										<Button className="w-full" disabled={items.length <= 0} onClick={handleGenerateOrder}>
+											Ir para o Checkout
+											<ArrowRight className="h-6 w-6" />
+										</Button>
+									) : (
+										<LoginAlert disabled={items.length <= 0} />
+									)}
+								</div>
+							</div>
+
+							<div className="h-min space-y-8 rounded-xl border bg-background p-4 shadow-sm">
+								<div className="flex items-center gap-2">
+									<Truck className="text-primary" />
+									<h3 className="text-lg font-bold">Entrega</h3>
+								</div>
+
+								<div>
+									<RadioGroup defaultValue="comfortable" className="group">
+										{customer?.customerInfos.customerAddress.map((address) => {
+											return (
+												<div className="flex items-center space-x-2" key={address.id}>
+													<RadioGroupItem value={address.id} id={address.id} />
+													<label
+														htmlFor={address.id}
+														className="w-full rounded border border-l-4 p-2 group-data-[state=checked]:bg-primary"
+													>
+														<div className="flex flex-col gap-1">
+															<span>
+																{address.street}, {address.number}
+															</span>
+															<div>
+																{address.addressComplement && <span>{address.addressComplement} </span>}
+																{address.addressReference && <span>- {address.addressReference}</span>}
+															</div>
+															<span>CEP: {address.cep}</span>
+														</div>
+													</label>
+												</div>
+											);
+										})}
+									</RadioGroup>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+
+			<GeneratingOrderAlert isOpen={isOpen} />
+		</>
 	);
 }
