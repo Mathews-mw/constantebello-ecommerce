@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 	try {
 		const favoriteProducts = await prisma.product.findMany({
 			where: {
-				customerFavoriteProducts: {
+				userFavoriteProducts: {
 					some: {
 						userId,
 					},

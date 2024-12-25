@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
 		dataParse.data;
 
 	try {
-		const customerInfos = await prisma.userInfo.findUnique({
+		const userInfos = await prisma.userInfo.findUnique({
 			where: {
-				id: user_id,
+				userId: user_id,
 			},
 		});
 
-		if (!customerInfos) {
+		if (!userInfos) {
 			return NextResponse.json(
 				{
 					message: 'Cliente não encontrado. Por favor, verifique os dados preenchidos',
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
 		await prisma.userAddress.create({
 			data: {
-				userId: user_id,
+				userInfoId: userInfos.id,
 				cep: cep.replace('-', ''),
 				street,
 				number,

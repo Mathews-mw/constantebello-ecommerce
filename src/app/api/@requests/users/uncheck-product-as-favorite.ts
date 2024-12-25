@@ -6,7 +6,7 @@ interface IRequest {
 }
 
 export async function uncheckProductAsFavorite({ userId, productId }: IRequest): Promise<void> {
-	const { data } = await api.patch(`/user/${userId}/uncheck-product-as-favorite`, {
+	const { data } = await api.patch(`/users/${userId}/uncheck-product-as-favorite`, {
 		product_id: productId,
 	});
 

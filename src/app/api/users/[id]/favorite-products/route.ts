@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 	const userId = z.string().uuid().parse(id);
 
 	try {
-		const favoriteProducts = await prisma.customerFavoriteProduct.findMany({
+		const favoriteProducts = await prisma.userFavoriteProduct.findMany({
 			where: {
 				userId,
 			},

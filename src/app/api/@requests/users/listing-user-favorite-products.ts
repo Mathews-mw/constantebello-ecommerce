@@ -1,11 +1,11 @@
 import { api } from '@/lib/axios';
-import { CustomerFavoriteProduct } from '@prisma/client';
+import { UserFavoriteProduct } from '@prisma/client';
 
 interface IRequest {
 	id: string;
 }
 
-export async function listingUserFavoriteProducts({ id }: IRequest): Promise<CustomerFavoriteProduct[]> {
+export async function listingUserFavoriteProducts({ id }: IRequest): Promise<UserFavoriteProduct[]> {
 	const { data } = await api.get(`/users/${id}/favorite-products`);
 
 	return data;

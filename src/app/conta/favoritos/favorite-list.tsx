@@ -4,10 +4,9 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-import { listingCustomerFavoriteProductsDetails } from '@/app/api/@requests/users/listing-user-favorite-products-details';
-
 import { FavoriteCard } from './favorite-card';
 import { FavoriteCardSkeleton } from './favorite-card-skeleton';
+import { listingUserFavoriteProductsDetails } from '@/app/api/@requests/users/listing-user-favorite-products-details';
 
 export function FavoriteList() {
 	const { status, data } = useSession();
@@ -15,7 +14,7 @@ export function FavoriteList() {
 
 	const { data: favoriteProducts } = useQuery({
 		queryKey: ['favorite-products', 'details', data?.user.id],
-		queryFn: async () => listingCustomerFavoriteProductsDetails({ id: data ? data.user.id : '' }),
+		queryFn: async () => listingUserFavoriteProductsDetails({ id: data ? data.user.id : '' }),
 		enabled: status === 'authenticated',
 	});
 

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { deleteAddress } from '@/app/api/@requests/users/delete-user-address';
+import { deleteUserAddress } from '@/app/api/@requests/users/delete-user-address';
 
 import { Button } from '@/components/ui/button';
 import { DialogDescription } from '@radix-ui/react-dialog';
@@ -32,7 +32,7 @@ export function DeleteAddressDialog({ userId, addressId }: IProps) {
 	const useQuery = useQueryClient();
 
 	const { mutateAsync: deleteAddressFn, isPending } = useMutation({
-		mutationFn: deleteAddress,
+		mutationFn: deleteUserAddress,
 		onSuccess: async () => {
 			await useQuery.invalidateQueries({ queryKey: ['user', userId] });
 			toast.success('Endereço atualizado');

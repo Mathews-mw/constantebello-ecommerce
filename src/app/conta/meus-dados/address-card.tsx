@@ -1,13 +1,13 @@
 import { twMerge } from 'tailwind-merge';
+import { UserAddress } from '@prisma/client';
 
 import { Button } from '@/components/ui/button';
-import { CustomerAddress } from '@prisma/client';
-import { MakeAddressPrincipalDialog } from './make-address-principal-dialog';
 import { DeleteAddressDialog } from './delete-address-dialog';
+import { MakeAddressPrincipalDialog } from './make-address-principal-dialog';
 
 interface IAddressCardProps {
 	userId: string;
-	address: CustomerAddress;
+	address: UserAddress;
 }
 
 export function AddressCard({ address, userId }: IAddressCardProps) {
@@ -15,7 +15,7 @@ export function AddressCard({ address, userId }: IAddressCardProps) {
 		<div
 			className={twMerge([
 				'rounded border border-l-4 px-4 py-2',
-				`${address.isPrincipal ? 'border-primary bg-primary-foreground' : 'bg-secondary'}`,
+				`${address.isMainAddress ? 'border-primary bg-primary-foreground' : 'bg-secondary'}`,
 			])}
 		>
 			<div className="flex w-full justify-between">
@@ -30,7 +30,7 @@ export function AddressCard({ address, userId }: IAddressCardProps) {
 					</p>
 				</div>
 
-				{address.isPrincipal && (
+				{address.isMainAddress && (
 					<div>
 						<span className="text-sm font-bold text-primary">(PRINCIPAL)</span>
 					</div>

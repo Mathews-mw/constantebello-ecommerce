@@ -59,7 +59,7 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 			return NextResponse.json({ message: `Recurso não encontrado.` }, { status: 404 });
 		}
 
-		await prisma.customerFavoriteProduct.create({
+		await prisma.userFavoriteProduct.create({
 			data: {
 				userId,
 				productId: product_id,

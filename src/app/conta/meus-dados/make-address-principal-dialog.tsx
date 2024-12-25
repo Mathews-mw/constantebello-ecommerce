@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { makeAddressPrincipal } from '@/app/api/@requests/users/make-user-address-principal';
+import { makeUserAddressPrincipal } from '@/app/api/@requests/users/make-user-address-principal';
 
 import { Button } from '@/components/ui/button';
 import { DialogDescription } from '@radix-ui/react-dialog';
@@ -32,7 +32,7 @@ export function MakeAddressPrincipalDialog({ userId, addressId }: IProps) {
 	const useQuery = useQueryClient();
 
 	const { mutateAsync: makeAddressPrincipalFn, isPending } = useMutation({
-		mutationFn: makeAddressPrincipal,
+		mutationFn: makeUserAddressPrincipal,
 		onSuccess: async () => {
 			await useQuery.invalidateQueries({ queryKey: ['user', userId] });
 			toast.success('Endereço atualizado');

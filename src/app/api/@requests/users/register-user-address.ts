@@ -1,7 +1,7 @@
 import { api } from '@/lib/axios';
 
 interface IRequest {
-	customerId: string;
+	userId: string;
 	cep: string;
 	street: string;
 	number: string;
@@ -17,7 +17,7 @@ export interface IResponse {
 }
 
 export async function registerUserAddress({
-	customerId,
+	userId,
 	cep,
 	street,
 	number,
@@ -28,7 +28,7 @@ export async function registerUserAddress({
 	state,
 }: IRequest): Promise<IResponse> {
 	const { data: response } = await api.post<IResponse>(`/users/address/register`, {
-		customer_id: customerId,
+		user_id: userId,
 		cep,
 		street,
 		number,

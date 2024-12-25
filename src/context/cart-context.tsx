@@ -5,12 +5,13 @@ import { createContext, useContext, useEffect, useState } from 'react';
 interface ICartItems {
 	productId: string;
 	quantity: number;
+	price: number;
 }
 
 interface CartContextType {
 	items: ICartItems[];
 	clearCart: () => void;
-	addToCart: (productId: string, quantity?: number) => void;
+	addToCart: (productId: string, price: number, quantity?: number) => void;
 	removeFromCart: (productId: string) => void;
 	decrementProductFromCart: (productId: string) => void;
 }
@@ -28,20 +29,20 @@ export function CartContextProvider({ children }: { children: React.ReactNode })
 		return [];
 	});
 
-	function addToCart(productId: string, quantity?: number) {
+	function addToCart(productId: string, price: number, quantity?: number) {
 		setCartItems((state) => {
 			const productInCart = state.some((item) => item.productId === productId);
 
 			if (productInCart) {
 				return state.map((item) => {
 					if (item.productId === productId) {
-						return { ...item, quantity: quantity ?? item.quantity + 1 };
+						return { ...item, quantity: quantity ?? item.quantity + 1, price: item.price };
 					} else {
 						return item;
 					}
 				});
 			} else {
-				return [...state, { productId, quantity: quantity ?? 1 }];
+				return [...state, { productId, quantity: quantity ?? 1, price }];
 			}
 		});
 	}

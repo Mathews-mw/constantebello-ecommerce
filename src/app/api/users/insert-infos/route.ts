@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ message: `Usuário não encontrado.` }, { status: 404 });
 		}
 
-		await prisma.customerInfo.create({
+		await prisma.userInfo.create({
 			data: {
 				userId: user_id,
 				phone,

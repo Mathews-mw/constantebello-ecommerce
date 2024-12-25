@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-import { getCustomerById } from '@/app/api/@requests/users/get-user-by-id';
+import { getUserById } from '@/app/api/@requests/users/get-user-by-id';
 
 import { AddressCard } from './address-card';
 import { UpdateUserInfosForm } from './update-user-infos-form';
@@ -19,7 +19,7 @@ export default function UserPersonalDataPage() {
 
 	const { data: customer } = useQuery({
 		queryKey: ['user', data?.user.id],
-		queryFn: async () => getCustomerById({ id: data ? data.user.id : '' }),
+		queryFn: async () => getUserById({ id: data ? data.user.id : '' }),
 		enabled: !!data,
 	});
 
@@ -47,12 +47,12 @@ export default function UserPersonalDataPage() {
 							<h2 className="text-lg font-semibold">Endereços cadastrados</h2>
 						</div>
 
-						{customer && <AddNewAddressDialog userId={customer.id} customerId={customer.customerInfos.id} />}
+						{customer && <AddNewAddressDialog userId={customer.id} />}
 					</div>
 
 					{customer && (
 						<div ref={parent} className="space-y-2">
-							{customer?.customerInfos.customerAddress.map((address) => {
+							{customer?.userInfos.userAddress.map((address) => {
 								return <AddressCard key={address.id} address={address} userId={customer.id} />;
 							})}
 						</div>

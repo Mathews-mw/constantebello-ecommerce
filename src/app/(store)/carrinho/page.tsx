@@ -6,26 +6,30 @@ import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { LoginAlert } from './login-alert';
 import { useCart } from '@/context/cart-context';
-import { GeneratingOrderAlert } from './generating-order-alert';
-import { getCustomerById } from '@/app/api/@requests/users/get-user-by-id';
+import { createCart } from '@/app/api/@requests/orders/create-cart';
+import { createOrder } from '@/app/api/@requests/orders/create-order';
+import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+import { saveCartItems } from '@/app/api/@requests/orders/save-cart-items';
 import { listingProductsToSetupCheckout } from '@/app/api/@requests/products/listing-products-to-setup-checkout';
 
 import { CartItem } from './cart-item';
+import { LoginAlert } from './login-alert';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/page-title';
 import { Separator } from '@/components/ui/separator';
+import { GeneratingOrderAlert } from './generating-order-alert';
+import { getUserById } from '@/app/api/@requests/users/get-user-by-id';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
 
 export default function CartPage() {
 	const { status, data } = useSession();
-	const { items, clearCart } = useCart();
+	const { items: cartItems, clearCart } = useCart();
 	const router = useRouter();
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -43,36 +47,63 @@ export default function CartPage() {
 
 	const { data: customer } = useQuery({
 		queryKey: ['user', data?.user.id],
-		queryFn: async () => getCustomerById({ id: data ? data.user.id : '' }),
+		queryFn: async () => getUserById({ id: data ? data.user.id : '' }),
 		enabled: !!data && status === 'authenticated',
 	});
 
 	const subtotal = products
 		? products.reduce((acc, product) => {
-				const quantity = items.find((item) => item.productId === product.id)?.quantity ?? 1;
+				const quantity = cartItems.find((item) => item.productId === product.id)?.quantity ?? 1;
 
 				return (acc += product.price * quantity);
 			}, 0)
 		: 0;
 
-	function handleGenerateOrder() {
+	const { mutateAsync: generatingOrderFn, isPending } = useMutation({
+		mutationFn: async () => {
+			if (data && products) {
+				const { cart } = await createCart({ userId: data.user.id });
+
+				const itemsToBePurchased = cartItems.map((item) => {
+					return {
+						productId: item.productId,
+						price: item.price,
+						quantity: item.quantity,
+					};
+				});
+
+				await saveCartItems({ userId: data.user.id, cartId: cart.id, cartItems: itemsToBePurchased });
+
+				await createOrder({
+					cartId: cart.id,
+					userId: data.user.id,
+				});
+			}
+		},
+	});
+
+	async function handleGenerateOrder() {
 		setIsOpen(true);
 
-		setTimeout(() => {
+		try {
+			await generatingOrderFn();
 			setIsOpen(false);
 			router.push('/checkout');
-		}, 3000);
+		} catch (error) {
+			setIsOpen(false);
+			errorToasterHandler(error);
+		}
 	}
 
 	useEffect(() => {
-		const productsId = items.map((item) => item.productId);
+		const productsId = cartItems.map((item) => item.productId);
 
 		setProductsId(productsId);
-	}, [items]);
+	}, [cartItems]);
 
 	useEffect(() => {
 		if (customer) {
-			const mainAddress = customer.customerInfos.customerAddress.find((address) => address.isPrincipal);
+			const mainAddress = customer.userInfos.userAddress.find((address) => address.isPrincipal);
 			setSelectedAddress(mainAddress?.id ?? '');
 		}
 	}, [customer]);
@@ -92,7 +123,7 @@ export default function CartPage() {
 							<Button
 								variant="ghost"
 								onClick={clearCart}
-								disabled={items.length <= 0}
+								disabled={cartItems.length <= 0}
 								className="border-destructive text-destructive hover:text-rose-600"
 							>
 								<Trash2 /> Remover todos os produtos
@@ -107,14 +138,14 @@ export default function CartPage() {
 								<h3 className="text-lg font-bold">Produtos</h3>
 							</div>
 
-							{items.length > 0 ? (
+							{cartItems.length > 0 ? (
 								<ul role="list" className="divide-y">
 									{products?.map((product) => {
 										return (
 											<li key={product.id} className="py-4 first:pt-0 last:pb-0">
 												<CartItem
 													product={product}
-													quantity={items.find((item) => item.productId === product.id)?.quantity ?? 1}
+													quantity={cartItems.find((item) => item.productId === product.id)?.quantity ?? 1}
 												/>
 											</li>
 										);
@@ -178,8 +209,8 @@ export default function CartPage() {
 								</div>
 
 								<div className="flex gap-4">
-									<Input placeholder="Código promocional" disabled={items.length <= 0} />
-									<Button variant="outline" disabled={items.length <= 0}>
+									<Input placeholder="Código promocional" disabled={cartItems.length <= 0} />
+									<Button variant="outline" disabled={cartItems.length <= 0}>
 										Aplicar
 									</Button>
 								</div>
@@ -196,7 +227,7 @@ export default function CartPage() {
 								{customer && (
 									<div>
 										<RadioGroup value={selectedAddress} onValueChange={setSelectedAddress}>
-											{customer?.customerInfos.customerAddress.map((address) => {
+											{customer?.userInfos.userAddress.map((address) => {
 												return (
 													<div className="flex items-center space-x-2" key={address.id}>
 														<RadioGroupItem value={address.id} id={address.id} className="hidden" />
@@ -229,12 +260,12 @@ export default function CartPage() {
 
 							<div className="space-y-4 rounded-xl border bg-background p-4 shadow-sm">
 								{status === 'authenticated' ? (
-									<Button className="w-full" disabled={items.length <= 0} onClick={handleGenerateOrder}>
+									<Button className="w-full" disabled={cartItems.length <= 0} onClick={handleGenerateOrder}>
 										Ir para o Pagamento
 										<ArrowRight className="h-6 w-6" />
 									</Button>
 								) : (
-									<LoginAlert disabled={items.length <= 0} />
+									<LoginAlert disabled={cartItems.length <= 0} />
 								)}
 
 								<Button variant="outline" className="w-full">

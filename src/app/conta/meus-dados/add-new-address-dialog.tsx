@@ -5,22 +5,22 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+import { registerUserAddress } from '@/app/api/@requests/users/register-user-address';
+
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { CepInput } from '@/components/cep-input';
+import { ErrorMessage } from '@/components/error-message';
+import { DialogDescription } from '@radix-ui/react-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 import { Loader2, MapPinPlus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ErrorMessage } from '@/components/error-message';
-import { DialogDescription } from '@radix-ui/react-dialog';
-import { CepInput } from '@/components/cep-input';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { registerCustomerAddress } from '@/app/api/@requests/users/register-user-address';
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
 
 interface IProps {
 	userId: string;
-	customerId: string;
 }
 
 const addAddressFormSchema = z.object({
@@ -35,7 +35,7 @@ const addAddressFormSchema = z.object({
 
 type AddAddressInputData = z.infer<typeof addAddressFormSchema>;
 
-export function AddNewAddressDialog({ userId, customerId }: IProps) {
+export function AddNewAddressDialog({ userId }: IProps) {
 	const {
 		handleSubmit,
 		register,
@@ -53,7 +53,7 @@ export function AddNewAddressDialog({ userId, customerId }: IProps) {
 	const useQuery = useQueryClient();
 
 	const { mutateAsync: registerCustomerAddressFn, isPending } = useMutation({
-		mutationFn: registerCustomerAddress,
+		mutationFn: registerUserAddress,
 		onSuccess: async () => {
 			await useQuery.invalidateQueries({ queryKey: ['user', userId] });
 		},
@@ -114,7 +114,7 @@ export function AddNewAddressDialog({ userId, customerId }: IProps) {
 
 		try {
 			await registerCustomerAddressFn({
-				customerId,
+				userId,
 				cep: cepInputValue,
 				street: data.street,
 				number: data.number,

@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 				id: userId,
 			},
 			include: {
-				customerInfos: {
+				userInfos: {
 					include: {
 						userAddress: true,
 					},

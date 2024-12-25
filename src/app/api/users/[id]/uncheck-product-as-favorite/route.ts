@@ -59,7 +59,7 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 			return NextResponse.json({ message: `Recurso não encontrado.` }, { status: 404 });
 		}
 
-		await prisma.customerFavoriteProduct.delete({
+		await prisma.userFavoriteProduct.delete({
 			where: {
 				userId_productId: {
 					userId,
@@ -70,7 +70,7 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 
 		return Response.json({ status: 201 });
 	} catch (error) {
-		console.log('unmark product as favorite route error: ', error);
+		console.log('uncheck product as favorite route error: ', error);
 		return NextResponse.json({ message: 'Erro ao tentar desmarcar o produto como favorito.' }, { status: 400 });
 	}
 }

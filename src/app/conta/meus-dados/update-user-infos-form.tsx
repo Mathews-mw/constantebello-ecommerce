@@ -1,16 +1,15 @@
-import { ICustomer } from '@/@types/user';
+import { IUserDetails } from '@/@types/user';
 import { CpfInput } from '@/components/cpf-input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { User } from '@prisma/client';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 interface IProps {
-	user: ICustomer;
+	user: IUserDetails;
 }
 
 const updateForm = z.object({
@@ -32,8 +31,8 @@ export function UpdateUserInfosForm({ user }: IProps) {
 		resolver: zodResolver(updateForm),
 		defaultValues: {
 			name: user.name ?? undefined,
-			phone: user.customerInfos.phone,
-			advertisingConsent: user.customerInfos.advertisingConsent,
+			phone: user.userInfos.phone,
+			advertisingConsent: user.userInfos.advertisingConsent,
 		},
 	});
 
@@ -56,12 +55,12 @@ export function UpdateUserInfosForm({ user }: IProps) {
 
 			<div className="space-y-2">
 				<Label>CPF</Label>
-				<Input id="cpf" value={user.customerInfos.cpf} disabled readOnly />
+				<Input id="cpf" value={user.userInfos.cpf} disabled readOnly />
 			</div>
 
 			<div className="space-y-2">
 				<Label>Data nascimento</Label>
-				<Input value={user.customerInfos.birthday} disabled readOnly />
+				<Input value={user.userInfos.birthday} disabled readOnly />
 			</div>
 
 			<div className="flex items-center gap-2">

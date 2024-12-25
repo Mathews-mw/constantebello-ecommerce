@@ -93,7 +93,7 @@ model UserInfo {
 
 model UserAddress {
   id                String   @id @default(uuid())
-  userId            String   @map("user_id")
+  userInfoId        String   @map("user_info_id")
   cep               String
   street            String
   number            String
@@ -104,7 +104,7 @@ model UserAddress {
   state             String
   isMainAddress     Boolean? @default(false) @map("is_main_address")
 
-  userInfo UserInfo @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userInfo UserInfo @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
 
   @@map("user_addresses")
 }
