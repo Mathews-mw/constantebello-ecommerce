@@ -19,12 +19,13 @@ export async function DELETE(request: NextRequest, { params }: IParamsProps) {
 		);
 	}
 
-	const id = z.string().parse(params.id);
+	const { id } = await params;
+	const userId = z.string().uuid().parse(id);
 
 	try {
 		await prisma.user.delete({
 			where: {
-				id,
+				id: userId,
 			},
 		});
 
@@ -36,9 +37,6 @@ export async function DELETE(request: NextRequest, { params }: IParamsProps) {
 		);
 	} catch (error) {
 		console.log('delete user route error: ', error);
-		return NextResponse.json(
-			{ message: 'Erro durante  o processo de deletar usuário.' },
-			{ status: 400 }
-		);
+		return NextResponse.json({ message: 'Erro durante  o processo de deletar usuário.' }, { status: 400 });
 	}
 }

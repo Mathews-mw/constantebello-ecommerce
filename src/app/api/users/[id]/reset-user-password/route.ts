@@ -10,7 +10,7 @@ interface IParamsProps {
 	};
 }
 
-const PASSWORD_RESET = 'sindagente@99';
+const PASSWORD_RESET = 'whatever@99';
 
 export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 	if (request.method !== 'PATCH') {
@@ -22,12 +22,13 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 		);
 	}
 
-	const id = z.string().parse(params.id);
+	const { id } = await params;
+	const userId = z.string().uuid().parse(id);
 
 	try {
 		const user = await prisma.user.findUnique({
 			where: {
-				id,
+				id: userId,
 			},
 		});
 
@@ -54,9 +55,6 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 		);
 	} catch (error) {
 		console.log('Reset user password route error: ', error);
-		return NextResponse.json(
-			{ message: 'Erro durante  a redefinição de senha do usuário.' },
-			{ status: 400 }
-		);
+		return NextResponse.json({ message: 'Erro durante  a redefinição de senha do usuário.' }, { status: 400 });
 	}
 }

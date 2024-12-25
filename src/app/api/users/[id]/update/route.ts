@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
+import { UserRole } from '@prisma/client';
 
 interface IParamsProps {
 	params: {
@@ -12,7 +13,7 @@ interface IParamsProps {
 const bodySchema = z.object({
 	name: z.optional(z.string()),
 	email: z.optional(z.string().email()),
-	role: z.optional(z.enum(['ADMIN', 'MODERADOR'])),
+	role: z.optional(z.nativeEnum(UserRole)),
 });
 
 export async function PUT(request: NextRequest, { params }: IParamsProps) {
@@ -27,14 +28,15 @@ export async function PUT(request: NextRequest, { params }: IParamsProps) {
 
 	const data = await request.json();
 
-	const id = z.string().parse(params.id);
+	const { id } = await params;
+	const userId = z.string().uuid().parse(id);
+
 	const dataParse = bodySchema.safeParse(data);
 
 	if (!dataParse.success) {
 		return NextResponse.json(
 			{
-				message:
-					'Erro ao preencher formulário. Por favor, verifique os dados e tente novamente.',
+				message: 'Erro ao preencher formulário. Por favor, verifique os dados e tente novamente.',
 				error: dataParse.error.issues,
 			},
 			{ status: 400 }
@@ -46,7 +48,7 @@ export async function PUT(request: NextRequest, { params }: IParamsProps) {
 	try {
 		const user = await prisma.user.findUnique({
 			where: {
-				id,
+				id: userId,
 			},
 		});
 
@@ -73,9 +75,6 @@ export async function PUT(request: NextRequest, { params }: IParamsProps) {
 		);
 	} catch (error) {
 		console.log('update user route error: ', error);
-		return NextResponse.json(
-			{ message: 'Erro durante  atualização de usuário.' },
-			{ status: 400 }
-		);
+		return NextResponse.json({ message: 'Erro durante  atualização de usuário.' }, { status: 400 });
 	}
 }

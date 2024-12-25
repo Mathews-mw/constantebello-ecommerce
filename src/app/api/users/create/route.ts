@@ -28,8 +28,7 @@ export async function POST(request: NextRequest) {
 	if (!dataParse.success) {
 		return NextResponse.json(
 			{
-				message:
-					'Erro ao preencher formulário. Por favor, verifique os dados e tente novamente.',
+				message: 'Erro ao preencher formulário. Por favor, verifique os dados e tente novamente.',
 				error: dataParse.error.issues,
 			},
 			{ status: 400 }
@@ -46,10 +45,7 @@ export async function POST(request: NextRequest) {
 		});
 
 		if (user) {
-			return NextResponse.json(
-				{ message: `Usuário como e-mail "${email}" já está cadastrado.` },
-				{ status: 400 }
-			);
+			return NextResponse.json({ message: `Usuário como e-mail "${email}" já está cadastrado.` }, { status: 400 });
 		}
 
 		const hashPassword = await hash(password, 8);
@@ -84,9 +80,6 @@ export async function POST(request: NextRequest) {
 		);
 	} catch (error) {
 		console.log('create user route error: ', error);
-		return NextResponse.json(
-			{ message: 'Erro durante o cadastro do usuário.' },
-			{ status: 400 }
-		);
+		return NextResponse.json({ message: 'Erro durante o cadastro do usuário.' }, { status: 400 });
 	}
 }

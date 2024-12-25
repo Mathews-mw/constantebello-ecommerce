@@ -23,8 +23,8 @@ export default function RegistrationConfirmationPage() {
 				<img src="/approval-animated.gif" alt="Aprovado" />
 
 				<p className="text-center">
-					Antes de realizar suas compras, por favor, faça o seu login e complete as informações
-					de cadastro na seção de dados cadastrais do cliente.
+					Antes de realizar suas compras, por favor, faça o seu login e complete as informações de cadastro na seção de
+					dados cadastrais do cliente.
 				</p>
 
 				<Button onClick={() => navigator.replace('/')}>Voltar para a loja</Button>

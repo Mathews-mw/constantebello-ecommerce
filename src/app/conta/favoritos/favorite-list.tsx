@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-import { listingCustomerFavoriteProductsDetails } from '@/app/api/@requests/customers/listing-customer-favorite-products-details';
+import { listingCustomerFavoriteProductsDetails } from '@/app/api/@requests/users/listing-user-favorite-products-details';
 
 import { FavoriteCard } from './favorite-card';
 import { FavoriteCardSkeleton } from './favorite-card-skeleton';

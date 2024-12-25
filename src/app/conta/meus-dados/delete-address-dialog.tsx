@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { deleteAddress } from '@/app/api/@requests/customers/delete-address';
+import { deleteAddress } from '@/app/api/@requests/users/delete-user-address';
 
 import { Button } from '@/components/ui/button';
 import { DialogDescription } from '@radix-ui/react-dialog';

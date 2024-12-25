@@ -6,13 +6,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 import { Loader2, MapPinPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,7 +15,7 @@ import { ErrorMessage } from '@/components/error-message';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { CepInput } from '@/components/cep-input';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { registerCustomerAddress } from '@/app/api/@requests/customers/register-customers-addres';
+import { registerCustomerAddress } from '@/app/api/@requests/users/register-user-address';
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
 
 interface IProps {
@@ -155,19 +149,14 @@ export function AddNewAddressDialog({ userId, customerId }: IProps) {
 					</div>
 
 					<DialogDescription className="text-sm text-muted-foreground">
-						Informe um novo endereço para as suas entregas. Lembrando, você pode marcar esse
-						novo endereço como o padrão para as suas encomendas.
+						Informe um novo endereço para as suas entregas. Lembrando, você pode marcar esse novo endereço como o padrão
+						para as suas encomendas.
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit(handleAddAddressForm)} className="space-y-4">
 					<div className="flex gap-4">
-						<CepInput
-							value={cepInputValue}
-							onValueChange={setCepInputValue}
-							placeholder="CEP*"
-							className="max-w-28"
-						/>
+						<CepInput value={cepInputValue} onValueChange={setCepInputValue} placeholder="CEP*" className="max-w-28" />
 						<Button
 							type="button"
 							variant="outline"

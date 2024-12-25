@@ -1,9 +1,9 @@
-import type { CustomerAddress, CustomerInfo, User } from "@prisma/client";
+import { User, UserInfo } from "@prisma/client"
 
-interface ICustomerInfosDetails extends CustomerInfo {
-  customerAddress: Array<CustomerAddress>
+interface IUserInfosDetails extends UserInfo {
+  userAddress: Array<CustomerAddress>
 }
 
-interface ICustomer extends User {
-  customerInfos: ICustomerInfosDetails
+interface IUserDetails extends User {
+  userInfos: IUserInfosDetails
 }

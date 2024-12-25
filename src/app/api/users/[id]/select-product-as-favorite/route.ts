@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { hash } from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
@@ -11,14 +10,23 @@ interface IParamsProps {
 }
 
 const bodySchema = z.object({
-	new_password: z.string(),
+	product_id: z.string().uuid(),
 });
 
 export async function PATCH(request: NextRequest, { params }: IParamsProps) {
-	const data = await request.json();
+	if (request.method !== 'PATCH') {
+		return Response.json(
+			{
+				error: 'Método não permitido',
+			},
+			{ status: 405 }
+		);
+	}
 
 	const { id } = await params;
 	const userId = z.string().uuid().parse(id);
+
+	const data = await request.json();
 
 	const dataParse = bodySchema.safeParse(data);
 
@@ -32,7 +40,7 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 		);
 	}
 
-	const { new_password } = dataParse.data;
+	const { product_id } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -41,29 +49,26 @@ export async function PATCH(request: NextRequest, { params }: IParamsProps) {
 			},
 		});
 
-		if (!user) {
-			return NextResponse.json({ message: `Usuário não encontrado."` }, { status: 404 });
-		}
-
-		const hashNewPassword = await hash(new_password, 8);
-
-		user.password = hashNewPassword;
-
-		await prisma.user.update({
-			data: user,
+		const product = await prisma.product.findUnique({
 			where: {
-				id: user.id,
+				id: product_id,
 			},
 		});
 
-		return Response.json(
-			{
-				message: 'Senha atualizada com sucesso',
+		if (!user || !product) {
+			return NextResponse.json({ message: `Recurso não encontrado.` }, { status: 404 });
+		}
+
+		await prisma.customerFavoriteProduct.create({
+			data: {
+				userId,
+				productId: product_id,
 			},
-			{ status: 200 }
-		);
+		});
+
+		return Response.json({ status: 201 });
 	} catch (error) {
-		console.log('update user password route error: ', error);
-		return NextResponse.json({ message: 'Erro durante  atualização de senha do usuário.' }, { status: 400 });
+		console.log('mark product as favorite route error: ', error);
+		return NextResponse.json({ message: 'Erro ao tentar marcar o produto como favorito.' }, { status: 400 });
 	}
 }

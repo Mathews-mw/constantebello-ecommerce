@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { useSession } from 'next-auth/react';
 
-import { markProductAsFavorite } from '@/app/api/@requests/customers/mark-product-as-favorite';
-import { unmarkProductAsFavorite } from '@/app/api/@requests/customers/unmark-customer-favorite-product';
-import { listingCustomerFavoriteProducts } from '@/app/api/@requests/customers/listing-customer-favorite-products';
+import { markProductAsFavorite } from '@/app/api/@requests/users/select-product-as-favorite';
+import { unmarkProductAsFavorite } from '@/app/api/@requests/users/uncheck-product-as-favorite';
+import { listingCustomerFavoriteProducts } from '@/app/api/@requests/users/listing-user-favorite-products';
 
 export interface IStoreState {
 	favoriteProducts: Array<string>;

@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { LoginAlert } from './login-alert';
 import { useCart } from '@/context/cart-context';
 import { GeneratingOrderAlert } from './generating-order-alert';
-import { getCustomerById } from '@/app/api/@requests/customers/get-customer-by-id';
+import { getCustomerById } from '@/app/api/@requests/users/get-user-by-id';
 import { listingProductsToSetupCheckout } from '@/app/api/@requests/products/listing-products-to-setup-checkout';
 
 import { CartItem } from './cart-item';
@@ -204,11 +204,11 @@ export default function CartPage() {
 															htmlFor={address.id}
 															data-selected={selectedAddress === address.id}
 															className={twMerge([
-																'w-full cursor-pointer rounded border border-l-4 p-2',
-																'data-[selected=true]:border-primary data-[selected=true]:bg-primary/10',
+																'w-full cursor-pointer rounded border border-l-4 p-2 text-muted-foreground',
+																'data-[selected=true]:border-primary data-[selected=true]:bg-primary/10 data-[selected=true]:text-foreground',
 															])}
 														>
-															<div className="flex flex-col gap-1">
+															<div className="flex flex-col gap-1 text-sm">
 																<span>
 																	{address.street}, {address.number}
 																</span>
@@ -230,7 +230,7 @@ export default function CartPage() {
 							<div className="space-y-4 rounded-xl border bg-background p-4 shadow-sm">
 								{status === 'authenticated' ? (
 									<Button className="w-full" disabled={items.length <= 0} onClick={handleGenerateOrder}>
-										Ir para o Checkout
+										Ir para o Pagamento
 										<ArrowRight className="h-6 w-6" />
 									</Button>
 								) : (

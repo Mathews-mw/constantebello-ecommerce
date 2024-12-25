@@ -14,28 +14,15 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 	const userId = z.string().uuid().parse(id);
 
 	try {
-		const user = await prisma.user.findUnique({
+		const favoriteProducts = await prisma.customerFavoriteProduct.findMany({
 			where: {
-				id: userId,
-			},
-			include: {
-				customerInfos: {
-					include: {
-						userAddress: true,
-					},
-				},
+				userId,
 			},
 		});
 
-		if (!user) {
-			return NextResponse.json({ message: 'Usuário não encontrado' }, { status: 404 });
-		}
-
-		const { password, ...userWithoutPassword } = user;
-
-		return Response.json(userWithoutPassword);
+		return Response.json(favoriteProducts);
 	} catch (error) {
-		console.log('get user route error: ', error);
+		console.log('listing customer favorite products error: ', error);
 		return new Response(JSON.stringify(error), {
 			status: 400,
 		});

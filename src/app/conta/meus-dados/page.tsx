@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-import { getCustomerById } from '@/app/api/@requests/customers/get-customer-by-id';
+import { getCustomerById } from '@/app/api/@requests/users/get-user-by-id';
 
 import { AddressCard } from './address-card';
 import { UpdateUserInfosForm } from './update-user-infos-form';

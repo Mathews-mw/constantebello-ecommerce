@@ -8,7 +8,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { registerUser } from '@/app/api/@requests/users/register-user';
-import { insertCustomerInfos } from '@/app/api/@requests/customers/insert-customer-infos';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +22,7 @@ import { ErrorMessage } from '@/components/error-message';
 import { PasswordInput } from '@/components/password-input';
 
 import { Loader2 } from 'lucide-react';
+import { insertUserInfos } from '@/app/api/@requests/users/insert-user-infos';
 
 const signUpForm = z.object({
 	name: z.string().min(3, { message: 'Por favor, preencha o campo.' }),
@@ -69,7 +69,7 @@ export default function Cadastro() {
 				password: data.password,
 			});
 
-			await insertCustomerInfos({
+			await insertUserInfos({
 				userId: response.user.id,
 				phone: data.phone,
 				cpf: data.cpf,
@@ -132,9 +132,7 @@ export default function Cadastro() {
 							name="birthday"
 							control={control}
 							render={({ field }) => {
-								return (
-									<DateInput id="birthday" value={field.value} onChange={field.onChange} />
-								);
+								return <DateInput id="birthday" value={field.value} onChange={field.onChange} />;
 							}}
 						/>
 						<ErrorMessage message={errors.birthday?.message} />
@@ -187,9 +185,7 @@ export default function Cadastro() {
 							name="policyConsent"
 							control={control}
 							render={({ field }) => {
-								return (
-									<Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />
-								);
+								return <Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />;
 							}}
 						/>
 

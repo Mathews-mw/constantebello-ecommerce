@@ -3,10 +3,9 @@
 import { useSession } from 'next-auth/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
-import { markProductAsFavorite } from '@/app/api/@requests/customers/mark-product-as-favorite';
-import { unmarkProductAsFavorite } from '@/app/api/@requests/customers/unmark-customer-favorite-product';
-import { listingCustomerFavoriteProducts } from '@/app/api/@requests/customers/listing-customer-favorite-products';
+import { listingUserFavoriteProducts } from '@/app/api/@requests/users/listing-user-favorite-products';
+import { uncheckProductAsFavorite } from '@/app/api/@requests/users/uncheck-product-as-favorite';
+import { selectProductAsFavorite } from '@/app/api/@requests/users/select-product-as-favorite';
 
 interface IFavoriteProductsContextType {
 	favoriteProducts: Array<string>;
@@ -29,8 +28,8 @@ export function FavoriteProductsContextProvider({ children }: { children: React.
 
 		if (status === 'authenticated') {
 			if (data && data.user) {
-				console.log('fetching customer favorite products...');
-				const response = await listingCustomerFavoriteProducts({
+				console.log('fetching user favorite products...');
+				const response = await listingUserFavoriteProducts({
 					id: data.user.id,
 				});
 
@@ -54,9 +53,9 @@ export function FavoriteProductsContextProvider({ children }: { children: React.
 		const isFavorite = favoriteProducts.includes(productId);
 
 		if (isFavorite) {
-			await unmarkProductAsFavorite({ userId: data.user.id, productId });
+			await uncheckProductAsFavorite({ userId: data.user.id, productId });
 		} else {
-			await markProductAsFavorite({ userId: data.user.id, productId });
+			await selectProductAsFavorite({ userId: data.user.id, productId });
 		}
 
 		await loadingFavoriteProducts();
