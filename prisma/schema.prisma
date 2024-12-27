@@ -105,6 +105,7 @@ model UserAddress {
   isMainAddress     Boolean? @default(false) @map("is_main_address")
 
   userInfo UserInfo @relation(fields: [userInfoId], references: [id], onDelete: Cascade)
+  orders   Order[]
 
   @@map("user_addresses")
 }
@@ -172,10 +173,11 @@ model UserFavoriteProduct {
 }
 
 model Cart {
-  id        String    @id @default(uuid())
-  userId    String    @unique @map("user_id")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+  id         String    @id @default(uuid())
+  userId     String    @unique @map("user_id")
+  deliveryIn String    @map("delivery_in")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
 
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   cartItems CartItem[]
@@ -205,16 +207,25 @@ enum OrderStatus {
   PAYMENT_CONFIRMED
 }
 
-model Order {
-  id         String      @id @default(uuid())
-  userId     String      @map("user_id")
-  totalPrice Float       @map("total_price")
-  status     OrderStatus @default(PENDING)
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime?   @updatedAt @map("updated_at")
+enum OrderPaymentType {
+  PIX
+  CARTAO_CREDITO
+  BOLETO
+}
 
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderItems OrderItem[]
+model Order {
+  id          String           @id @default(uuid())
+  userId      String           @map("user_id")
+  totalPrice  Float            @map("total_price")
+  status      OrderStatus      @default(PENDING)
+  deliveryIn  String           @map("delivery_in")
+  paymentType OrderPaymentType @map("payment_type")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime?        @updatedAt @map("updated_at")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAddress UserAddress @relation(fields: [deliveryIn], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
 
   @@map("orders")
 }
@@ -224,7 +235,7 @@ model OrderItem {
   orderId         String @map("order_id")
   productId       String @map("product_id")
   quantity        Int
-  priceAtPurchase Int    @map("price_at_purchase")
+  priceAtPurchase Float  @map("price_at_purchase")
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)

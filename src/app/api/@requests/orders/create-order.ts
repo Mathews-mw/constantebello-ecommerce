@@ -1,9 +1,11 @@
 import { api } from '@/lib/axios';
-import { Order } from '@prisma/client';
+import { Order, OrderPaymentType } from '@prisma/client';
 
 interface IRequest {
 	userId: string;
 	cartId: string;
+	deliveryIn: string;
+	paymentType: OrderPaymentType;
 }
 
 export interface IResponse {
@@ -11,10 +13,12 @@ export interface IResponse {
 	order: Order;
 }
 
-export async function createOrder({ userId, cartId }: IRequest): Promise<IResponse> {
+export async function createOrder({ userId, cartId, deliveryIn, paymentType }: IRequest): Promise<IResponse> {
 	const { data: response } = await api.post<IResponse>('/orders/create', {
 		user_id: userId,
 		cart_id: cartId,
+		delivery_in: deliveryIn,
+		payment_type: paymentType,
 	});
 
 	return response;

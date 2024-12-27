@@ -9,20 +9,9 @@ import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { NewArrivalsSection } from './new-arrivals-secition';
 import { BestSellingSection } from './best-selling-section';
-import { useStore } from '@/zustand-store';
-import { useEffect } from 'react';
 import Link from 'next/link';
 
 export default function HomePage() {
-	// const { loadingFavoriteProducts, isLoadingFavoriteProducts } = useStore((state) => {
-	// 	return {
-	// 		loadingFavoriteProducts: state.loadingFavoriteProducts,
-	//     isLoadingFavoriteProducts: state.isLoadingFavoriteProducts
-	// 	};
-	// });
-
-	// console.log('isLoadingFavoriteProducts: ', isLoadingFavoriteProducts)
-
 	return (
 		<div>
 			<div>

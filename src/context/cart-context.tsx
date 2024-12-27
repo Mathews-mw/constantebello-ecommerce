@@ -8,10 +8,16 @@ interface ICartItems {
 	price: number;
 }
 
+interface IAddToCartRequest {
+	productId: string;
+	price: number;
+	quantity?: number;
+}
+
 interface CartContextType {
 	items: ICartItems[];
 	clearCart: () => void;
-	addToCart: (productId: string, price: number, quantity?: number) => void;
+	addToCart: (params: IAddToCartRequest) => void;
 	removeFromCart: (productId: string) => void;
 	decrementProductFromCart: (productId: string) => void;
 }
@@ -29,7 +35,7 @@ export function CartContextProvider({ children }: { children: React.ReactNode })
 		return [];
 	});
 
-	function addToCart(productId: string, price: number, quantity?: number) {
+	function addToCart({ productId, price, quantity }: IAddToCartRequest) {
 		setCartItems((state) => {
 			const productInCart = state.some((item) => item.productId === productId);
 
@@ -65,6 +71,7 @@ export function CartContextProvider({ children }: { children: React.ReactNode })
 
 	function clearCart() {
 		setCartItems([]);
+		sessionStorage.removeItem('cart');
 	}
 
 	// Atualiza o localStorage apenas quando o carrinho já foi inicializado

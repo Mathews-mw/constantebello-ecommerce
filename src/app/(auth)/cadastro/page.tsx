@@ -22,7 +22,7 @@ import { ErrorMessage } from '@/components/error-message';
 import { PasswordInput } from '@/components/password-input';
 
 import { Loader2 } from 'lucide-react';
-import { insertUserInfos } from '@/app/api/@requests/users/insert-user-infos';
+import { insertUserInfos } from '@/app/api/@requests/users/infos/insert-user-infos';
 
 const signUpForm = z.object({
 	name: z.string().min(3, { message: 'Por favor, preencha o campo.' }),

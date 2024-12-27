@@ -8,8 +8,8 @@ export function FavoriteCardSkeleton() {
 				<Skeleton className="h-[140px] w-[140px] rounded-lg" />
 
 				<div className="space-y-4">
-					<Skeleton className="h-8 w-96" />
-					<Skeleton className="h-6 w-36" />
+					<Skeleton className="h-6 w-96" />
+					<Skeleton className="h-4 w-36" />
 				</div>
 			</div>
 

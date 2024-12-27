@@ -22,7 +22,10 @@ const satoshiFont = localFont({
 });
 
 export const metadata: Metadata = {
-	title: 'Costante Bello ',
+	title: {
+		template: '%s | Costante Bello',
+		default: 'Costante Bello',
+	},
 	description: 'E-commerce Constante Bello',
 };
 

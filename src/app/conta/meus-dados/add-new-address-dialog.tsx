@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { registerUserAddress } from '@/app/api/@requests/users/register-user-address';
+import { registerUserAddress } from '@/app/api/@requests/users/address/register-user-address';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

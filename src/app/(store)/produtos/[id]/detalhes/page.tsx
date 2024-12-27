@@ -37,7 +37,7 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 
 	function handleAddToCart() {
 		if (product) {
-			addToCart(product.id, quantity);
+			addToCart({ productId: product.id, price: product.price, quantity });
 
 			router.push('/carrinho');
 		}

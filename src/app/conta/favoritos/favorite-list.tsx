@@ -6,7 +6,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 import { FavoriteCard } from './favorite-card';
 import { FavoriteCardSkeleton } from './favorite-card-skeleton';
-import { listingUserFavoriteProductsDetails } from '@/app/api/@requests/users/listing-user-favorite-products-details';
+import { listingUserFavoriteProductsDetails } from '@/app/api/@requests/users/favorites/listing-user-favorite-products-details';
 
 export function FavoriteList() {
 	const { status, data } = useSession();

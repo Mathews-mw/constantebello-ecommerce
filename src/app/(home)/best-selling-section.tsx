@@ -7,8 +7,8 @@ import { listingNewArrivalsProducts } from '../api/@requests/products/listing-ne
 
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card/product-card';
-import { ProductCardSkeleton } from '@/components/product-card-skeleton';
 import { useFavoriteProducts } from '@/context/favorite-products-context';
+import { ProductCardSkeleton } from '@/components/product-card/product-card-skeleton';
 
 export function BestSellingSection() {
 	const { favoriteProducts } = useFavoriteProducts();

@@ -17,15 +17,17 @@ export default function ProductsPage() {
 	const searchParams = useSearchParams();
 	const { favoriteProducts } = useFavoriteProducts();
 
+	const searchProductsParams = searchParams.get('search') ?? undefined;
 	const orderByParams = searchParams.get('orderBy') ?? undefined;
 	const minPriceParams = searchParams.get('minPrice') ?? undefined;
 	const maxPriceParams = searchParams.get('maxPrice') ?? undefined;
 	const departmentsParams = searchParams.get('departments') ?? undefined;
 
 	const { data: productsResponse } = useQuery({
-		queryKey: ['products', minPriceParams, maxPriceParams, orderByParams, departmentsParams],
+		queryKey: ['products', searchProductsParams, minPriceParams, maxPriceParams, orderByParams, departmentsParams],
 		queryFn: async () =>
 			listingProducts({
+				search: searchProductsParams,
 				orderBy: orderByParams,
 				minPrice: minPriceParams,
 				maxPrice: maxPriceParams,

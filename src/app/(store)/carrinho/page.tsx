@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -10,9 +11,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { useCart } from '@/context/cart-context';
 import { createCart } from '@/app/api/@requests/orders/create-cart';
-import { createOrder } from '@/app/api/@requests/orders/create-order';
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
 import { saveCartItems } from '@/app/api/@requests/orders/save-cart-items';
+import { getCartByUserId } from '@/app/api/@requests/orders/get-cart-by-user-id';
 import { listingProductsToSetupCheckout } from '@/app/api/@requests/products/listing-products-to-setup-checkout';
 
 import { CartItem } from './cart-item';
@@ -26,10 +27,12 @@ import { getUserById } from '@/app/api/@requests/users/get-user-by-id';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
+import { editCart } from '@/app/api/@requests/orders/edit-cart';
 
 export default function CartPage() {
 	const { status, data } = useSession();
 	const { items: cartItems, clearCart } = useCart();
+
 	const router = useRouter();
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +48,7 @@ export default function CartPage() {
 		enabled: productsId.length > 0,
 	});
 
-	const { data: customer } = useQuery({
+	const { data: user } = useQuery({
 		queryKey: ['user', data?.user.id],
 		queryFn: async () => getUserById({ id: data ? data.user.id : '' }),
 		enabled: !!data && status === 'authenticated',
@@ -62,7 +65,7 @@ export default function CartPage() {
 	const { mutateAsync: generatingOrderFn, isPending } = useMutation({
 		mutationFn: async () => {
 			if (data && products) {
-				const { cart } = await createCart({ userId: data.user.id });
+				const currentCart = await getCartByUserId({ userId: data.user.id });
 
 				const itemsToBePurchased = cartItems.map((item) => {
 					return {
@@ -72,23 +75,30 @@ export default function CartPage() {
 					};
 				});
 
-				await saveCartItems({ userId: data.user.id, cartId: cart.id, cartItems: itemsToBePurchased });
-
-				await createOrder({
-					cartId: cart.id,
-					userId: data.user.id,
-				});
+				if (currentCart) {
+					// Case exista algum carrinho já criado (currentCart) para o usuário, apenas atualiza os itens desse carrinho
+					await editCart({ cartId: currentCart.id, deliveryIn: selectedAddress });
+					await saveCartItems({ userId: data.user.id, cartId: currentCart.id, cartItems: itemsToBePurchased });
+				} else {
+					// Se não, cria um novo carrinho e adiciona os itens nele
+					const { cart } = await createCart({ userId: data.user.id, deliveryIn: selectedAddress });
+					await saveCartItems({ userId: data.user.id, cartId: cart.id, cartItems: itemsToBePurchased });
+				}
 			}
 		},
 	});
 
 	async function handleGenerateOrder() {
+		if (!selectedAddress) {
+			return toast.error('Por favor, selecione o endereço de entrega');
+		}
+
 		setIsOpen(true);
 
 		try {
 			await generatingOrderFn();
 			setIsOpen(false);
-			router.push('/checkout');
+			router.push('/pagamento');
 		} catch (error) {
 			setIsOpen(false);
 			errorToasterHandler(error);
@@ -102,11 +112,11 @@ export default function CartPage() {
 	}, [cartItems]);
 
 	useEffect(() => {
-		if (customer) {
-			const mainAddress = customer.userInfos.userAddress.find((address) => address.isPrincipal);
+		if (user) {
+			const mainAddress = user.userInfos.userAddress.find((address) => address.isMainAddress);
 			setSelectedAddress(mainAddress?.id ?? '');
 		}
-	}, [customer]);
+	}, [user]);
 
 	return (
 		<>
@@ -224,10 +234,10 @@ export default function CartPage() {
 
 								<p className="text-muted-foreground">Selecione o endereço que será feito a entrega do produto</p>
 
-								{customer && (
+								{user && (
 									<div>
 										<RadioGroup value={selectedAddress} onValueChange={setSelectedAddress}>
-											{customer?.userInfos.userAddress.map((address) => {
+											{user?.userInfos.userAddress.map((address) => {
 												return (
 													<div className="flex items-center space-x-2" key={address.id}>
 														<RadioGroupItem value={address.id} id={address.id} className="hidden" />
@@ -268,7 +278,7 @@ export default function CartPage() {
 									<LoginAlert disabled={cartItems.length <= 0} />
 								)}
 
-								<Button variant="outline" className="w-full">
+								<Button variant="outline" className="w-full" onClick={() => router.push('/produtos')}>
 									Continuar comprando
 								</Button>
 							</div>

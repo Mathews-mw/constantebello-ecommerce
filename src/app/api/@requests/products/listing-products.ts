@@ -3,6 +3,7 @@ import { api } from '@/lib/axios';
 import { Product } from '@prisma/client';
 
 interface IRequest {
+	search?: string;
 	orderBy?: string;
 	minPrice?: string;
 	maxPrice?: string;
@@ -17,6 +18,7 @@ interface IResponse {
 export async function listingProducts(query: IRequest): Promise<IResponse> {
 	const { data: response } = await api.get('/products', {
 		params: {
+			search: query.search,
 			orderBy: query.orderBy,
 			minPrice: query.minPrice,
 			maxPrice: query.maxPrice,

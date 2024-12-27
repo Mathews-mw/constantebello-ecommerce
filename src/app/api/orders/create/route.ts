@@ -2,11 +2,13 @@ import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
+import { OrderPaymentType, Prisma } from '@prisma/client';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),
 	cart_id: z.string().uuid(),
+	delivery_in: z.string(),
+	payment_type: z.nativeEnum(OrderPaymentType),
 });
 
 export async function POST(request: NextRequest) {
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const { user_id, cart_id } = dataParse.data;
+	const { user_id, cart_id, payment_type, delivery_in } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -69,6 +71,8 @@ export async function POST(request: NextRequest) {
 			data: {
 				userId: user_id,
 				totalPrice: totalPriceOrder,
+				paymentType: payment_type,
+				deliveryIn: delivery_in,
 			},
 		});
 

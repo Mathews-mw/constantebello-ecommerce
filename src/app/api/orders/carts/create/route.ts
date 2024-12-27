@@ -6,6 +6,7 @@ import { NextApiResponse } from 'next';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),
+	delivery_in: z.string(),
 });
 
 export async function POST(request: NextRequest, response: NextApiResponse) {
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 		);
 	}
 
-	const { user_id } = dataParse.data;
+	const { user_id, delivery_in } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 		const cart = await prisma.cart.create({
 			data: {
 				userId: user_id,
+				deliveryIn: delivery_in,
 			},
 		});
 

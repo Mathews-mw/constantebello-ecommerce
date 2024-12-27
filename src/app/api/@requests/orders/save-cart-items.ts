@@ -15,9 +15,6 @@ export interface IResponse {
 }
 
 export async function saveCartItems({ userId, cartId, cartItems }: IRequest): Promise<IResponse> {
-	console.log('on @requests: ', userId);
-	console.log('on @requests: ', cartId);
-	console.log('on @requests: ', cartItems);
 	const { data: response } = await api.post<IResponse>(`/orders/carts/${cartId}/items/save`, {
 		user_id: userId,
 		cart_items: cartItems.map((item) => {

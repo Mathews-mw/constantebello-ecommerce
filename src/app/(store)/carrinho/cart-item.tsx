@@ -69,7 +69,7 @@ export function CartItem({ product, quantity }: ICartItemProps) {
 						<span>{quantity}</span>
 					</div>
 
-					<Button variant="ghost" size="xs" onClick={() => addToCart(product.id)}>
+					<Button variant="ghost" size="xs" onClick={() => addToCart({ productId: product.id, price: product.price })}>
 						<Plus className="h-5 w-5" />
 					</Button>
 				</div>

@@ -5,6 +5,7 @@ import { Prisma, ProductDepartment } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 
 const queryParamsSchema = z.object({
+	search: z.string().optional().nullish(),
 	orderBy: z
 		.optional(z.enum(['relevance', 'lowestPrice', 'highPrice', 'az', 'za']))
 		.nullish()
@@ -26,12 +27,15 @@ export async function GET(request: NextRequest) {
 
 	const { searchParams } = request.nextUrl;
 
-	const { orderBy, minPrice, maxPrice, departments } = queryParamsSchema.parse({
+	const { search, orderBy, minPrice, maxPrice, departments } = queryParamsSchema.parse({
+		search: searchParams.get('search'),
 		orderBy: searchParams.get('orderBy'),
 		minPrice: searchParams.get('minPrice'),
 		maxPrice: searchParams.get('maxPrice'),
 		departments: searchParams.getAll('departments[]'),
 	});
+
+	console.log('search: ', search);
 
 	try {
 		let orderByQuery: Prisma.ProductOrderByWithAggregationInput | undefined = { name: 'desc' };
@@ -58,6 +62,12 @@ export async function GET(request: NextRequest) {
 
 		const query: Prisma.ProductFindManyArgs = {
 			where: {
+				name: search
+					? {
+							contains: search,
+							mode: 'insensitive',
+						}
+					: undefined,
 				price:
 					minPrice && maxPrice
 						? {
