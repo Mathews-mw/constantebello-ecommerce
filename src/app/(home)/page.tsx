@@ -1,13 +1,12 @@
 'use client';
 
-import { ProductCard } from '@/components/product-card/product-card';
 import { ReviewCard } from '@/components/review-card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { MoveLeft, MoveRight } from 'lucide-react';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
-import { NewArrivalsSection } from './new-arrivals-secition';
+import { NewArrivalsSection } from './new-arrivals-section';
 import { BestSellingSection } from './best-selling-section';
 import Link from 'next/link';
 

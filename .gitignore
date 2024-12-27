@@ -39,4 +39,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Misc
 notes.md
+db-checkout-relation.png
