@@ -85,7 +85,7 @@ export async function POST(request: NextRequest, { params }: IParamsProps) {
 			{ status: 201 }
 		);
 	} catch (error) {
-		console.log('create user route error: ', error);
-		return NextResponse.json({ message: 'Erro durante o cadastro do usuário.' }, { status: 400 });
+		console.log('save cart items route error: ', error);
+		return NextResponse.json({ message: 'Erro durante a criação do pedido.' }, { status: 400 });
 	}
 }

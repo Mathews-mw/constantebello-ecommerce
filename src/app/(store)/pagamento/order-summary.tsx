@@ -181,11 +181,7 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 					Continuar
 					{isPending || isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
 				</Button>
-				<Button
-					variant="outline"
-					onClick={() => router.back()}
-					disabled={isFetchingCart || !paymentType || isPending || isLoading}
-				>
+				<Button variant="outline" onClick={() => router.back()} disabled={isFetchingCart || isPending || isLoading}>
 					Voltar
 				</Button>
 			</div>

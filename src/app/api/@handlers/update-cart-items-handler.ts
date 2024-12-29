@@ -50,7 +50,11 @@ export async function updateCartItemsHandler({ userId, updatedItems }: IRequest)
 		}
 	});
 
-	itemsToDelete.push(...Array.from(currentItemsMap.values().map((item) => item.id)));
+	// Caso seja 0, significa que a o carrinho está sendo recém criado.
+	if (currentItemsMap.size > 0) {
+		const currentItemsMapValuesArray = [...currentItemsMap.values()];
+		itemsToDelete.push(...currentItemsMapValuesArray.map((item) => item.id));
+	}
 
 	const transactions = [];
 

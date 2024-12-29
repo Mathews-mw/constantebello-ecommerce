@@ -88,6 +88,9 @@ export default function CartPage() {
 				}
 			}
 		},
+		async onSuccess() {
+			await queryClient.invalidateQueries({ queryKey: ['user-cart', 'delivery-address'] });
+		},
 	});
 
 	async function handleGenerateOrder() {
@@ -99,7 +102,6 @@ export default function CartPage() {
 
 		try {
 			await generatingOrderFn();
-			await queryClient.invalidateQueries({ queryKey: ['user-cart', 'delivery-address'] });
 
 			setIsOpen(false);
 			router.push('/pagamento');
