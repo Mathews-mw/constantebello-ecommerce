@@ -7,7 +7,7 @@ import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useCart } from '@/context/cart-context';
 import { createCart } from '@/app/api/@requests/orders/create-cart';
@@ -28,12 +28,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
 import { editCart } from '@/app/api/@requests/orders/edit-cart';
+import { AddNewAddressDialog } from '@/components/add-new-address-dialog';
 
 export default function CartPage() {
 	const { status, data } = useSession();
 	const { items: cartItems, clearCart } = useCart();
 
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [productsId, setProductsId] = useState<string[]>([]);
@@ -97,6 +99,8 @@ export default function CartPage() {
 
 		try {
 			await generatingOrderFn();
+			await queryClient.invalidateQueries({ queryKey: ['user-cart', 'delivery-address'] });
+
 			setIsOpen(false);
 			router.push('/pagamento');
 		} catch (error) {
@@ -227,12 +231,20 @@ export default function CartPage() {
 							</div>
 
 							<div className="h-min space-y-4 rounded-xl border bg-background p-4 shadow-sm">
-								<div className="flex items-center gap-2">
-									<Truck className="text-primary" />
-									<h3 className="text-lg font-bold">Entrega</h3>
+								<div className="flex w-full items-center justify-between">
+									<div className="flex items-center gap-2">
+										<Truck className="text-primary" />
+										<h3 className="text-lg font-bold">Entrega</h3>
+									</div>
+
+									{!!user && <AddNewAddressDialog userId={user.id} />}
 								</div>
 
-								<p className="text-muted-foreground">Selecione o endereço que será feito a entrega do produto</p>
+								{user?.userInfos.userAddress.length === 0 ? (
+									<p className="text-muted-foreground">Você ainda não tem nenhum endereço cadastrado</p>
+								) : (
+									<p className="text-muted-foreground">Selecione o endereço que será feito a entrega do produto</p>
+								)}
 
 								{user && (
 									<div>

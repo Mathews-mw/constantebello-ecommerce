@@ -58,6 +58,14 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
+		const existingAddress = await prisma.userAddress.findMany({
+			where: {
+				userInfoId: userInfos.id,
+			},
+		});
+
+		const markAsMaisAddress = existingAddress.length === 0;
+
 		await prisma.userAddress.create({
 			data: {
 				userInfoId: userInfos.id,
@@ -69,6 +77,7 @@ export async function POST(request: NextRequest) {
 				addressReference: address_reference,
 				city,
 				state,
+				isMainAddress: markAsMaisAddress,
 			},
 		});
 

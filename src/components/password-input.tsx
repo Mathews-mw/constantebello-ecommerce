@@ -7,10 +7,7 @@ import { Eye, EyeOff } from 'lucide-react';
 
 type InputControlProps = ComponentProps<'input'>;
 
-export const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputControlProps> = (
-	{ ...props },
-	ref
-) => {
+export const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputControlProps> = ({ ...props }, ref) => {
 	const [isVisible, setIsVisible] = useState(false);
 	return (
 		<div
@@ -27,11 +24,7 @@ export const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputControlP
 				{...props}
 			/>
 
-			<button
-				className="focus:outline-none"
-				type="button"
-				onClick={() => setIsVisible(!isVisible)}
-			>
+			<button className="focus:outline-none" type="button" onClick={() => setIsVisible(!isVisible)}>
 				{isVisible ? (
 					<EyeOff className="pointer-events-none h-5 w-5 text-muted-foreground" />
 				) : (

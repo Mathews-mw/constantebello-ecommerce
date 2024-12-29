@@ -1,11 +1,14 @@
 'use client';
 
 import { toast } from 'sonner';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { OrderPaymentType } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+import { useCart } from '@/context/cart-context';
+import { deleteCart } from '@/app/api/@requests/orders/delete-cart';
 import { createOrder } from '@/app/api/@requests/orders/create-order';
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
 import { getUserAddressById } from '@/app/api/@requests/users/address/get-address-by-id';
@@ -15,36 +18,36 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { ArrowRight, FileSearch, Loader2, Truck } from 'lucide-react';
-import { deleteCart } from '@/app/api/@requests/orders/delete-cart';
-import { useCart } from '@/context/cart-context';
 
 interface IOrderSummaryProps {
 	paymentType?: OrderPaymentType;
 }
 
 export function OrderSummary({ paymentType }: IOrderSummaryProps) {
+	const [isLoading, setIsLoading] = useState(false);
+
 	const { data, status } = useSession();
 	const { clearCart } = useCart();
 	const router = useRouter();
 
-	const {
-		data: userCart,
-		status: queryStatus,
-		isFetching: isFetchingCart,
-	} = useQuery({
+	const { data: userCartResponse, isFetching: isFetchingCart } = useQuery({
 		queryKey: ['user-cart', data?.user.id],
-		queryFn: async () => getCartDetailsByUserId({ userId: data?.user.id ?? '' }),
+		queryFn: async () => {
+			const userCart = await getCartDetailsByUserId({ userId: data?.user.id ?? '' });
+
+			const address = await getUserAddressById({ addressId: userCart.deliveryIn });
+
+			return {
+				userCart,
+				address,
+			};
+		},
 		enabled: status === 'authenticated' && !!data,
+		staleTime: 0,
 	});
 
-	const { data: address, isFetching: isFetchingAddress } = useQuery({
-		queryKey: ['delivery-address', userCart?.deliveryIn],
-		queryFn: async () => getUserAddressById({ addressId: userCart?.deliveryIn ?? '' }),
-		enabled: !!userCart && queryStatus === 'success',
-	});
-
-	const totalProductsPrice = userCart
-		? userCart.cartItems.reduce((acc, currentItem) => {
+	const totalProductsPrice = userCartResponse
+		? userCartResponse.userCart.cartItems.reduce((acc, currentItem) => {
 				return (acc += currentItem.price * currentItem.quantity);
 			}, 0)
 		: 0;
@@ -56,28 +59,34 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 	});
 
 	async function handleGenerateOrder() {
+		setIsLoading(true);
+
 		if (!paymentType) {
+			setIsLoading(false);
 			return toast.error('Por favor, selecione um tipo de pagamento');
 		}
 
-		if (!userCart) {
+		if (!userCartResponse?.userCart) {
+			setIsLoading(false);
 			return toast.error('Carrinho do usuário não definido');
 		}
 
 		try {
 			const { order } = await generateOrderFn({
-				cartId: userCart.id,
+				cartId: userCartResponse.userCart.id,
 				paymentType,
-				userId: userCart.userId,
-				deliveryIn: userCart.deliveryIn,
+				userId: userCartResponse.userCart.userId,
+				deliveryIn: userCartResponse.userCart.deliveryIn,
 			});
 
-			await deleteCart({ cartId: userCart.id });
+			await deleteCart({ cartId: userCartResponse.userCart.id });
 			clearCart();
 
 			toast.success(`Pagamento concluído. ID do pedido: ${order.id}`);
+			setIsLoading(false);
 			router.replace(`/confirmacao-pedido/${order.id}`);
 		} catch (error) {
+			setIsLoading(false);
 			errorToasterHandler(error);
 		}
 	}
@@ -89,7 +98,7 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 				<h2 className="font-black">RESUMO DO PEDIDO</h2>
 			</div>
 
-			{userCart ? (
+			{userCartResponse ? (
 				<div className="divide-y">
 					<div className="flex w-full items-center justify-between py-4 first:pt-0 last:pb-0">
 						<span className="text-sm text-muted-foreground">Valor dos produtos:</span>
@@ -133,7 +142,7 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 				</div>
 			)}
 
-			{address ? (
+			{userCartResponse && userCartResponse.address ? (
 				<div className="flex flex-col gap-2 rounded border p-2 text-muted-foreground">
 					<div className="flex items-center gap-2">
 						<Truck className="h-5 w-5 text-primary" />
@@ -141,13 +150,13 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 					</div>
 					<div className="flex flex-col gap-1 text-sm">
 						<span>
-							{address.street}, {address.number}
+							{userCartResponse.address.street}, {userCartResponse.address.number}
 						</span>
 						<div>
-							{address.addressComplement && <span>{address.addressComplement} </span>}
-							{address.addressReference && <span>- {address.addressReference}</span>}
+							{userCartResponse.address.addressComplement && <span>{userCartResponse.address.addressComplement} </span>}
+							{userCartResponse.address.addressReference && <span>- {userCartResponse.address.addressReference}</span>}
 						</div>
-						<span>CEP: {address.cep}</span>
+						<span>CEP: {userCartResponse.address.cep}</span>
 					</div>
 				</div>
 			) : (
@@ -167,12 +176,16 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 			<div className="flex flex-col gap-4">
 				<Button
 					onClick={() => handleGenerateOrder()}
-					disabled={isFetchingAddress || isFetchingCart || !paymentType || isPending}
+					disabled={isFetchingCart || !paymentType || isPending || isLoading}
 				>
 					Continuar
-					{isPending ? <Loader2 className="animate-spin" /> : <ArrowRight />}
+					{isPending || isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
 				</Button>
-				<Button variant="outline" onClick={() => router.back()} disabled={isPending}>
+				<Button
+					variant="outline"
+					onClick={() => router.back()}
+					disabled={isFetchingCart || !paymentType || isPending || isLoading}
+				>
 					Voltar
 				</Button>
 			</div>

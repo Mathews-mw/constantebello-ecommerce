@@ -79,7 +79,7 @@ export function AccountMenu() {
 							</button>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
-							<button className="w-full">
+							<button className="w-full" onClick={() => router.push('/conta/avaliacoes')}>
 								<ThumbsUp className="mr-2 h-4 w-4" />
 								<span>Avaliações</span>
 							</button>

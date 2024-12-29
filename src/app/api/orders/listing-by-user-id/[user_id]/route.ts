@@ -19,11 +19,53 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 				userId,
 			},
 			include: {
-				orderItems: true,
+				orderItems: {
+					include: {
+						product: true,
+					},
+				},
 			},
 		});
 
-		return Response.json(orders);
+		const response = orders.map((order) => {
+			let statusText = '';
+
+			switch (order.status) {
+				case 'COMPLETED':
+					statusText = 'Pedido concluído';
+					break;
+				case 'PENDING':
+					statusText = 'Pedido pendente';
+					break;
+				case 'AWAITING_PAYMENT':
+					statusText = 'Aguardando pagamento';
+					break;
+				case 'PAYMENT_CONFIRMED':
+					statusText = 'Pagamento confirmado';
+					break;
+				case 'CANCELLED':
+					statusText = 'Pedido cancelado';
+					break;
+			}
+
+			let paymentTypeText = '';
+
+			switch (order.paymentType) {
+				case 'PIX':
+					paymentTypeText = 'Pix';
+					break;
+				case 'BOLETO':
+					paymentTypeText = 'Boleto bancário';
+					break;
+				case 'CARTAO_CREDITO':
+					paymentTypeText = 'Cartão de crédito';
+					break;
+			}
+
+			return { ...order, statusText, paymentTypeText };
+		});
+
+		return Response.json(response);
 	} catch (error) {
 		console.log('get user route error: ', error);
 		return new Response(JSON.stringify(error), {

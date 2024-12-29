@@ -78,7 +78,7 @@ export function SigInDialog() {
 
 				<div className="grid grid-cols-2 gap-8">
 					<div className="relative">
-						<div className="absolute z-10 h-full w-full bg-gradient-to-r from-rose-400 opacity-30" />
+						<div className="absolute z-10 h-full w-full bg-gradient-to-r from-rose-400 opacity-20" />
 						<Image
 							src="https://images.unsplash.com/photo-1627226325480-f46163bc38c2?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 							alt=""
@@ -98,8 +98,7 @@ export function SigInDialog() {
 
 						<div>
 							<p className="text-sm text-muted-foreground">
-								Faça o login ou cadastre-se para poder ter acesso ao checkout e concluir as suas
-								compras.
+								Faça o login ou cadastre-se para poder ter acesso ao checkout e concluir as suas compras.
 							</p>
 						</div>
 
@@ -117,12 +116,7 @@ export function SigInDialog() {
 								</div>
 							</div>
 
-							<Button
-								type="button"
-								variant="link"
-								className="m-0 p-0"
-								disabled={isLoading || isSubmitting}
-							>
+							<Button type="button" variant="link" className="m-0 p-0" disabled={isLoading || isSubmitting}>
 								Esqueceu a senha?
 							</Button>
 
@@ -143,33 +137,11 @@ export function SigInDialog() {
 									onClick={() => signIn('google', { callbackUrl: pathname })}
 									disabled={isLoading || isSubmitting}
 								>
-									<Image
-										src="/google-logo.svg"
-										alt="google"
-										width={32}
-										height={32}
-										className="h-6 w-6"
-									/>
+									<Image src="/google-logo.svg" alt="google" width={32} height={32} className="h-6 w-6" />
 								</Button>
 
 								<Button variant="outline" disabled={isLoading || isSubmitting}>
-									<Image
-										src="/apple-logo.svg"
-										alt="google"
-										width={32}
-										height={32}
-										className="h-6 w-6"
-									/>
-								</Button>
-
-								<Button variant="outline" disabled={isLoading || isSubmitting}>
-									<Image
-										src="/microsoft-logo.svg"
-										alt="google"
-										width={32}
-										height={32}
-										className="h-6 w-6"
-									/>
+									<Image src="/apple-logo.svg" alt="google" width={32} height={32} className="h-6 w-6" />
 								</Button>
 							</div>
 						</div>

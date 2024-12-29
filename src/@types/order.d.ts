@@ -13,4 +13,6 @@ interface IOrderDetails extends Order {
   orderItems: Array<IOrderItemsDetails>;
   userAddress: UserAddress;
   user: IUserWithInfos
+  statusText: string;
+  paymentTypeText: string;
 }
