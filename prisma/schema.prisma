@@ -29,6 +29,8 @@ model User {
   userFavoriteProducts UserFavoriteProduct[]
   carts                Cart[]
   orders               Order[]
+  productReviews       ProductReview[]
+  notifications        Notification[]
 
   @@map("users")
 }
@@ -125,6 +127,7 @@ model Product {
   userFavoriteProducts UserFavoriteProduct[]
   cartItems            CartItem[]
   orderItems           OrderItem[]
+  productReviews       ProductReview[]
 
   @@map("products")
 }
@@ -237,9 +240,56 @@ model OrderItem {
   quantity        Int
   priceAtPurchase Float  @map("price_at_purchase")
 
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productReview ProductReview?
 
   @@unique([productId, orderId])
   @@map("order_items")
+}
+
+model ProductReview {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  productId   String    @map("product_id")
+  orderItemId String    @unique @map("order_item_id")
+  score       Int
+  reviewTitle String    @map("review_title")
+  reviewText  String    @map("review_text")
+  anonymous   Boolean?
+  approved    Boolean?
+  reject      Boolean?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orderItemId])
+  @@map("product_reviews")
+}
+
+enum NotificationTag {
+  GENERAL
+  NEWS
+  REMINDS
+  NOTICES
+  OFFERS
+  OTHERS
+}
+
+model Notification {
+  id        String          @id @default(uuid())
+  userId    String          @map("user_id")
+  title     String
+  subtitle  String
+  content   String
+  tag       NotificationTag @default(GENERAL)
+  readAt    DateTime?       @map("read_at")
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
 }

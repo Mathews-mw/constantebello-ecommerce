@@ -29,7 +29,6 @@ export function FavoriteProductsContextProvider({ children }: { children: React.
 
 		if (status === 'authenticated') {
 			if (data && data.user) {
-				console.log('fetching user favorite products...');
 				const response = await listingUserFavoriteProducts({
 					id: data.user.id,
 				});

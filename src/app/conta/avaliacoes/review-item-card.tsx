@@ -1,15 +1,28 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import dayjs from 'dayjs';
 import Image from 'next/image';
-import { ReviewProductDialog } from './review-product-dialog';
 
-export function ReviewItemCard() {
+import { IProductToUserReview } from '@/@types/review';
+
+import { ReviewProductDialog } from './review-product-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ViewReviewDialog } from './view-review-dialog';
+import { EditReviewDialog } from './edit-review-dialiog';
+
+interface IProps {
+	userId: string;
+	productToReview: IProductToUserReview;
+}
+
+export function ReviewItemCard({ userId, productToReview }: IProps) {
 	return (
 		<div className="flex w-full justify-between rounded-lg border bg-background p-3 shadow-sm">
 			<div className="flex gap-2">
 				<Image
-					src="https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+					src={productToReview.product.imageUrl}
 					alt=""
 					width={1020}
 					height={1020}
@@ -17,15 +30,30 @@ export function ReviewItemCard() {
 				/>
 
 				<div>
-					<span className="line-clamp-1 font-bold">
-						MESA DE ESCRITÓRIO / MESA SIMPLES - CADEIRA SIMPLES R$ 820,00 165L X 90C
+					<span className="line-clamp-1 font-bold">{productToReview.product.name}</span>
+					<span className="text-sm font-semibold">
+						Data da compra: {dayjs(productToReview.purchaseAt).format('DD/MM/YYYY')}
 					</span>
-					<span className="font-semibold">Data da compra: 24/12/2024</span>
 				</div>
 			</div>
 
-			<div>
-				<ReviewProductDialog />
+			<div className="flex flex-col gap-1">
+				{!productToReview.productReview ? (
+					<ReviewProductDialog
+						userId={userId}
+						productId={productToReview.productId}
+						orderItemId={productToReview.id}
+						productName={productToReview.product.name}
+					/>
+				) : (
+					<Badge variant="outline">
+						<Check className="h-4 w-4 text-emerald-500" />
+						Avaliado
+					</Badge>
+				)}
+
+				{productToReview.productReview && <ViewReviewDialog review={productToReview.productReview} />}
+				{productToReview.productReview && <EditReviewDialog review={productToReview.productReview} />}
 			</div>
 		</div>
 	);

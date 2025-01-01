@@ -6,9 +6,8 @@ import { NavIconItem } from './nav-icon-item';
 import { useCart } from '@/context/cart-context';
 import { useFavoriteProducts } from '@/context/favorite-products-context';
 
-import { Heart, Home, ShoppingCart } from 'lucide-react';
-import { useStore } from '@/zustand-store';
-import { useEffect } from 'react';
+import { Bell, Heart, Home, ShoppingCart } from 'lucide-react';
+import { useUserNotifications } from '@/context/user-notifications-context';
 
 interface INavIconsLink {
 	showHome?: boolean;
@@ -18,20 +17,7 @@ export function NavIconsLink({ showHome }: INavIconsLink) {
 	const { items } = useCart();
 	const { status } = useSession();
 	const { favoriteProducts } = useFavoriteProducts();
-
-	// const { loadingFavoriteProducts, isLoadingFavoriteProducts } = useStore((store) => {
-	// 	return {
-	// 		loadingFavoriteProducts: store.loadingFavoriteProducts,
-	// 		isLoadingFavoriteProducts: store.isLoadingFavoriteProducts,
-	// 	};
-	// });
-
-	// console.log('loadingFavoriteProducts: ', loadingFavoriteProducts);
-	// console.log('isLoadingFavoriteProducts: ', isLoadingFavoriteProducts);
-
-	// useEffect(() => {
-	// 	loadingFavoriteProducts();
-	// }, []);
+	const { amountUserNotifications } = useUserNotifications();
 
 	return (
 		<nav className="flex gap-2">
@@ -54,6 +40,17 @@ export function NavIconsLink({ showHome }: INavIconsLink) {
 						</div>
 					)}
 					<NavIconItem icon={Heart} href="/conta/favoritos" />
+				</div>
+			)}
+
+			{status === 'authenticated' && (
+				<div className="relative">
+					{amountUserNotifications > 0 && (
+						<div className="absolute -right-1 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+							<span className="text-xs text-white">{amountUserNotifications}</span>
+						</div>
+					)}
+					<NavIconItem icon={Bell} href="/conta/notificacoes" />
 				</div>
 			)}
 		</nav>

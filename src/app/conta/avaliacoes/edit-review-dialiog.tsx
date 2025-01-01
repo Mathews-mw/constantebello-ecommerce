@@ -2,37 +2,32 @@
 
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { registerUserAddress } from '@/app/api/@requests/users/address/register-user-address';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { CepInput } from '@/components/cep-input';
 import { ErrorMessage } from '@/components/error-message';
-import { DialogDescription } from '@radix-ui/react-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-import { ImagePlus, Loader2, MapPinPlus, Star } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { StarsRating } from '@/components/rating/stars-rating';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { registerUserReview } from '@/app/api/@requests/reviews/register-user-review';
+import { ProductReview } from '@prisma/client';
+import { updateUserReview } from '@/app/api/@requests/reviews/update-user-review';
+
+import { ImagePlus, Loader2, SquarePen } from 'lucide-react';
 
 interface IProps {
-	userId: string;
-	productId: string;
-	orderItemId: string;
-	productName: string;
+	review: ProductReview;
 }
 
 const reviewFormSchema = z.object({
-	// reviewValue: z.number().min(1, { message: 'Por favor, dê pelo menos 1 estrela para a sua avaliação' }),
 	reviewTitle: z.string().min(1, { message: 'Por favor, preencha o título da sua avaliação' }),
 	reviewText: z
 		.string()
@@ -42,7 +37,7 @@ const reviewFormSchema = z.object({
 
 type ReviewInputData = z.infer<typeof reviewFormSchema>;
 
-export function ReviewProductDialog({ userId, productId, orderItemId, productName }: IProps) {
+export function EditReviewDialog({ review }: IProps) {
 	const {
 		handleSubmit,
 		register,
@@ -51,18 +46,22 @@ export function ReviewProductDialog({ userId, productId, orderItemId, productNam
 		formState: { isSubmitting, errors },
 	} = useForm<ReviewInputData>({
 		resolver: zodResolver(reviewFormSchema),
+		defaultValues: {
+			reviewTitle: review.reviewTitle,
+			reviewText: review.reviewText,
+		},
 	});
 
 	const [isOpen, setIsOpen] = useState(false);
-	const [reviewScore, setReviewScore] = useState<number | undefined>(undefined);
+	const [reviewScore, setReviewScore] = useState<number>(review.score);
 	const [reviewScoreErrorMsg, setReviewScoreErrorMsg] = useState('');
 
 	const useQuery = useQueryClient();
 
-	const { mutateAsync: registerUserReviewFn, isPending } = useMutation({
-		mutationFn: registerUserReview,
+	const { mutateAsync: updateUserReviewFn, isPending } = useMutation({
+		mutationFn: updateUserReview,
 		onSuccess: async () => {
-			await useQuery.invalidateQueries({ queryKey: ['user-products-review', userId] });
+			await useQuery.invalidateQueries({ queryKey: ['user-products-review', review.userId] });
 		},
 	});
 
@@ -75,19 +74,16 @@ export function ReviewProductDialog({ userId, productId, orderItemId, productNam
 		}
 
 		try {
-			await registerUserReviewFn({
-				userId,
-				productId,
-				orderItemId,
+			await updateUserReviewFn({
+				reviewId: review.id,
 				score: reviewScore,
 				reviewTitle: data.reviewTitle,
 				reviewText: data.reviewText,
 			});
 
 			reset();
-			setReviewScore(undefined);
 			setIsOpen(false);
-			toast.success('Avaliação registrada com sucesso');
+			toast.success('Avaliação atualizada com sucesso');
 		} catch (error) {
 			console.log('handleAddAddressForm error: ', error);
 			errorToasterHandler(error);
@@ -97,23 +93,22 @@ export function ReviewProductDialog({ userId, productId, orderItemId, productNam
 	return (
 		<Dialog modal open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button size="xs">
-					<Star /> Avaliar
+				<Button size="xs" variant="outline">
+					<SquarePen />
+					Editar
 				</Button>
 			</DialogTrigger>
 
 			<DialogContent className="w-full min-w-[640px]">
 				<ScrollArea className="max-h-[80vh] overflow-y-auto pr-4">
 					<DialogHeader className="mb-4 space-y-2 px-1">
-						<DialogTitle>O que você achou do produto?</DialogTitle>
-
-						<DialogDescription className="text-sm font-bold">{productName}</DialogDescription>
+						<DialogTitle>Editar avaliação</DialogTitle>
 					</DialogHeader>
 
 					<form onSubmit={handleSubmit(handleReviewForm)} className="space-y-1 px-1">
 						<div className="flex flex-col gap-2">
 							<Label className="font-semibold text-muted-foreground">Qual nota você dá para o produto?*</Label>
-							<StarsRating onRatingStars={setReviewScore} />
+							<StarsRating onRatingStars={setReviewScore} defaultValue={review.score} />
 							<ErrorMessage message={reviewScoreErrorMsg} />
 						</div>
 
@@ -149,9 +144,9 @@ export function ReviewProductDialog({ userId, productId, orderItemId, productNam
 						</div>
 
 						<div className="flex w-full justify-end">
-							<Button type="submit" disabled={isPending}>
+							<Button type="submit" disabled={isPending || isSubmitting}>
 								{isPending && <Loader2 className="animate-spin" />}
-								Avaliar
+								Salvar
 							</Button>
 						</div>
 					</form>

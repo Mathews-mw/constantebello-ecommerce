@@ -8,6 +8,7 @@ import { CartContextProvider } from '@/context/cart-context';
 import { NextAuthSessionProvider } from '@/providers/SessionProvider';
 import { TanstackQueryClientProvider } from '@/providers/tanstack-query-client-provider';
 import { FavoriteProductsContextProvider } from '@/context/favorite-products-context';
+import { UserNotificationsContextProvider } from '@/context/user-notifications-context';
 
 const satoshiFont = localFont({
 	src: [
@@ -40,7 +41,9 @@ export default function RootLayout({
 				<TanstackQueryClientProvider>
 					<NextAuthSessionProvider>
 						<FavoriteProductsContextProvider>
-							<CartContextProvider>{children}</CartContextProvider>
+							<UserNotificationsContextProvider>
+								<CartContextProvider>{children}</CartContextProvider>
+							</UserNotificationsContextProvider>
 						</FavoriteProductsContextProvider>
 					</NextAuthSessionProvider>
 				</TanstackQueryClientProvider>

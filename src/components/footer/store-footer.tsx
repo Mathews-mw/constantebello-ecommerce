@@ -12,7 +12,7 @@ export function StoreFooter() {
 						<Logo />
 
 						<p className="text-sm text-muted-foreground">
-							Nós temos os móveis ideais para o seu ambiente e nós teremos orgulho de produzi-lo para você.
+							Nós Temos os móveis ideais para o seu ambiente e teremos orgulho de produzi-lo para você.
 						</p>
 
 						<div className="space-x-3">
