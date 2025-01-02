@@ -50,10 +50,19 @@ export async function POST(request: NextRequest) {
 			await createNotification({
 				title: 'Pagamento confirmado',
 				subtitle: 'O pagamento do seu pedido foi confirmado.',
-				content:
-					'Olá, informamos que o seu pedido teve o pagamento aprovado. Agora o restante é com a gente, pode ficar tranquilo. Iremos processar o seu pedido e fazer a entrega o mais breve possível. Fique de olho na sua caixa de e-mail e/ou telefone pois iremos manter contato para atualizar você do seu pedido. Obrigado!',
+				content: `Olá, ${data.customer.name}, informamos que o seu pedido teve o pagamento aprovado. Agora o restante é com a gente, pode ficar tranquilo. Iremos processar o seu pedido e fazer a entrega o mais breve possível. Fique de olho na sua caixa de e-mail e/ou telefone pois iremos manter contato para atualizar você do seu pedido. Obrigado!`,
 				userId: order.userId,
 				tag: 'GENERAL',
+			});
+		}
+
+		if (order.status === 'PAYMENT_DECLINED') {
+			await createNotification({
+				title: 'Pagamento Recusado',
+				subtitle: 'O pagamento do seu pedido foi recusado.',
+				content: `Olá, ${data.customer.name}, informamos que infelizmente o pagamento do seu pedido foi recusado. Por favor, verifique as informações bancárias e tente novamente.`,
+				userId: order.userId,
+				tag: 'REMINDS',
 			});
 		}
 
