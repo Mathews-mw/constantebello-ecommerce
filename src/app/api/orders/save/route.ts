@@ -3,11 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
 import { OrderPaymentType, Prisma } from '@prisma/client';
+import { updateOrderItemsHandler } from '../../@handlers/update-order-items-handler';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),
 	cart_id: z.string().uuid(),
 	delivery_in: z.string(),
+	payment_institution_order_id: z.string().optional(),
 	payment_type: z.nativeEnum(OrderPaymentType),
 });
 
@@ -35,7 +37,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const { user_id, cart_id, payment_type, delivery_in } = dataParse.data;
+	const { user_id, cart_id, payment_type, delivery_in, payment_institution_order_id } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -67,26 +69,38 @@ export async function POST(request: NextRequest) {
 			return (acc += currentItem.price * currentItem.quantity);
 		}, 0);
 
-		const order = await prisma.order.create({
-			data: {
+		const order = await prisma.order.upsert({
+			create: {
+				id: cart.preOrderId,
 				userId: user_id,
 				totalPrice: totalPriceOrder,
+				paymentInstitutionOrderId: payment_institution_order_id,
 				paymentType: payment_type,
 				deliveryIn: delivery_in,
 			},
+			update: {
+				userId: user_id,
+				totalPrice: totalPriceOrder,
+				paymentType: payment_type,
+				paymentInstitutionOrderId: payment_institution_order_id,
+				deliveryIn: delivery_in,
+			},
+			where: {
+				id: cart.preOrderId,
+			},
 		});
 
-		const orderItemsToCreate: Array<Prisma.OrderItemUncheckedCreateInput> = cartItems.map((item) => {
+		const orderItemsToCreate = cartItems.map((item) => {
 			return {
-				orderId: order.id,
 				productId: item.productId,
-				priceAtPurchase: item.product.price,
 				quantity: item.quantity,
+				priceAtPurchase: item.product.price,
 			};
 		});
 
-		await prisma.orderItem.createMany({
-			data: orderItemsToCreate,
+		await updateOrderItemsHandler({
+			orderId: order.id,
+			updatedItems: orderItemsToCreate,
 		});
 
 		return Response.json(
@@ -97,7 +111,7 @@ export async function POST(request: NextRequest) {
 			{ status: 201 }
 		);
 	} catch (error) {
-		console.log('create order route error: ', error);
+		console.log('save order route error: ', error);
 		return NextResponse.json({ message: 'Erro ao tentar gerar ordem.' }, { status: 400 });
 	}
 }

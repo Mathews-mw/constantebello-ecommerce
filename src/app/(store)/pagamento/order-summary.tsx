@@ -7,10 +7,9 @@ import { useSession } from 'next-auth/react';
 import { OrderPaymentType } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { useCart } from '@/context/cart-context';
-import { deleteCart } from '@/app/api/@requests/orders/delete-cart';
-import { createOrder } from '@/app/api/@requests/orders/create-order';
+import { saveOrder } from '@/app/api/@requests/orders/save-order';
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+import { createCheckout } from '@/app/api/@requests/checkouts/create-checkout';
 import { getUserAddressById } from '@/app/api/@requests/users/address/get-address-by-id';
 import { getCartDetailsByUserId } from '@/app/api/@requests/orders/get-cart-details-by-user-id';
 
@@ -27,7 +26,6 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const { data, status } = useSession();
-	const { clearCart } = useCart();
 	const router = useRouter();
 
 	const { data: userCartResponse, isFetching: isFetchingCart } = useQuery({
@@ -54,8 +52,8 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 
 	const totalOrder = totalProductsPrice - 200 + 48;
 
-	const { mutateAsync: generateOrderFn, isPending } = useMutation({
-		mutationFn: createOrder,
+	const { mutateAsync: createCheckoutFn, isPending } = useMutation({
+		mutationFn: createCheckout,
 	});
 
 	async function handleGenerateOrder() {
@@ -72,19 +70,22 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 		}
 
 		try {
-			const { order } = await generateOrderFn({
+			const { payment_link } = await createCheckoutFn({
 				cartId: userCartResponse.userCart.id,
 				paymentType,
 				userId: userCartResponse.userCart.userId,
 				deliveryIn: userCartResponse.userCart.deliveryIn,
 			});
 
-			await deleteCart({ cartId: userCartResponse.userCart.id });
-			clearCart();
+			await saveOrder({
+				userId: userCartResponse.userCart.userId,
+				cartId: userCartResponse.userCart.id,
+				deliveryIn: userCartResponse.userCart.deliveryIn,
+				paymentType,
+			});
 
-			toast.success(`Pagamento concluído. ID do pedido: ${order.id}`);
+			router.push(payment_link);
 			setIsLoading(false);
-			router.replace(`/confirmacao-pedido/${order.id}`);
 		} catch (error) {
 			setIsLoading(false);
 			errorToasterHandler(error);

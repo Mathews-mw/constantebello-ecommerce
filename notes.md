@@ -3,7 +3,11 @@
 https://dribbble.com/shots/25001090-Stella-Ecommerce-Website
 https://www.figma.com/design/vKpQs4e5g8nLgvTlCbPfFc/E-commerce-Website-Template-(Freebie)-(Community)?node-id=0-1&node-type=canvas&t=s8Z5bWFpNwnokMoj-0
 
-# Produtos
+## PagSeguro Documentação
+[Checkout Pagbank](https://dev.pagbank.uol.com.br/reference/checkout-pagbank)
+[Conta PagSeguro](https://acesso.pagseguro.uol.com.br/)
+
+## Produtos
 https://www.magazineluiza.com.br/kit-armario-de-cozinha-viena-compacto-com-4-portas-e-1-gaveta-balcao-multiuso-madine/p/dc3195f0k3/mo/mocz/
 https://www.magazineluiza.com.br/armario-de-cozinha-completa-300cm-cinza-nice-madesa-01/p/gd30a22ef7/mo/mcoz/
 https://www.magazineluiza.com.br/guarda-roupa-casal-com-espelho-6-portas-4-gavetas-araplac-braga/p/237759800/mo/guro/
@@ -13,7 +17,6 @@ https://www.magazineluiza.com.br/escrivaninha-mesa-de-escritorio-de-canto-3-gave
 https://www.magazineluiza.com.br/painel-para-tv-ate-65-polegadas-1-porta-e-prateleiras-multimoveis-mp1064/p/gd1469gg2d/mo/mopa/
 https://www.magazineluiza.com.br/rack-para-tv-72-2-portas-caemmun-tannen-1-8/p/237296200/mo/racm/
 
-!alt
 
 # Product Reference
 <Image
@@ -174,3 +177,74 @@ Gerenciamento de Status do Pedido:
 - cancelled: Pedido cancelado.
 
 ![Relação de tabelas para gerenciar pedidos](db-checkout-relation.png)
+
+## PagBank transactional webhook notification 
+
+{
+  id: 'ORDE_69441ADD-A127-4699-8EB0-A6ED8FCED7DA',
+  reference_id: 'f075633f-c086-4147-a061-78bb437980da',
+  created_at: '2025-01-01T19:52:53.472-03:00',
+  customer: {
+    name: 'Mathews Araújo',
+    email: 'mathews.mw@gmail.com',
+    tax_id: '02268593207',
+    phones: [ [Object] ]
+  },
+  items: [
+    {
+      reference_id: '9d6bf836-706f-4246-9ea9-f5a6b962d954',
+      name: 'Rack para TV 72” 2 Portas Caemmun Tannen 1.8',
+      quantity: 1,
+      unit_amount: 42779
+    },
+    {
+      reference_id: '1123effa-f6ea-40ff-baac-e3bc1063a1bb',
+      name: 'Guarda-roupa Casal com Espelho 6 Portas 4 Gavetas Araplac Braga',
+      quantity: 1,
+      unit_amount: 112091
+    }
+  ],
+  shipping: {
+    address: {
+      street: 'Rua Epaminondas Baraúna',
+      number: '42',
+      complement: 'Apt 302 Cond residencial Atlanta',
+      locality: 'Parque 10 de Novembro',
+      city: 'Manaus',
+      region_code: 'AM',
+      country: 'BRA',
+      postal_code: '69054691'
+    }
+  },
+  charges: [
+    {
+      id: 'CHAR_249F20F5-93DA-44CC-B7C0-C81130420997',
+      reference_id: 'f075633f-c086-4147-a061-78bb437980da',
+      status: 'PAID',
+      created_at: '2025-01-01T19:52:53.590-03:00',
+      paid_at: '2025-01-01T19:52:54.000-03:00',
+      amount: [Object],
+      payment_response: [Object],
+      payment_method: [Object],
+      links: [Array],
+      metadata: {}
+    }
+  ],
+  notification_urls: [
+    'https://careful-previously-opossum.ngrok-free.app/api/checkouts/webhooks/transactional'
+  ],
+  links: [
+    {
+      rel: 'SELF',
+      href: 'https://sandbox.api.pagseguro.com/orders/ORDE_69441ADD-A127-4699-8EB0-A6ED8FCED7DA',
+      media: 'application/json',
+      type: 'GET'
+    },
+    {
+      rel: 'PAY',
+      href: 'https://sandbox.api.pagseguro.com/orders/ORDE_69441ADD-A127-4699-8EB0-A6ED8FCED7DA/pay',
+      media: 'application/json',
+      type: 'POST'
+    }
+  ]
+}

@@ -13,8 +13,8 @@ export interface IResponse {
 	order: Order;
 }
 
-export async function createOrder({ userId, cartId, deliveryIn, paymentType }: IRequest): Promise<IResponse> {
-	const { data: response } = await api.post<IResponse>('/orders/create', {
+export async function saveOrder({ userId, cartId, deliveryIn, paymentType }: IRequest): Promise<IResponse> {
+	const { data: response } = await api.post<IResponse>('/orders/save', {
 		user_id: userId,
 		cart_id: cartId,
 		delivery_in: deliveryIn,

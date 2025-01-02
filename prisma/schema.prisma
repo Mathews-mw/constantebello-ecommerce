@@ -178,6 +178,7 @@ model UserFavoriteProduct {
 model Cart {
   id         String    @id @default(uuid())
   userId     String    @unique @map("user_id")
+  preOrderId String    @map("pre_order_id")
   deliveryIn String    @map("delivery_in")
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime? @updatedAt @map("updated_at")
@@ -205,8 +206,10 @@ model CartItem {
 enum OrderStatus {
   PENDING
   COMPLETED
-  CANCELLED
+  CANCELED
   AWAITING_PAYMENT
+  PAYMENT_IN_ANALYSIS
+  PAYMENT_DECLINED
   PAYMENT_CONFIRMED
 }
 
@@ -217,14 +220,15 @@ enum OrderPaymentType {
 }
 
 model Order {
-  id          String           @id @default(uuid())
-  userId      String           @map("user_id")
-  totalPrice  Float            @map("total_price")
-  status      OrderStatus      @default(PENDING)
-  deliveryIn  String           @map("delivery_in")
-  paymentType OrderPaymentType @map("payment_type")
-  createdAt   DateTime         @default(now()) @map("created_at")
-  updatedAt   DateTime?        @updatedAt @map("updated_at")
+  id                        String           @id @default(uuid())
+  userId                    String           @map("user_id")
+  paymentInstitutionOrderId String?          @unique @map("payment_institution_order_id")
+  totalPrice                Float            @map("total_price")
+  status                    OrderStatus      @default(PENDING)
+  deliveryIn                String           @map("delivery_in")
+  paymentType               OrderPaymentType @map("payment_type")
+  createdAt                 DateTime         @default(now()) @map("created_at")
+  updatedAt                 DateTime?        @updatedAt @map("updated_at")
 
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userAddress UserAddress @relation(fields: [deliveryIn], references: [id], onDelete: Cascade)
@@ -246,6 +250,17 @@ model OrderItem {
 
   @@unique([productId, orderId])
   @@map("order_items")
+}
+
+model Checkout {
+  id                           String   @id @default(uuid())
+  referenceId                  String   @unique @map("reference_id")
+  paymentInstitutionCheckoutId String   @unique @map("payment_institution_checkout_id")
+  expirationDate               DateTime
+  status                       String
+  createdAt                    DateTime @default(now()) @map("created_at")
+
+  @@map("checkouts")
 }
 
 model ProductReview {

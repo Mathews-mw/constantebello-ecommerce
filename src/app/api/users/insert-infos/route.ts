@@ -52,8 +52,8 @@ export async function POST(request: NextRequest) {
 		await prisma.userInfo.create({
 			data: {
 				userId: user_id,
-				phone,
-				cpf,
+				phone: phone.trim().replace(' ', '').replace('-', '').replace('(', '').replace(')', ''),
+				cpf: cpf.trim().replaceAll('.', '').replace('-', ''),
 				birthday,
 				policyConsent: policy_consent,
 				advertisingConsent: advertising_consent,

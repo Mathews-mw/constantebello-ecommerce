@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
 import { NextApiResponse } from 'next';
+import { randomUUID } from 'node:crypto';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 		const cart = await prisma.cart.create({
 			data: {
 				userId: user_id,
+				preOrderId: randomUUID(),
 				deliveryIn: delivery_in,
 			},
 		});

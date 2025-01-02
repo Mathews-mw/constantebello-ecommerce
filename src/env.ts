@@ -10,6 +10,9 @@ export const env = createEnv({
 		SECRET_TOKEN: z.string(),
 		NEXTAUTH_URL: z.string().url(),
 		NEXTAUTH_SECRET: z.string(),
+		PAGBANK_API_URL: z.string().url(),
+		PAGBANK_TOKEN: z.string(),
+		PAGBANK_EVENT_URL: z.string(),
 	},
 	client: {
 		NEXT_PUBLIC_API_BASE_URL: z.string().url(),
@@ -24,5 +27,8 @@ export const env = createEnv({
 		SECRET_TOKEN: process.env.SECRET_TOKEN,
 		NEXTAUTH_URL: process.env.NEXTAUTH_URL,
 		NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+		PAGBANK_API_URL: process.env.PAGBANK_API_URL,
+		PAGBANK_TOKEN: process.env.PAGBANK_TOKEN,
+		PAGBANK_EVENT_URL: process.env.PAGBANK_EVENT_URL,
 	},
 });
