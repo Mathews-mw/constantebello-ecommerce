@@ -23,5 +23,7 @@ export async function sendWelcomeEmail({ to, name, siteLink }: IProps): Promise<
 		html: emailHtml,
 	});
 
+	console.log('send email response: ', emailSenderResult);
+
 	return emailSenderResult;
 }
