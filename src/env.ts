@@ -13,6 +13,10 @@ export const env = createEnv({
 		PAGBANK_API_URL: z.string().url(),
 		PAGBANK_TOKEN: z.string(),
 		PAGBANK_EVENT_URL: z.string(),
+		MAIL_HOST: z.string(),
+		MAIL_PORT: z.coerce.number(),
+		MAIL_USER: z.string(),
+		MAIL_PASSWORD: z.string(),
 	},
 	client: {
 		NEXT_PUBLIC_API_BASE_URL: z.string().url(),
@@ -30,5 +34,9 @@ export const env = createEnv({
 		PAGBANK_API_URL: process.env.PAGBANK_API_URL,
 		PAGBANK_TOKEN: process.env.PAGBANK_TOKEN,
 		PAGBANK_EVENT_URL: process.env.PAGBANK_EVENT_URL,
+		MAIL_HOST: process.env.MAIL_HOST,
+		MAIL_PORT: process.env.MAIL_PORT,
+		MAIL_USER: process.env.MAIL_USER,
+		MAIL_PASSWORD: process.env.MAIL_PASSWORD,
 	},
 });
