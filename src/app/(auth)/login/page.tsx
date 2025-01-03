@@ -7,8 +7,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,12 +26,19 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>;
 
 export default function SignInPage() {
+	const searchParams = useSearchParams();
+
+	const emailParams = searchParams.get('email') ?? undefined;
+
 	const {
 		handleSubmit,
 		register,
 		formState: { isSubmitting, errors },
 	} = useForm<SignInForm>({
 		resolver: zodResolver(signInForm),
+		defaultValues: {
+			email: emailParams,
+		},
 	});
 
 	const [isLoading, setIsLoading] = useState(false);

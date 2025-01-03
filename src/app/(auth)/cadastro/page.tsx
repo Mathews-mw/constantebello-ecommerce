@@ -7,7 +7,10 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { env } from '@/env';
 import { registerUser } from '@/app/api/@requests/users/register-user';
+import { sendWelcomeEmail } from '@/app/api/@requests/emails/send-welcome-email';
+import { insertUserInfos } from '@/app/api/@requests/users/infos/insert-user-infos';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,7 +25,6 @@ import { ErrorMessage } from '@/components/error-message';
 import { PasswordInput } from '@/components/password-input';
 
 import { Loader2 } from 'lucide-react';
-import { insertUserInfos } from '@/app/api/@requests/users/infos/insert-user-infos';
 
 const signUpForm = z.object({
 	name: z.string().min(3, { message: 'Por favor, preencha o campo.' }),
@@ -76,6 +78,12 @@ export default function Cadastro() {
 				birthday: data.birthday,
 				policyConsent: data.policyConsent,
 			});
+
+			await sendWelcomeEmail({
+				name: response.user.name,
+				to: response.user.email,
+				siteLink: env.NEXT_PUBLIC_APP_BASE_URL,
+			});
 		},
 	});
 
@@ -94,7 +102,7 @@ export default function Cadastro() {
 
 			reset();
 			toast.success('Cadastro feito com sucesso');
-			navigator.replace(`/cadastro/confirmacao?user=${data.name}`);
+			navigator.replace(`/login?email=${data.email}`);
 		} catch (error) {
 			console.log('error: ', error);
 		}
