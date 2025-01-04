@@ -20,7 +20,7 @@ export function NewArrivalsSection() {
 
 	return (
 		<div>
-			<h1 className="text-center text-2xl font-bold">RECÉM CHEGADOS</h1>
+			<h1 className="text-center text-2xl font-bold">NOVIDADES</h1>
 
 			<div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
 				{products ? (

@@ -1,9 +1,7 @@
 import { z } from 'zod';
-import { render } from '@react-email/components';
 import { NextRequest, NextResponse } from 'next/server';
 
-import WelcomeEmail from '@emails/welcome-email';
-import { mailTransport } from '@/app/utils/mails/mail-transport';
+import { sendWelcomeEmail } from '../../../utils/mails/send-welcome-email';
 
 const bodySchema = z.object({
 	to: z.string().email(),
@@ -37,29 +35,26 @@ export async function POST(request: NextRequest) {
 	const { to, name, site_link } = dataParse.data;
 
 	try {
-		const emailHtml = await render(WelcomeEmail({ name, siteLink: site_link }));
-		const emailPlainText = await render(WelcomeEmail({ name, siteLink: site_link }), {
-			plainText: true,
-		});
-
-		const emailSenderResult = await mailTransport.sendMail({
-			from: 'Sumaúma Móveis <mensageiro@sumaumamoveis.com.br>',
+		const emailSenderResult = await sendWelcomeEmail({
 			to,
-			subject: 'Bem-vindo(a) à Costante Bello!',
-			text: emailPlainText,
-			html: emailHtml,
+			name,
+			siteLink: site_link,
 		});
-
-		console.log('Message sent %s', emailSenderResult);
 
 		return Response.json(
 			{
-				message: emailSenderResult.messageId,
+				messageId: emailSenderResult.messageId,
+				accepted: emailSenderResult.accepted,
+				rejected: emailSenderResult.rejected,
 			},
 			{ status: 201 }
 		);
 	} catch (error) {
 		console.log('email send router error: ', error);
-		return NextResponse.json({ message: 'Erro durante o envio de e-mail.' }, { status: 400 });
+		if (error instanceof Error) {
+			return NextResponse.json({ message: 'Erro durante o envio de e-mail.', error: error.message }, { status: 400 });
+		}
+
+		return NextResponse.json({ message: 'Erro durante o envio de e-mail.' }, { status: 500 });
 	}
 }

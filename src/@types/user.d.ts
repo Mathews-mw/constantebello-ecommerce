@@ -9,5 +9,5 @@ interface IUserWithInfos extends User {
 }
 
 interface IUserDetails extends User {
-  userInfos: IUserInfosDetails
+  userInfos?: IUserInfosDetails
 }

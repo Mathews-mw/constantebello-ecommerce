@@ -9,7 +9,6 @@ import {
 	Html,
 	Img,
 	Link,
-	Preview,
 	Row,
 	Section,
 	Text,
@@ -25,7 +24,6 @@ export default function WelcomeEmail({ name, siteLink }: WelcomeEmailProps) {
 	return (
 		<Html>
 			<Head />
-			<Preview>Netlify Welcome</Preview>
 			<Tailwind
 				config={{
 					theme: {

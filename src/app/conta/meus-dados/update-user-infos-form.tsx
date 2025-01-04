@@ -1,12 +1,28 @@
-import { IUserDetails } from '@/@types/user';
-import { CpfInput } from '@/components/cpf-input';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+'use client';
+
 import { z } from 'zod';
+import { toast } from 'sonner';
+import validateCpf from 'validar-cpf';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { cpfFormatter } from '@/app/utils/cpf-formatter';
+import { phoneFormatter } from '@/app/utils/phone-formatter';
+import { updateUser } from '@/app/api/@requests/users/update-user';
+import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+
+import { IUserDetails } from '@/@types/user';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { CpfInput } from '@/components/cpf-input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DateInput } from '@/components/date-input';
+import { PhoneInput } from '@/components/phone-input';
+import { ErrorMessage } from '@/components/error-message';
+
+import { Loader2 } from 'lucide-react';
 
 interface IProps {
 	user: IUserDetails;
@@ -14,7 +30,17 @@ interface IProps {
 
 const updateForm = z.object({
 	name: z.string().min(3, { message: 'Por favor, preencha o campo.' }),
+	cpf: z
+		.string()
+		.min(1, { message: 'Por favor, preencha o campo.' })
+		.refine((value) => validateCpf(value), { message: 'Por favor, preencha um CPF válido' }),
 	phone: z.string().min(15, { message: 'Por favor, preencha o campo.' }),
+	birthday: z
+		.string()
+		.min(1, { message: 'Por favor, preencha o campo.' })
+		.refine((value) => /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/([0-9]{4})$/.test(value), {
+			message: 'Por favor, preencha uma data válida',
+		}),
 	advertisingConsent: z.coerce.boolean(),
 });
 
@@ -31,36 +57,88 @@ export function UpdateUserInfosForm({ user }: IProps) {
 		resolver: zodResolver(updateForm),
 		defaultValues: {
 			name: user.name ?? undefined,
-			phone: user.userInfos.phone,
-			advertisingConsent: user.userInfos.advertisingConsent,
+			birthday: user.userInfos ? user.userInfos.birthday : undefined,
+			cpf: user.userInfos ? cpfFormatter(user.userInfos.cpf) : undefined,
+			phone: user.userInfos ? phoneFormatter(user.userInfos.phone) : undefined,
+			advertisingConsent: user.userInfos ? user.userInfos.advertisingConsent : undefined,
 		},
 	});
 
+	const queryClient = useQueryClient();
+
+	const { mutateAsync: updateUserFn, isPending } = useMutation({
+		mutationFn: updateUser,
+	});
+
+	async function handleUpdateForm(data: UpdateForm) {
+		try {
+			await updateUserFn({
+				id: user.id,
+				email: user.email,
+				name: data.name,
+				cpf: data.cpf,
+				phone: data.phone,
+				birthday: data.birthday,
+				advertisingConsent: data.advertisingConsent,
+			});
+
+			await queryClient.invalidateQueries({ queryKey: ['user', user.id] });
+
+			reset();
+			toast.success('Cadastro atualizado com sucesso');
+		} catch (error) {
+			console.log('error: ', error);
+			errorToasterHandler(error);
+		}
+	}
+
 	return (
-		<form className="flex flex-col gap-4">
-			<div className="space-y-2">
-				<Label>Nome</Label>
-				<Input {...register('name')} />
+		<form onSubmit={handleSubmit(handleUpdateForm)} className="flex flex-col gap-4">
+			<div className="space-y-1">
+				<Label htmlFor="name">Nome completo*</Label>
+				<Input id="name" {...register('name')} />
+				<ErrorMessage message={errors.name?.message} />
 			</div>
 
-			<div className="space-y-2">
-				<Label>Telefone</Label>
-				<Input {...register('phone')} />
+			<div className="space-y-1">
+				<Label htmlFor="cpf">CPF*</Label>
+				<Controller
+					name="cpf"
+					control={control}
+					render={({ field }) => {
+						return <CpfInput id="cpf" value={field.value} onChange={field.onChange} />;
+					}}
+				/>
+				<ErrorMessage message={errors.cpf?.message} />
+			</div>
+
+			<div className="flex flex-col gap-3">
+				<Label htmlFor="birthday">Data de nascimento*</Label>
+				<Controller
+					name="birthday"
+					control={control}
+					render={({ field }) => {
+						return <DateInput id="birthday" value={field.value} onChange={field.onChange} />;
+					}}
+				/>
+				<ErrorMessage message={errors.birthday?.message} />
+			</div>
+
+			<div className="space-y-1">
+				<Label htmlFor="phone">Telefone</Label>
+				<Controller
+					name="phone"
+					control={control}
+					render={({ field }) => {
+						return <PhoneInput id="phone" value={field.value} onChange={field.onChange} />;
+					}}
+				/>
+				<ErrorMessage message={errors.phone?.message} />
 			</div>
 
 			<div className="space-y-2">
 				<Label>E-mail</Label>
 				<Input value={user.email} disabled readOnly />
-			</div>
-
-			<div className="space-y-2">
-				<Label>CPF</Label>
-				<Input id="cpf" value={user.userInfos.cpf} disabled readOnly />
-			</div>
-
-			<div className="space-y-2">
-				<Label>Data nascimento</Label>
-				<Input value={user.userInfos.birthday} disabled readOnly />
 			</div>
 
 			<div className="flex items-center gap-2">
@@ -81,7 +159,10 @@ export function UpdateUserInfosForm({ user }: IProps) {
 			</div>
 
 			<div className="flex justify-end">
-				<Button type="submit">Salvar</Button>
+				<Button type="submit" disabled={isPending || isSubmitting}>
+					{(isPending || isSubmitting) && <Loader2 className="animate-spin" />}
+					Salvar
+				</Button>
 			</div>
 		</form>
 	);

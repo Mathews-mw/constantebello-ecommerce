@@ -48,12 +48,10 @@ const nextAuthOptions: NextAuthOptions = {
 					},
 				});
 				if (!existingUser) {
-					console.log('É o primeiro acesso desse usuário. Portanto, deve ser enviado o e-mail de boas-vindas');
-
 					await sendWelcomeEmail({
 						to: user.email ?? '',
 						name: user.name ?? '',
-						siteLink: env.NEXT_PUBLIC_APP_BASE_URL,
+						siteLink: 'https://google.com',
 					});
 				}
 			}

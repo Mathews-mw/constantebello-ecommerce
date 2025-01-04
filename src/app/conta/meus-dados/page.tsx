@@ -14,13 +14,13 @@ import { UpdateUserInfosFormSkeleton } from './update-user-infos-form-skeleton';
 import { FileText, MapPinHouse, UserRound } from 'lucide-react';
 
 export default function UserPersonalDataPage() {
-	const { data } = useSession();
+	const { data, status } = useSession();
 	const [parent] = useAutoAnimate();
 
-	const { data: customer } = useQuery({
+	const { data: user } = useQuery({
 		queryKey: ['user', data?.user.id],
 		queryFn: async () => getUserById({ id: data ? data.user.id : '' }),
-		enabled: !!data,
+		enabled: !!data && status === 'authenticated',
 	});
 
 	return (
@@ -31,29 +31,29 @@ export default function UserPersonalDataPage() {
 			</div>
 
 			<div className="flex w-full flex-wrap gap-8">
-				<div className="h-min flex-grow space-y-4 rounded border bg-background p-4 shadow-sm">
+				<div className="h-min flex-grow space-y-4 rounded-lg border bg-background p-4 shadow-sm">
 					<div className="flex items-center gap-2">
-						<FileText className="fill-primary text-white" />
+						<FileText className="fill-primary text-background" />
 						<h2 className="text-lg font-semibold">Dados de cadastro</h2>
 					</div>
 
-					{customer ? <UpdateUserInfosForm user={customer} /> : <UpdateUserInfosFormSkeleton />}
+					{user ? <UpdateUserInfosForm user={user} /> : <UpdateUserInfosFormSkeleton />}
 				</div>
 
-				<div className="h-min flex-grow space-y-4 rounded border bg-background p-4 shadow-sm">
+				<div className="h-min flex-grow space-y-4 rounded-lg border bg-background p-4 shadow-sm">
 					<div className="flex w-full items-center justify-between">
 						<div className="flex items-center gap-2">
-							<MapPinHouse className="fill-white text-primary" />
+							<MapPinHouse className="fill-background text-primary" />
 							<h2 className="text-lg font-semibold">Endereços cadastrados</h2>
 						</div>
 
-						{customer && <AddNewAddressDialog userId={customer.id} />}
+						{user && <AddNewAddressDialog userId={user.id} />}
 					</div>
 
-					{customer && (
+					{user && (
 						<div ref={parent} className="space-y-2">
-							{customer?.userInfos.userAddress.map((address) => {
-								return <AddressCard key={address.id} address={address} userId={customer.id} />;
+							{user?.userInfos?.userAddress.map((address) => {
+								return <AddressCard key={address.id} address={address} userId={user.id} />;
 							})}
 						</div>
 					)}

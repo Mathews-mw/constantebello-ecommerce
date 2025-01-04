@@ -29,6 +29,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
 import { editCart } from '@/app/api/@requests/orders/edit-cart';
 import { AddNewAddressDialog } from '@/components/add-new-address-dialog';
+import { CompleteRegisterAlert } from './complete-register-alert';
 
 export default function CartPage() {
 	const { status, data } = useSession();
@@ -38,6 +39,7 @@ export default function CartPage() {
 	const queryClient = useQueryClient();
 
 	const [isOpen, setIsOpen] = useState(false);
+	const [completeRegisterIsOpen, setCompleteRegisterIsOpen] = useState(false);
 	const [productsId, setProductsId] = useState<string[]>([]);
 	const [selectedAddress, setSelectedAddress] = useState('');
 
@@ -94,6 +96,10 @@ export default function CartPage() {
 	});
 
 	async function handleGenerateOrder() {
+		if (!user?.userInfos) {
+			return setCompleteRegisterIsOpen(true);
+		}
+
 		if (!selectedAddress) {
 			return toast.error('Por favor, selecione o endereço de entrega');
 		}
@@ -119,7 +125,7 @@ export default function CartPage() {
 
 	useEffect(() => {
 		if (user) {
-			const mainAddress = user.userInfos.userAddress.find((address) => address.isMainAddress);
+			const mainAddress = user.userInfos?.userAddress.find((address) => address.isMainAddress);
 			setSelectedAddress(mainAddress?.id ?? '');
 		}
 	}, [user]);
@@ -242,7 +248,7 @@ export default function CartPage() {
 									{!!user && <AddNewAddressDialog userId={user.id} />}
 								</div>
 
-								{user?.userInfos.userAddress.length === 0 ? (
+								{user?.userInfos?.userAddress.length === 0 ? (
 									<p className="text-muted-foreground">Você ainda não tem nenhum endereço cadastrado</p>
 								) : (
 									<p className="text-muted-foreground">Selecione o endereço que será feito a entrega do produto</p>
@@ -251,7 +257,7 @@ export default function CartPage() {
 								{user && (
 									<div>
 										<RadioGroup value={selectedAddress} onValueChange={setSelectedAddress}>
-											{user?.userInfos.userAddress.map((address) => {
+											{user?.userInfos?.userAddress.map((address) => {
 												return (
 													<div className="flex items-center space-x-2" key={address.id}>
 														<RadioGroupItem value={address.id} id={address.id} className="hidden" />
@@ -302,6 +308,7 @@ export default function CartPage() {
 			</div>
 
 			<GeneratingOrderAlert isOpen={isOpen} />
+			<CompleteRegisterAlert isOpen={completeRegisterIsOpen} onOpen={setCompleteRegisterIsOpen} />
 		</>
 	);
 }

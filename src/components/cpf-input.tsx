@@ -1,13 +1,7 @@
 'use client';
 
 import { twMerge } from 'tailwind-merge';
-import {
-	ChangeEventHandler,
-	ComponentProps,
-	ForwardRefRenderFunction,
-	forwardRef,
-	useState,
-} from 'react';
+import { ChangeEventHandler, ComponentProps, ForwardRefRenderFunction, forwardRef, useState } from 'react';
 
 import { Eye, EyeOff } from 'lucide-react';
 

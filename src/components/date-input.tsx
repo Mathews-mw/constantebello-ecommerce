@@ -32,11 +32,7 @@ export const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputControlP
 		const [day, month, year] = date.split('/').map(Number);
 		const dateObject = new Date(year, month - 1, day);
 
-		return (
-			dateObject.getFullYear() === year &&
-			dateObject.getMonth() === month - 1 &&
-			dateObject.getDate() === day
-		);
+		return dateObject.getFullYear() === year && dateObject.getMonth() === month - 1 && dateObject.getDate() === day;
 	};
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -37,6 +37,8 @@ export function NotificationsList({
 		return [];
 	}, [notifications]);
 
+	console.log('notificationsGroped: ', notificationsGroped);
+
 	useEffect(() => {
 		if (inView) {
 			fetchNextPage();
@@ -55,22 +57,24 @@ export function NotificationsList({
 				})}
 			</ul>
 
-			<div className="mb-4 mt-2">
-				<button
-					ref={ref}
-					onClick={() => fetchNextPage()}
-					disabled={!hasNextPage || isFetchingNextPage}
-					className="text-sm text-muted-foreground"
-				>
-					{isFetchingNextPage || isFetching ? (
-						<Loader2 className="animate-spin" />
-					) : hasNextPage ? (
-						'Carregar mais'
-					) : (
-						'Nada mais para mostrar'
-					)}
-				</button>
-			</div>
+			{notificationsGroped.length > 0 && (
+				<div className="mb-4 mt-2">
+					<button
+						ref={ref}
+						onClick={() => fetchNextPage()}
+						disabled={!hasNextPage || isFetchingNextPage}
+						className="text-sm text-muted-foreground"
+					>
+						{isFetchingNextPage || isFetching ? (
+							<Loader2 className="animate-spin" />
+						) : hasNextPage ? (
+							'Carregar mais'
+						) : (
+							'Nada mais para mostrar'
+						)}
+					</button>
+				</div>
+			)}
 		</div>
 	);
 }

@@ -49,7 +49,7 @@ export default function NotificationsPage() {
 				<h1 className="text-xl font-black">Notificações</h1>
 			</div>
 
-			{notificationsResponse?.pages.length === 0 && <EmptyNotifications />}
+			{notificationsResponse?.pages[0].notifications.length === 0 && <EmptyNotifications />}
 
 			{notificationsResponse && (
 				<NotificationsList
