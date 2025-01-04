@@ -2,7 +2,6 @@ import WelcomeEmail from '@emails/welcome-email';
 import { render } from '@react-email/components';
 import { mailTransport } from './mail-transport';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { error } from 'console';
 
 interface IProps {
 	to: string;

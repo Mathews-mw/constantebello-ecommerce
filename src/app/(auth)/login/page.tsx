@@ -115,7 +115,7 @@ export default function SignInPage() {
 							</Button>
 
 							<Button type="submit" className="flex w-full gap-2" disabled={isSubmitting}>
-								Acessar painel
+								Acessar
 								{isSubmitting && <Loader2 className="h-5 w-5 animate-spin text-slate-200" />}
 							</Button>
 						</form>

@@ -14,6 +14,7 @@ const nextAuthOptions: NextAuthOptions = {
 		GoogleProvider({
 			clientId: env.GOOGLE_CLIENT_ID,
 			clientSecret: env.GOOGLE_CLIENT_SECRET,
+			allowDangerousEmailAccountLinking: true,
 		}),
 		CredentialsProvider({
 			name: 'credentials', // nome do provedor que será utilizado
@@ -28,7 +29,12 @@ const nextAuthOptions: NextAuthOptions = {
 				});
 
 				if (sessionResponse && status === 200) {
-					return sessionResponse.user;
+					return {
+						id: sessionResponse.user.id,
+						name: sessionResponse.user.name,
+						email: sessionResponse.user.email,
+						role: sessionResponse.user.role,
+					};
 				}
 
 				return null;
@@ -36,6 +42,9 @@ const nextAuthOptions: NextAuthOptions = {
 		}),
 	],
 	secret: `${env.NEXTAUTH_SECRET}`,
+	session: {
+		strategy: 'jwt',
+	},
 	pages: {
 		signIn: '/login',
 	},
@@ -58,7 +67,15 @@ const nextAuthOptions: NextAuthOptions = {
 
 			return true;
 		},
+
 		async jwt({ token, trigger, user, session }) {
+			if (user) {
+				token.id = user.id;
+				token.name = user.name;
+				token.email = user.email;
+				token.role = user.role;
+			}
+
 			if (trigger === 'signIn') {
 				token.role = user.role;
 			}
@@ -67,6 +84,7 @@ const nextAuthOptions: NextAuthOptions = {
 			}
 			return token;
 		},
+
 		async session({ session, token, newSession, user, trigger }) {
 			if (trigger === 'update' && newSession?.name) {
 				session.user.name = newSession.name;
@@ -79,12 +97,12 @@ const nextAuthOptions: NextAuthOptions = {
 					session.user.role = token.role;
 				}
 			}
-			if (user) {
-				session.user.id = user.id;
-				session.user.name = user.name;
-				session.user.email = user.email;
-				session.user.role = user.role;
-			}
+			// if (user) {
+			// 	session.user.id = user.id;
+			// 	session.user.name = user.name;
+			// 	session.user.email = user.email;
+			// 	session.user.role = user.role;
+			// }
 			return session;
 		},
 	},

@@ -223,7 +223,9 @@ model Order {
   id                        String           @id @default(uuid())
   userId                    String           @map("user_id")
   paymentInstitutionOrderId String?          @unique @map("payment_institution_order_id")
-  totalPrice                Float            @map("total_price")
+  subtotal                  Float            @map("total_price")
+  discount                  Float
+  deliveryFee               Float            @map("delivery_fee")
   status                    OrderStatus      @default(PENDING)
   deliveryIn                String           @map("delivery_in")
   paymentType               OrderPaymentType @map("payment_type")

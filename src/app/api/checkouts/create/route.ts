@@ -1,18 +1,19 @@
 import { z } from 'zod';
-import { NextRequest, NextResponse } from 'next/server';
-
-import { prisma } from '@/lib/prisma';
-import { OrderPaymentType, Prisma } from '@prisma/client';
-import { pagBankAPI } from '@/lib/pagbank/pagbank-api';
-import { randomUUID } from 'node:crypto';
 import dayjs from 'dayjs';
 import { AxiosError } from 'axios';
+import { OrderPaymentType } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { env } from '@/env';
+import { prisma } from '@/lib/prisma';
+import { pagBankAPI } from '@/lib/pagbank/pagbank-api';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),
 	cart_id: z.string().uuid(),
 	delivery_in: z.string(),
+	discount: z.coerce.number().optional().default(0),
+	delivery_fee: z.coerce.number().optional().default(0),
 	payment_type: z.nativeEnum(OrderPaymentType),
 });
 
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const { user_id, cart_id, payment_type, delivery_in } = dataParse.data;
+	const { user_id, cart_id, payment_type, delivery_in, discount, delivery_fee } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -110,8 +111,8 @@ export async function POST(request: NextRequest) {
 				},
 			},
 			shipping: {
-				type: 'FREE',
-				amount: 0,
+				type: 'FIXED',
+				amount: delivery_fee,
 				address: {
 					country: 'BRA',
 					region_code: address.state,
@@ -125,6 +126,7 @@ export async function POST(request: NextRequest) {
 				address_modifiable: false,
 			},
 			items: checkoutItems,
+			discount_amount: discount,
 			payment_methods: [
 				{
 					type: 'CREDIT_CARD',
@@ -181,12 +183,12 @@ export async function POST(request: NextRequest) {
 			{ status: 201 }
 		);
 	} catch (error) {
-		console.log('create order route error: ', error);
+		console.log('create checkout route error: ', error);
 
 		if (error instanceof AxiosError) {
-			console.log('order route axios error: ', error.response?.data);
+			console.log('checkout route axios error: ', error.response?.data);
 		}
 
-		return NextResponse.json({ message: 'Erro ao tentar gerar ordem.' }, { status: 400 });
+		return NextResponse.json({ message: 'Erro ao tentar gerar pedido.' }, { status: 400 });
 	}
 }

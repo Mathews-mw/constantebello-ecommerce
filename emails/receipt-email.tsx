@@ -20,11 +20,13 @@ interface WelcomeEmailProps {
 	name: string;
 	orderId: string;
 	orderLink: string;
+	address: string;
+	total: number;
 	subtotal: number;
 	discount: number;
-	deliveryValue: number;
+	deliveryFee: number;
 	products: Array<{
-		id: 1;
+		id: string;
 		img: string;
 		name: string;
 		size: string;
@@ -33,7 +35,17 @@ interface WelcomeEmailProps {
 	}>;
 }
 
-export default function ReceiptEmail({ name = 'Mathews Araujo', orderLink }: WelcomeEmailProps) {
+export default function ReceiptEmail({
+	name,
+	orderId,
+	orderLink,
+	address,
+	total,
+	subtotal,
+	discount,
+	deliveryFee,
+	products,
+}: WelcomeEmailProps) {
 	return (
 		<Html>
 			<Head />
@@ -91,13 +103,19 @@ export default function ReceiptEmail({ name = 'Mathews Araujo', orderLink }: Wel
 									<Text className="m-0 p-0">ID do pedido</Text>
 								</Column>
 								<Column align="right">
-									<Text className="m-0 p-0 font-bold">5796fb3e-9a5e-4b13-a4ab-304d4c8c0b84</Text>
+									<Text className="m-0 p-0 font-bold">{orderId}</Text>
 								</Column>
+							</Row>
+
+							<Row className="my-2">
+								<Text className="m-0 p-0 font-semibold">Endereço de entrega</Text>
+
+								<Text className="m-0 p-0">{address}</Text>
 							</Row>
 						</Section>
 
 						<Section className="box-border rounded-[8px] border border-solid border-zinc-200 p-2">
-							{productsList.map((product) => {
+							{products?.map((product) => {
 								return (
 									<Row key={product.id} className="mt-2">
 										<Column>
@@ -125,7 +143,9 @@ export default function ReceiptEmail({ name = 'Mathews Araujo', orderLink }: Wel
 									<Text className="m-0 p-0">Subtotal</Text>
 								</Column>
 								<Column align="right">
-									<Text className="m-0 p-0 font-semibold">R$ 820,00</Text>
+									<Text className="m-0 p-0 font-semibold">
+										{subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+									</Text>
 								</Column>
 							</Row>
 
@@ -136,7 +156,9 @@ export default function ReceiptEmail({ name = 'Mathews Araujo', orderLink }: Wel
 									<Text className="m-0 p-0">Descontos</Text>
 								</Column>
 								<Column align="right">
-									<Text className="m-0 p-0 font-semibold">R$ 00,00</Text>
+									<Text className="m-0 p-0 font-semibold">
+										{discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+									</Text>
 								</Column>
 							</Row>
 
@@ -147,7 +169,9 @@ export default function ReceiptEmail({ name = 'Mathews Araujo', orderLink }: Wel
 									<Text className="m-0 p-0">Entrega</Text>
 								</Column>
 								<Column align="right">
-									<Text className="m-0 p-0 font-semibold">R$ 20,00</Text>
+									<Text className="m-0 p-0 font-semibold">
+										{deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+									</Text>
 								</Column>
 							</Row>
 
@@ -158,7 +182,9 @@ export default function ReceiptEmail({ name = 'Mathews Araujo', orderLink }: Wel
 									<Text className="m-0 p-0 font-semibold">Total</Text>
 								</Column>
 								<Column align="right">
-									<Text className="m-0 p-0 font-bold">R$ 840,00</Text>
+									<Text className="m-0 p-0 font-bold">
+										{total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+									</Text>
 								</Column>
 							</Row>
 						</Section>
@@ -213,30 +239,3 @@ export default function ReceiptEmail({ name = 'Mathews Araujo', orderLink }: Wel
 		</Html>
 	);
 }
-
-const productsList = [
-	{
-		id: 1,
-		img: 'https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-		name: 'MESA DE ESCRITÓRIO / MESA SIMPLES - CADEIRA SIMPLES',
-		size: '165L X 90C',
-		quantity: 1,
-		price: 820,
-	},
-	{
-		id: 2,
-		img: 'https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-		name: 'MESA DE ESCRITÓRIO / MESA SIMPLES - CADEIRA SIMPLES',
-		size: '165L X 90C',
-		quantity: 1,
-		price: 820,
-	},
-	{
-		id: 3,
-		img: 'https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-		name: 'MESA DE ESCRITÓRIO / MESA SIMPLES - CADEIRA SIMPLES',
-		size: '165L X 90C',
-		quantity: 1,
-		price: 820,
-	},
-];
