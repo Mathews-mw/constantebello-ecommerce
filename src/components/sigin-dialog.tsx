@@ -134,7 +134,7 @@ export function SigInDialog() {
 							<div className="flex items-center gap-4">
 								<Button
 									variant="outline"
-									onClick={() => signIn('google', { callbackUrl: pathname })}
+									onClick={() => signIn('google', { callbackUrl: pathname, redirect: false })}
 									disabled={isLoading || isSubmitting}
 								>
 									<Image src="/google-logo.svg" alt="google" width={32} height={32} className="h-6 w-6" />

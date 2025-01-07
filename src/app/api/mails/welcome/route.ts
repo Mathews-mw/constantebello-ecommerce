@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 		const emailSenderResult = await sendWelcomeEmail({
 			to,
 			name,
-			siteLink: site_link,
+			siteLink: 'https://www.google.com/',
 		});
 
 		return Response.json(
