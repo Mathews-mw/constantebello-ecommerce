@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { twMerge } from 'tailwind-merge';
 import { useQuery } from '@tanstack/react-query';
 
 import { useFavoriteProducts } from '@/context/favorite-products-context';
@@ -22,7 +23,12 @@ export function NewArrivalsSection() {
 		<div>
 			<h1 className="text-center text-2xl font-bold">NOVIDADES</h1>
 
-			<div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+			<div
+				className={twMerge([
+					'flex flex-col items-center gap-4 p-6',
+					'sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+				])}
+			>
 				{products ? (
 					<>
 						{products.map((product) => {

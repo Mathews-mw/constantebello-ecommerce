@@ -1,7 +1,8 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { twMerge } from 'tailwind-merge';
 
 import { useFavoriteProducts } from '@/context/favorite-products-context';
 import { listingProducts } from '@/app/api/@requests/products/listing-products';
@@ -10,12 +11,28 @@ import { OrderByFilter } from './order-by-filter';
 import { ProductsFilters } from './products-filters';
 import { Separator } from '@/components/ui/separator';
 import { ProductCard } from '../../../components/product-card/product-card';
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerDescription,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from '@/components/ui/drawer';
 
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import useMediaQuery from '@/app/utils/hooks/use-media-query';
 
 export default function PageContent() {
 	const searchParams = useSearchParams();
 	const { favoriteProducts } = useFavoriteProducts();
+
+	const { width } = useMediaQuery();
+	const isDesktop = width ? width > 768 : true;
 
 	const searchProductsParams = searchParams.get('search') ?? undefined;
 	const orderByParams = searchParams.get('orderBy') ?? undefined;
@@ -42,25 +59,49 @@ export default function PageContent() {
 				<span className="font-semibold text-primary">Produtos</span>
 			</div>
 
-			<div className="grid grid-cols-4 gap-8">
-				<ProductsFilters />
+			<div className={twMerge(['flex flex-col gap-4 lg:gap-8', 'lg:grid lg:grid-cols-4'])}>
+				<div className="hidden lg:block">
+					<ProductsFilters />
+				</div>
 
 				<div className="col-span-3 space-y-4">
-					<div className="flex items-center justify-between">
-						<h2 className="text-xl font-semibold">Todos os móveis</h2>
+					{isDesktop ? (
+						<div className="flex items-center justify-between">
+							<h2 className="text-xl font-semibold">Todos os móveis</h2>
 
-						<OrderByFilter />
-					</div>
+							<OrderByFilter />
+						</div>
+					) : (
+						<div className="flex w-full items-center justify-between">
+							<Drawer modal>
+								<DrawerTrigger asChild>
+									<Button variant="outline">
+										<SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
+										Filtros
+									</Button>
+								</DrawerTrigger>
+								<DrawerContent>
+									<DrawerHeader>
+										<VisuallyHidden>
+											<DrawerTitle>Are you absolutely sure?</DrawerTitle>
+										</VisuallyHidden>
+									</DrawerHeader>
+
+									<ProductsFilters />
+								</DrawerContent>
+							</Drawer>
+
+							<OrderByFilter />
+						</div>
+					)}
 
 					<Separator />
 
 					<div
-						style={{
-							display: 'grid',
-							columnGap: '18px',
-							rowGap: '18px',
-							gridTemplateColumns: 'repeat(auto-fit, minmax(325px, 1fr))',
-						}}
+						className={twMerge([
+							'flex flex-col items-center gap-4',
+							'sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3',
+						])}
 					>
 						{productsResponse?.products?.map((product) => {
 							return (

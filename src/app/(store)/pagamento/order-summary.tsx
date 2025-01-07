@@ -4,9 +4,9 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { OrderPaymentType } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+import { useCart } from '@/context/cart-context';
 import { saveOrder } from '@/app/api/@requests/orders/save-order';
 import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
 import { createCheckout } from '@/app/api/@requests/checkouts/create-checkout';
@@ -18,14 +18,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import { ArrowRight, FileSearch, Loader2, Truck } from 'lucide-react';
 
-interface IOrderSummaryProps {
-	paymentType?: OrderPaymentType;
-}
-
-export function OrderSummary({ paymentType }: IOrderSummaryProps) {
+export function OrderSummary() {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const { data, status } = useSession();
+	const { clearCart } = useCart();
 	const router = useRouter();
 
 	const { data: userCartResponse, isFetching: isFetchingCart } = useQuery({
@@ -59,11 +56,6 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 	async function handleGenerateOrder() {
 		setIsLoading(true);
 
-		if (!paymentType) {
-			setIsLoading(false);
-			return toast.error('Por favor, selecione um tipo de pagamento');
-		}
-
 		if (!userCartResponse?.userCart) {
 			setIsLoading(false);
 			return toast.error('Carrinho do usuário não definido');
@@ -72,7 +64,6 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 		try {
 			const { payment_link } = await createCheckoutFn({
 				cartId: userCartResponse.userCart.id,
-				paymentType,
 				userId: userCartResponse.userCart.userId,
 				deliveryIn: userCartResponse.userCart.deliveryIn,
 			});
@@ -81,8 +72,9 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 				userId: userCartResponse.userCart.userId,
 				cartId: userCartResponse.userCart.id,
 				deliveryIn: userCartResponse.userCart.deliveryIn,
-				paymentType,
 			});
+
+			clearCart();
 
 			router.push(payment_link);
 			setIsLoading(false);
@@ -93,7 +85,7 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 	}
 
 	return (
-		<div className="space-y-8 rounded-lg bg-background p-6 shadow-sm">
+		<div className="w-full max-w-[620px] space-y-8 rounded-lg bg-background p-6 shadow-sm">
 			<div className="flex items-center gap-2">
 				<FileSearch className="h-6 w-6 text-primary" />
 				<h2 className="font-black">RESUMO DO PEDIDO</h2>
@@ -175,11 +167,8 @@ export function OrderSummary({ paymentType }: IOrderSummaryProps) {
 			)}
 
 			<div className="flex flex-col gap-4">
-				<Button
-					onClick={() => handleGenerateOrder()}
-					disabled={isFetchingCart || !paymentType || isPending || isLoading}
-				>
-					Continuar
+				<Button onClick={() => handleGenerateOrder()} disabled={isFetchingCart || isPending || isLoading}>
+					Ir para o pagamento
 					{isPending || isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
 				</Button>
 				<Button variant="outline" onClick={() => router.back()} disabled={isFetchingCart || isPending || isLoading}>

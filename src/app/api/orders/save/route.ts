@@ -12,7 +12,7 @@ const bodySchema = z.object({
 	discount: z.coerce.number().optional().default(0),
 	delivery_fee: z.coerce.number().optional().default(0),
 	payment_institution_order_id: z.string().optional(),
-	payment_type: z.nativeEnum(OrderPaymentType),
+	payment_type: z.nativeEnum(OrderPaymentType).optional(),
 });
 
 export async function POST(request: NextRequest) {

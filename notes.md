@@ -6,6 +6,7 @@ https://www.figma.com/design/vKpQs4e5g8nLgvTlCbPfFc/E-commerce-Website-Template-
 ## PagSeguro Documentação
 [Checkout Pagbank](https://dev.pagbank.uol.com.br/reference/checkout-pagbank)
 [Conta PagSeguro](https://acesso.pagseguro.uol.com.br/)
+[Cartões de teste](https://developer.pagbank.com.br/docs/cartoes-de-teste)
 
 ## Produtos
 https://www.magazineluiza.com.br/kit-armario-de-cozinha-viena-compacto-com-4-portas-e-1-gaveta-balcao-multiuso-madine/p/dc3195f0k3/mo/mocz/

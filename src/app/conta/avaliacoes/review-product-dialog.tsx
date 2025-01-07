@@ -102,7 +102,7 @@ export function ReviewProductDialog({ userId, productId, orderItemId, productNam
 				</Button>
 			</DialogTrigger>
 
-			<DialogContent className="w-full min-w-[640px]">
+			<DialogContent className="w-full md:min-w-[640px]">
 				<ScrollArea className="max-h-[80vh] overflow-y-auto pr-4">
 					<DialogHeader className="mb-4 space-y-2 px-1">
 						<DialogTitle>O que você achou do produto?</DialogTitle>

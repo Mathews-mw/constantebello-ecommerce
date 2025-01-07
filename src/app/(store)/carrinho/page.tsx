@@ -140,20 +140,23 @@ export default function CartPage() {
 
 				<div className="space-y-4">
 					<div className="grid grid-cols-3 items-center justify-between">
-						<div className="col-span-2 flex w-full items-center justify-between">
+						<div className="col-span-2 flex w-full flex-col lg:flex-row lg:items-center lg:justify-between">
 							<PageTitle title="SEU CARRINHO" />
-							<Button
-								variant="ghost"
-								onClick={clearCart}
-								disabled={cartItems.length <= 0}
-								className="border-destructive text-destructive hover:text-rose-600"
-							>
-								<Trash2 /> Remover todos os produtos
-							</Button>
+
+							<div className="">
+								<Button
+									variant="ghost"
+									onClick={clearCart}
+									disabled={cartItems.length <= 0}
+									className="border-destructive text-destructive hover:text-rose-600"
+								>
+									<Trash2 /> Remover todos os produtos
+								</Button>
+							</div>
 						</div>
 					</div>
 
-					<div className="grid grid-cols-3 gap-6">
+					<div className="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6">
 						<div className="col-span-2 h-min space-y-4 rounded-xl border bg-background p-4 shadow-sm">
 							<div className="flex items-center gap-2">
 								<ShoppingBasket className="text-primary" />
@@ -291,7 +294,7 @@ export default function CartPage() {
 							<div className="space-y-4 rounded-xl border bg-background p-4 shadow-sm">
 								{status === 'authenticated' ? (
 									<Button className="w-full" disabled={cartItems.length <= 0} onClick={handleGenerateOrder}>
-										Ir para o Pagamento
+										Continuar
 										<ArrowRight className="h-6 w-6" />
 									</Button>
 								) : (

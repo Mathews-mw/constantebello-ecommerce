@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { StarsRating } from '@/components/stars-rating';
 
 import { ChevronRight, Minus, Plus } from 'lucide-react';
+import { ProductImages } from './product-images';
 
 interface IProductDetailsPageProps {
 	params: Promise<{
@@ -54,45 +55,8 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 				<ChevronRight className="h-4 w-4" /> <span className="font-semibold text-primary">Detalhes</span>
 			</div>
 
-			<div className="flex gap-8">
-				<div className="flex gap-4">
-					<div className="flex flex-col justify-between">
-						<Image
-							priority
-							src={product.imageUrl}
-							alt=""
-							width={320}
-							height={300}
-							className="h-[167px] rounded-lg object-cover"
-						/>
-						<Image
-							priority
-							src={product.imageUrl}
-							alt=""
-							width={320}
-							height={300}
-							className="h-[167px] rounded-lg object-cover"
-						/>
-						<Image
-							priority
-							src={product.imageUrl}
-							alt=""
-							width={320}
-							height={300}
-							className="h-[167px] rounded-lg object-cover"
-						/>
-					</div>
-
-					<Image
-						priority
-						quality={100}
-						src={product.imageUrl}
-						alt=""
-						width={1020}
-						height={1020}
-						className="h-[530px] rounded-lg object-cover"
-					/>
-				</div>
+			<div className="flex flex-col gap-8 lg:flex-row">
+				<ProductImages product={product} />
 
 				<div className="space-y-4">
 					<div className="flex flex-col gap-2">
@@ -144,13 +108,13 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 						<h4 className="text-muted-foreground">Escolha o tamanho</h4>
 
 						<div className="space-x-2">
-							<button className="rounded-lg border border-secondary bg-secondary px-4 py-1 hover:border-primary/50">
+							<button className="rounded-lg border border-secondary bg-secondary px-2 py-1 text-sm hover:border-primary/50">
 								165L X 90C
 							</button>
-							<button className="rounded-lg border border-secondary bg-secondary px-4 py-1 hover:border-primary/50">
+							<button className="rounded-lg border border-secondary bg-secondary px-2 py-1 text-sm hover:border-primary/50">
 								190L X 90C
 							</button>
-							<button className="rounded-lg border border-secondary bg-secondary px-4 py-1 hover:border-primary/50">
+							<button className="rounded-lg border border-secondary bg-secondary px-2 py-1 text-sm hover:border-primary/50">
 								175L X 90C
 							</button>
 						</div>

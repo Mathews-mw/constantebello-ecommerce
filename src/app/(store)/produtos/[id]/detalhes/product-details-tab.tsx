@@ -5,7 +5,7 @@ export function ProductDetailsTab() {
 		<div className="space-y-8">
 			<h4 className="text-xl font-bold">Características do Produto</h4>
 
-			<div className="grid grid-cols-3 gap-8">
+			<div className="flex flex-col gap-8 lg:grid lg:grid-cols-3">
 				<div className="flex w-fit items-center gap-2 rounded-lg bg-secondary p-2">
 					<MoveDiagonal className="h-5 w-5 text-muted-foreground" />
 
@@ -50,13 +50,11 @@ export function ProductDetailsTab() {
 			</div>
 
 			<div>
-				<p>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia numquam minima neque
-					dolorem rerum laudantium libero autem distinctio, eveniet tempore in, et corrupti eos
-					possimus magnam laborum quae vel voluptas! Lorem ipsum dolor sit amet consectetur
-					adipisicing elit. Distinctio, commodi eum sapiente doloremque voluptate laudantium non
-					quae? Fugiat, mollitia molestias incidunt velit beatae totam aut eos. Quas voluptas
-					quasi unde.
+				<p className="text-justify">
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia numquam minima neque dolorem rerum laudantium
+					libero autem distinctio, eveniet tempore in, et corrupti eos possimus magnam laborum quae vel voluptas! Lorem
+					ipsum dolor sit amet consectetur adipisicing elit. Distinctio, commodi eum sapiente doloremque voluptate
+					laudantium non quae? Fugiat, mollitia molestias incidunt velit beatae totam aut eos. Quas voluptas quasi unde.
 				</p>
 			</div>
 		</div>

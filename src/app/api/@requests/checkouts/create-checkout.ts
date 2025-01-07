@@ -7,7 +7,6 @@ interface IRequest {
 	deliveryIn: string;
 	discount?: number;
 	delivery_fee?: number;
-	paymentType: OrderPaymentType;
 }
 
 export interface IResponse {
@@ -23,13 +22,11 @@ export async function createCheckout({
 	deliveryIn,
 	discount,
 	delivery_fee,
-	paymentType,
 }: IRequest): Promise<IResponse> {
 	const { data: response } = await api.post<IResponse>('/checkouts/create', {
 		user_id: userId,
 		cart_id: cartId,
 		delivery_in: deliveryIn,
-		payment_type: paymentType,
 		discount,
 		delivery_fee,
 	});

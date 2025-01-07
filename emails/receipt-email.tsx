@@ -119,18 +119,26 @@ export default function ReceiptEmail({
 								return (
 									<Row key={product.id} className="mt-2">
 										<Column>
-											<Img src={product.img} alt={product.name} width={80} height={80} />
+											<Img src={product.img} alt={product.name} width={80} height={80} className="h-[80px] w-[80px]" />
 										</Column>
 
-										<Column className="m-0 flex flex-col pl-2">
-											<Text title={product.name} className="m-0 line-clamp-1 p-0 text-sm font-semibold">
-												{product.name}
-											</Text>
-											<Text className="m-0 p-0 text-xs">Qnt: {product.quantity}</Text>
-											<Text className="m-0 p-0 text-xs">{product.size}</Text>
-											<Text className="m-0 p-0 text-sm font-semibold">
-												{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-											</Text>
+										<Column className="pl-2 align-baseline" align="left">
+											<Row>
+												<Text title={product.name} className="m-0 line-clamp-1 p-0 text-sm font-semibold">
+													{product.name}
+												</Text>
+											</Row>
+											<Row>
+												<Text className="m-0 p-0 text-xs">Qnt: {product.quantity}</Text>
+											</Row>
+											<Row>
+												<Text className="m-0 p-0 text-xs">{product.size}</Text>
+											</Row>
+											<Row>
+												<Text className="m-0 p-0 text-sm font-semibold">
+													{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+												</Text>
+											</Row>
 										</Column>
 									</Row>
 								);
@@ -190,7 +198,7 @@ export default function ReceiptEmail({
 						</Section>
 
 						<Section className="mt-4 text-center">
-							<Button href={orderLink} className="bg-brand rounded-lg px-4 py-3 text-white">
+							<Button href="/#" className="bg-brand rounded-lg px-4 py-3 text-white">
 								Detalhes do Pedido
 							</Button>
 						</Section>
@@ -239,3 +247,22 @@ export default function ReceiptEmail({
 		</Html>
 	);
 }
+
+// const productsList = [
+// 	{
+// 		id: 1,
+// 		img: 'https://a-static.mlcdn.com.br/1500x1500/kit-armario-de-cozinha-viena-compacto-com-4-portas-e-1-gaveta-balcao-multiuso-madine/macielsignorini/msarma1200mel/e278e0861dab8bf7c55f9e21740dd70b.jpeg',
+// 		name: 'Escrivaninha Mesa de Escritório de Canto 3 Gavetas Branco/Rustic Lisboa Madesa',
+// 		size: '190x170x90',
+// 		quantity: 1,
+// 		price: 540,
+// 	},
+// 	{
+// 		id: 2,
+// 		img: 'https://a-static.mlcdn.com.br/1500x1500/kit-armario-de-cozinha-viena-compacto-com-4-portas-e-1-gaveta-balcao-multiuso-madine/macielsignorini/msarma1200mel/e278e0861dab8bf7c55f9e21740dd70b.jpeg',
+// 		name: 'Rack para TV 72” 2 Portas Caemmun Tannen 1.8',
+// 		size: '190x170x90',
+// 		quantity: 1,
+// 		price: 540,
+// 	},
+// ];

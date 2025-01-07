@@ -7,7 +7,7 @@ interface IRequest {
 	deliveryIn: string;
 	discount?: number;
 	deliveryFee?: number;
-	paymentType: OrderPaymentType;
+	paymentType?: OrderPaymentType;
 }
 
 export interface IResponse {

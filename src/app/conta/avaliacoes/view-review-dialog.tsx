@@ -24,7 +24,7 @@ export function ViewReviewDialog({ review }: IProps) {
 					Visualizar
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent className="md:max-w-[425px]">
 				<DialogHeader>
 					<DialogTitle>{review.reviewTitle}</DialogTitle>
 					<StarsRatingView score={review.score} iconsSize={15} showAverage />

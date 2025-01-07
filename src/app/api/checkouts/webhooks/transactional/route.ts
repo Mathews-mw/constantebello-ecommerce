@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
-import { OrderStatus } from '@prisma/client';
+import { OrderPaymentType, OrderStatus } from '@prisma/client';
 import { createNotification } from '@/app/api/@worker/notifications/create-notification';
 import { sendReceiptEmail } from '@/app/utils/mails/send-receipt-email';
 import { env } from '@/env';
@@ -11,14 +11,16 @@ import { env } from '@/env';
 export async function POST(request: NextRequest) {
 	const data: ITransactionalNotification = await request.json();
 
-	console.log('pagbank transactional webhook notification: ', data);
+	console.log('pagbank transactional webhook notification: ', data.charges[0]);
+	console.log('charges: ', data.charges[0]);
 
 	try {
 		let orderStatus: OrderStatus;
+		let paymentMethod: OrderPaymentType;
 
 		switch (data.charges[0].status) {
 			case 'CANCELED':
-				orderStatus = 'CANCELED';
+				orderStatus = 'CHARGE_CANCELED';
 				break;
 			case 'DECLINED':
 				orderStatus = 'PAYMENT_DECLINED';
@@ -36,9 +38,27 @@ export async function POST(request: NextRequest) {
 				orderStatus = 'PENDING';
 		}
 
+		switch (data.charges[0].payment_method.type) {
+			case 'CREDIT_CARD':
+				paymentMethod = 'CARTAO_CREDITO';
+				break;
+			case 'DEBIT_CARD':
+				paymentMethod = 'DEBITO';
+				break;
+			case 'BOLETO':
+				paymentMethod = 'BOLETO';
+				break;
+			case 'PIX':
+				paymentMethod = 'PIX';
+				break;
+			default:
+				paymentMethod = 'A_DEFINIR';
+		}
+
 		await prisma.order.update({
 			data: {
 				status: orderStatus,
+				paymentType: paymentMethod,
 				paymentInstitutionOrderId: data.id,
 			},
 			where: {
@@ -62,11 +82,51 @@ export async function POST(request: NextRequest) {
 			},
 		});
 
+		if (order && order.status === 'PAYMENT_DECLINED') {
+			await createNotification({
+				title: 'Pagamento Recusado',
+				subtitle: 'O pagamento do seu pedido foi recusado.',
+				content: `Olá, ${data.customer.name}, informamos que infelizmente o pagamento do seu pedido foi recusado. Por favor, verifique as informações bancárias e tente novamente.`,
+				userId: order.userId,
+				tag: 'REMINDS',
+			});
+		}
+
+		if (order && order.status === 'AWAITING_PAYMENT') {
+			await createNotification({
+				title: 'Pedido Recebido',
+				subtitle: 'Aguardando o pagamento.',
+				content: `Olá, ${data.customer.name}, informamos que recebemos o seu pedido e estamos aguardando o pagamento. Assim que tudo estiver ok, iremos avisar você. Obrigado(a)!`,
+				userId: order.userId,
+				tag: 'GENERAL',
+			});
+		}
+
+		if (order && order.status === 'PAYMENT_IN_ANALYSIS') {
+			await createNotification({
+				title: 'Pagamento em análise',
+				subtitle: 'Aguardando a aprovação do pagamento.',
+				content: `Olá, ${data.customer.name}, informamos que o pagamento do seu pedido está em análise. Assim que recebemos uma resposta iremos avisar você. Obrigado(a)!`,
+				userId: order.userId,
+				tag: 'GENERAL',
+			});
+		}
+
+		if (order && order.status === 'CHARGE_CANCELED') {
+			await createNotification({
+				title: 'Cobrança cancelada',
+				subtitle: 'A cobrança gerada para o seu pedido foi cancelada.',
+				content: `Olá, ${data.customer.name}, informamos que a cobrança de valor ${order.subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} do seu pedido foi cancelada e não é mais válida. Por favor, caso queira, tente fazer um novo pedido para concluir sua compra. Obrigado(a)!`,
+				userId: order.userId,
+				tag: 'REMINDS',
+			});
+		}
+
 		if (order && order.status === 'PAYMENT_CONFIRMED') {
 			await createNotification({
 				title: 'Pagamento confirmado',
 				subtitle: 'O pagamento do seu pedido foi confirmado.',
-				content: `Olá, ${data.customer.name}, informamos que o seu pedido teve o pagamento aprovado. Agora o restante é com a gente, pode ficar tranquilo. Iremos processar o seu pedido e fazer a entrega o mais breve possível. Fique de olho na sua caixa de e-mail e/ou telefone pois iremos manter contato para atualizar você do seu pedido. Obrigado!`,
+				content: `Olá, ${data.customer.name}, informamos que o seu pedido teve o pagamento aprovado. Agora o restante é com a gente, pode ficar tranquilo. Iremos processar o seu pedido e fazer a entrega o mais breve possível. Fique de olho na sua caixa de e-mail e/ou telefone pois iremos manter contato para atualizar você do seu pedido. Obrigado(a)!`,
 				userId: order.userId,
 				tag: 'GENERAL',
 			});
@@ -101,16 +161,6 @@ export async function POST(request: NextRequest) {
 				discount: order.discount,
 				deliveryFee: order.deliveryFee,
 				products: orderProducts,
-			});
-		}
-
-		if (order && order.status === 'PAYMENT_DECLINED') {
-			await createNotification({
-				title: 'Pagamento Recusado',
-				subtitle: 'O pagamento do seu pedido foi recusado.',
-				content: `Olá, ${data.customer.name}, informamos que infelizmente o pagamento do seu pedido foi recusado. Por favor, verifique as informações bancárias e tente novamente.`,
-				userId: order.userId,
-				tag: 'REMINDS',
 			});
 		}
 

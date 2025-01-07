@@ -25,6 +25,7 @@ import { ErrorMessage } from '@/components/error-message';
 import { PasswordInput } from '@/components/password-input';
 
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
 const signUpForm = z.object({
 	name: z.string().min(3, { message: 'Por favor, preencha o campo.' }),
@@ -113,7 +114,7 @@ export default function Cadastro() {
 			<PageTitle title="CRIAR CONTA" />
 
 			<form onSubmit={handleSubmit(handleSignUpForm)} className="space-y-4">
-				<div className="grid grid-cols-2 gap-4">
+				<div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
 					<div className="space-y-1">
 						<Label htmlFor="name">Nome completo*</Label>
 						<Input id="name" {...register('name')} />
@@ -133,7 +134,7 @@ export default function Cadastro() {
 					</div>
 				</div>
 
-				<div className="grid grid-cols-2 gap-4">
+				<div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
 					<div className="flex flex-col gap-3">
 						<Label htmlFor="birthday">Data de nascimento*</Label>
 						<Controller
@@ -159,7 +160,7 @@ export default function Cadastro() {
 					</div>
 				</div>
 
-				<div className="grid grid-cols-2 gap-4">
+				<div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
 					<div className="space-y-1">
 						<Label htmlFor="email">E-mail</Label>
 						<Input id="email" type="email" {...register('email')} />
@@ -168,12 +169,12 @@ export default function Cadastro() {
 
 					<div className="space-y-1">
 						<Label htmlFor="confirmEmail">Confirme o e-mail</Label>
-						<Input id="confirmEmail" {...register('confirmEmail')} />
+						<Input id="confirmEmail" type="email" {...register('confirmEmail')} />
 						<ErrorMessage message={errors.confirmEmail?.message} />
 					</div>
 				</div>
 
-				<div className="grid grid-cols-2 gap-4">
+				<div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
 					<div className="space-y-1">
 						<Label htmlFor="password">Senha</Label>
 						<PasswordInput id="password" {...register('password')} />
@@ -210,7 +211,11 @@ export default function Cadastro() {
 					<ErrorMessage message={errors.policyConsent?.message} />
 				</div>
 
-				<div className="flex justify-end">
+				<div className="flex items-center justify-between">
+					<Button variant="link" asChild>
+						<Link href="/login">Já possui uma conta?</Link>
+					</Button>
+
 					<Button type="submit" disabled={isPending || isSubmitting}>
 						CADASTRAR
 						{(isPending || isSubmitting) && <Loader2 className="h-5 w-5 animate-spin" />}

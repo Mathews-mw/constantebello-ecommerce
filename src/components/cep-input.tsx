@@ -42,6 +42,7 @@ const CepInputBase: ForwardRefRenderFunction<HTMLInputElement, ICurrencyInputPro
 		<Input
 			ref={ref}
 			color="primary"
+			inputMode="numeric"
 			maxLength={9}
 			value={cepInputValue}
 			onChange={handleChange}

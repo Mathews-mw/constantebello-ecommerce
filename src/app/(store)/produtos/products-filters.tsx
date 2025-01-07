@@ -34,7 +34,7 @@ const items = [
 ];
 
 export function ProductsFilters() {
-	const [rangePriceFilter, setRangePriceFilter] = useState([220, 5000]);
+	const [rangePriceFilter, setRangePriceFilter] = useState([50, 5000]);
 	const [rangePriceFilterCommitted, setRangePriceFilterCommitted] = useState<number[] | undefined>();
 	const [departmentFilter, setDepartmentFilter] = useState<string[]>([]);
 
@@ -78,7 +78,7 @@ export function ProductsFilters() {
 	}, []);
 
 	return (
-		<div className="h-min space-y-4 rounded-xl border bg-background p-6 shadow-sm">
+		<div className="h-min space-y-4 p-4 lg:rounded-xl lg:border lg:bg-background lg:p-6 lg:shadow-sm">
 			<div className="flex items-center justify-between">
 				<h4 className="text-lg font-semibold">Filtros</h4>
 				<SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
@@ -90,8 +90,8 @@ export function ProductsFilters() {
 				<h6 className="font-semibold">Preço</h6>
 				<div>
 					<Slider.Root
-						defaultValue={[220, 5000]}
-						min={100}
+						defaultValue={[50, 5000]}
+						min={50}
 						max={10000}
 						minStepsBetweenThumbs={1}
 						value={rangePriceFilter}

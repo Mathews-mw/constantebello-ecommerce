@@ -141,14 +141,14 @@ export function AddNewAddressDialog({ userId }: IProps) {
 				</Button>
 			</DialogTrigger>
 
-			<DialogContent className="w-full min-w-[640px]">
+			<DialogContent className="w-full max-w-[95%] rounded-lg lg:w-min lg:min-w-[640px]">
 				<DialogHeader>
 					<div className="flex items-center gap-2">
 						<MapPinPlus className="text-primary" />
 						<DialogTitle>Cadastrar novo endereço de entrega</DialogTitle>
 					</div>
 
-					<DialogDescription className="text-sm text-muted-foreground">
+					<DialogDescription className="text-justify text-sm text-muted-foreground">
 						Informe um novo endereço para as suas entregas. Lembrando, você pode marcar esse novo endereço como o padrão
 						para as suas encomendas.
 					</DialogDescription>

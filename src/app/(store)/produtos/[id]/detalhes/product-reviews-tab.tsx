@@ -6,7 +6,7 @@ export function ProductReviewsTab() {
 		<div className="space-y-8">
 			<h4 className="text-xl font-bold">Avaliações e reviews</h4>
 
-			<div className="grid grid-cols-2 gap-8">
+			<div className="flex flex-col gap-4 lg:grid lg:grid-cols-2">
 				<ReviewCard />
 				<ReviewCard />
 				<ReviewCard />

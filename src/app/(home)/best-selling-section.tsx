@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card/product-card';
 import { useFavoriteProducts } from '@/context/favorite-products-context';
 import { ProductCardSkeleton } from '@/components/product-card/product-card-skeleton';
+import { twMerge } from 'tailwind-merge';
 
 export function BestSellingSection() {
 	const { favoriteProducts } = useFavoriteProducts();
@@ -22,7 +23,12 @@ export function BestSellingSection() {
 		<div>
 			<h1 className="text-center text-2xl font-bold">MAIS VENDIDOS</h1>
 
-			<div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+			<div
+				className={twMerge([
+					'flex flex-col items-center gap-4 p-6',
+					'sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+				])}
+			>
 				{products ? (
 					<>
 						{products.map((product) => {

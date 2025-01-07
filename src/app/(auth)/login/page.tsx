@@ -70,9 +70,9 @@ export default function SignInPage() {
 	}
 
 	return (
-		<div className="p-8">
+		<div className="p-4 lg:p-0">
 			<div>
-				<Button asChild variant="secondary" disabled={isLoading || isSubmitting} className="absolute left-8 top-8">
+				<Button asChild variant="outline" disabled={isLoading || isSubmitting} className="absolute left-8 top-8">
 					<Link href="/cadastro">Cadastre-se</Link>
 				</Button>
 
@@ -81,7 +81,7 @@ export default function SignInPage() {
 				</Button>
 			</div>
 
-			<div className="flex w-[400px] flex-col justify-center gap-6">
+			<div className="flex flex-col justify-center gap-6 lg:w-[400px]">
 				<Card>
 					<CardHeader>
 						<CardTitle className="text-center">Acesse sua conta</CardTitle>
@@ -96,7 +96,7 @@ export default function SignInPage() {
 								<Label htmlFor="email">E-mail</Label>
 
 								<div>
-									<Input id="email" placeholder="Insira seu e-mail cadastrado" type="text" {...register('email')} />
+									<Input id="email" placeholder="Insira seu e-mail cadastrado" type="email" {...register('email')} />
 									<small className="text-red-400">{errors.email?.message}</small>
 								</div>
 							</div>

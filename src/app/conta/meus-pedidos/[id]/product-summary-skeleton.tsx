@@ -6,7 +6,7 @@ import { OrderProgressSkeleton } from './order-progress.skeleton';
 export function ProductSummarySkeleton() {
 	return (
 		<div className="col-span-2 space-y-8 rounded-lg border bg-background p-6 shadow-sm">
-			<div className="flex w-full items-center justify-between">
+			<div className="flex w-full flex-col-reverse justify-between gap-4 lg:flex-row lg:items-center lg:gap-0">
 				<div className="text-sm font-semibold">
 					<div className="flex items-center gap-1">
 						<h4>Pedido:</h4>
@@ -25,24 +25,24 @@ export function ProductSummarySkeleton() {
 
 			{Array.from([1, 2]).map((_, i) => {
 				return (
-					<div key={i} className="flex w-full justify-between">
+					<div key={i} className="flex w-full justify-between gap-2">
 						<div className="flex gap-3">
 							<Skeleton className="h-[65px] w-[65px]" />
 
 							<div className="flex flex-col gap-2">
-								<Skeleton className="h-3 w-96" />
+								<Skeleton className="h-3 w-36 lg:w-96" />
 								<Skeleton className="h-3 w-32" />
 							</div>
 						</div>
 
-						<Skeleton className="h-4 w-28" />
+						<Skeleton className="h-4 w-24 lg:w-28" />
 					</div>
 				);
 			})}
 
 			<Separator />
 
-			<div className="flex w-full justify-end gap-4">
+			<div className="flex w-full flex-col justify-center gap-2 lg:flex-row lg:justify-end lg:gap-4">
 				<Button variant="secondary" disabled>
 					Ajuda com o pedido
 				</Button>

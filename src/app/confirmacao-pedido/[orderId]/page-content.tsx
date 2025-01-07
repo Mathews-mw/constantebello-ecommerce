@@ -33,11 +33,11 @@ export function PageContent({ orderId }: IPageContentProps) {
 	}, []);
 
 	return (
-		<div className="grid grid-cols-2 gap-20">
+		<div className="gap-20 lg:grid lg:grid-cols-2">
 			<div className="h-min space-y-10 p-4">
 				<div className="space-y-4">
-					<h1 className="text-5xl font-black">Obrigado por comprar conosco!</h1>
-					<p className="text-muted-foreground">
+					<h1 className="text-2xl font-black lg:text-5xl">Obrigado por comprar conosco!</h1>
+					<p className="text-justify text-muted-foreground">
 						Seu pedido será processado em 24 horas durante os dias úteis de trabalho. Nós iremos notificar você por
 						e-mail ou telefone assim que seu pedido estiver pronto para entrega.
 					</p>

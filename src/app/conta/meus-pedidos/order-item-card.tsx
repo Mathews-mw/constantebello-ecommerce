@@ -21,25 +21,27 @@ export function OrderItemCard({ orderDetails }: IOrderItemCardProps) {
 
 	return (
 		<div className="space-y-4 rounded-lg border bg-background p-4 shadow-sm">
-			<div className="flex w-full justify-between">
-				<div className="flex flex-col gap-1 text-sm font-bold text-muted-foreground">
+			<div className="flex w-full flex-col-reverse justify-between gap-2.5 lg:flex-row lg:gap-0">
+				<div className="flex flex-col gap-1 text-sm text-muted-foreground">
 					<p>
-						<span className="font-semibold text-muted-foreground">Pedido:</span> {orderDetails.id}
+						Pedido: <strong>{orderDetails.id}</strong>
 					</p>
 					<p>
-						<span className="font-semibold">Data:</span> {dayjs(orderDetails.createdAt).format('DD/MM/YYYY')}
+						Data: <strong>{dayjs(orderDetails.createdAt).format('DD/MM/YYYY')}</strong>
 					</p>
 					<p>
-						<span className="font-semibold">Tipo pagamento: {orderDetails.paymentTypeText}</span>
+						Tipo pagamento: <strong>{orderDetails.paymentTypeText}</strong>
 					</p>
 				</div>
 
-				<OrderStatusBadge status={orderDetails.status} text={orderDetails.statusText} />
+				<div className="flex w-full justify-end lg:w-min">
+					<OrderStatusBadge status={orderDetails.status} text={orderDetails.statusText} />
+				</div>
 			</div>
 
 			<Separator />
 
-			<div className="flex w-full justify-between">
+			<div className="flex w-full flex-col justify-between gap-2.5 lg:flex-row lg:gap-0">
 				<div className="w-full space-y-2">
 					{orderDetails.orderItems.map((item) => {
 						return (

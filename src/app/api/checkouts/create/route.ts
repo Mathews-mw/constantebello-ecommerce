@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import { AxiosError } from 'axios';
-import { OrderPaymentType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { env } from '@/env';
@@ -14,7 +13,6 @@ const bodySchema = z.object({
 	delivery_in: z.string(),
 	discount: z.coerce.number().optional().default(0),
 	delivery_fee: z.coerce.number().optional().default(0),
-	payment_type: z.nativeEnum(OrderPaymentType),
 });
 
 export async function POST(request: NextRequest) {
@@ -41,7 +39,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const { user_id, cart_id, payment_type, delivery_in, discount, delivery_fee } = dataParse.data;
+	const { user_id, cart_id, delivery_in, discount, delivery_fee } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({

@@ -5,7 +5,7 @@ import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog
 
 export function NotificationContentDialogSkeleton() {
 	return (
-		<DialogContent className="w-full min-w-[520px]">
+		<DialogContent className="w-full md:min-w-[520px]">
 			<div className="pr-4">
 				<DialogHeader className="mb-4 flex flex-col space-y-2 px-1">
 					<div className="mb-4 flex w-full items-center justify-between">

@@ -99,7 +99,7 @@ export function EditReviewDialog({ review }: IProps) {
 				</Button>
 			</DialogTrigger>
 
-			<DialogContent className="w-full min-w-[640px]">
+			<DialogContent className="w-full md:min-w-[640px]">
 				<ScrollArea className="max-h-[80vh] overflow-y-auto pr-4">
 					<DialogHeader className="mb-4 space-y-2 px-1">
 						<DialogTitle>Editar avaliação</DialogTitle>

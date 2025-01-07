@@ -13,11 +13,7 @@ export function ProductTabs() {
 	return (
 		<Tabs.Root value={currentTab} onValueChange={setCurrentTab}>
 			<Tabs.List className="mt-6 flex w-full items-center gap-4 border-b">
-				<TabItem
-					value="details"
-					title="Detalhes do Produto"
-					isSelected={currentTab === 'details'}
-				/>
+				<TabItem value="details" title="Detalhes do Produto" isSelected={currentTab === 'details'} />
 				<TabItem value="review" title="Avaliações" isSelected={currentTab === 'review'} />
 			</Tabs.List>
 

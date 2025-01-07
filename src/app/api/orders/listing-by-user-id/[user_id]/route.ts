@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 		const response = orders.map((order) => {
 			let statusText = '';
 
-			switch (order.status) {
+			switch (order?.status) {
 				case 'COMPLETED':
 					statusText = 'Pedido concluído';
 					break;
@@ -43,14 +43,26 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 				case 'PAYMENT_CONFIRMED':
 					statusText = 'Pagamento confirmado';
 					break;
-				case 'CANCELLED':
+				case 'CANCELED':
 					statusText = 'Pedido cancelado';
+					break;
+				case 'CHARGE_CANCELED':
+					statusText = 'Cobrança cancelada';
+					break;
+				case 'PAYMENT_DECLINED':
+					statusText = 'Pagamento recusado';
+					break;
+				case 'PAYMENT_IN_ANALYSIS':
+					statusText = 'Pagamento em análise';
 					break;
 			}
 
 			let paymentTypeText = '';
 
-			switch (order.paymentType) {
+			switch (order?.paymentType) {
+				case 'A_DEFINIR':
+					paymentTypeText = 'A definir';
+					break;
 				case 'PIX':
 					paymentTypeText = 'Pix';
 					break;
@@ -60,6 +72,11 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 				case 'CARTAO_CREDITO':
 					paymentTypeText = 'Cartão de crédito';
 					break;
+				case 'DEBITO':
+					paymentTypeText = 'Cartão de débito';
+					break;
+				default:
+					paymentTypeText = 'A definir';
 			}
 
 			return { ...order, statusText, paymentTypeText };

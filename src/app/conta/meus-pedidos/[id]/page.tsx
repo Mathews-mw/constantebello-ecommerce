@@ -33,13 +33,13 @@ export default function OrderDetailsPage({ params }: IOrderDetailsPageProps) {
 				<h1 className="text-xl font-black">Detalhes do pedido</h1>
 			</div>
 
-			<div className="grid grid-cols-3 gap-8">
+			<div className="flex flex-col gap-8 lg:grid lg:grid-cols-3">
 				{order ? <ProductSummary order={order} /> : <ProductSummarySkeleton />}
 
 				{order ? (
 					<div className="space-y-4">
 						<PaymentSummary order={order} />
-						<ReviewCard />
+						<ReviewCard disabled={order.status !== 'COMPLETED'} />
 					</div>
 				) : (
 					<div className="space-y-4">

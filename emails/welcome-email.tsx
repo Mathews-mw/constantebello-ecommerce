@@ -91,7 +91,7 @@ export default function WelcomeEmail({ name, siteLink }: WelcomeEmailProps) {
 						</Section>
 
 						<Section className="text-center">
-							<Button href={siteLink} className="bg-brand rounded-lg px-4 py-3 text-white">
+							<Button href="/#" className="bg-brand rounded-lg px-4 py-3 text-white">
 								Ir para o site
 							</Button>
 						</Section>

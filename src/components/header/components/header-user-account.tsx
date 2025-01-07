@@ -7,10 +7,7 @@ import { SigInDialog } from '../../sigin-dialog';
 import { Loader2 } from 'lucide-react';
 
 export function HeaderUserAccount() {
-	const { data, status } = useSession();
-
-	console.log('session data: ', data);
-	console.log('session status: ', status);
+	const { status } = useSession();
 
 	if (status === 'loading') {
 		return <Loader2 className="animate-spin" />;

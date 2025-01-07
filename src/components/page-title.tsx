@@ -3,5 +3,5 @@ interface IPageTitleProps {
 }
 
 export function PageTitle({ title }: IPageTitleProps) {
-	return <h1 className="text-2xl font-black">{title}</h1>;
+	return <h1 className="text-lg font-black lg:text-2xl">{title}</h1>;
 }

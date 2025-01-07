@@ -48,6 +48,7 @@ export function SearchProductFilter() {
 				value={searchValue}
 				onChange={(e) => setSearchValue(e.target.value)}
 				onKeyDown={handleSearchKeyDown}
+				type="search"
 				className="w-full bg-transparent outline-none ring-0"
 				placeholder="Buscar por produto..."
 			/>

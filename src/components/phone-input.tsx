@@ -41,6 +41,7 @@ export const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputControlP
 				value={inputValue}
 				onChange={handleInputChange}
 				maxLength={15}
+				inputMode="tel"
 				placeholder="(99) 9 9999-9999"
 				className="flex-1 border-0 bg-transparent p-0 text-zinc-900 placeholder-zinc-600 outline-none dark:text-zinc-100 dark:placeholder-zinc-400"
 				{...props}

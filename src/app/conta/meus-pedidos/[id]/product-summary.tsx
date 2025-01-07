@@ -15,7 +15,7 @@ interface IProps {
 export function ProductSummary({ order }: IProps) {
 	return (
 		<div className="col-span-2 space-y-8 rounded-lg border bg-background p-6 shadow-sm">
-			<div className="flex w-full items-center justify-between">
+			<div className="flex w-full flex-col-reverse justify-between gap-4 lg:flex-row lg:items-center lg:gap-0">
 				<div className="text-sm font-semibold">
 					<h4>Pedido: {order.id}</h4>
 					<div>
@@ -24,7 +24,7 @@ export function ProductSummary({ order }: IProps) {
 					</div>
 				</div>
 
-				<OrderStatusBadge text="Pedido Concluído" status="COMPLETED" />
+				<OrderStatusBadge text={order.statusText} status={order.status} />
 			</div>
 
 			<Separator />
@@ -57,7 +57,7 @@ export function ProductSummary({ order }: IProps) {
 
 			<Separator />
 
-			<div className="flex w-full justify-end gap-4">
+			<div className="flex w-full flex-col justify-center gap-2 lg:flex-row lg:justify-end lg:gap-4">
 				<Button variant="secondary">Ajuda com o pedido</Button>
 				<Button variant="outline">Rastreio detalhado</Button>
 			</div>

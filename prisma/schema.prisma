@@ -144,7 +144,7 @@ enum ProductDepartment {
 model ProductDetail {
   id               String            @id @default(uuid())
   productId        String            @map("product_id")
-  stockQuantity    Int               @map("stock_quantity ")
+  stockQuantity    Int               @map("stock_quantity")
   color            String
   width            Float
   height           Float
@@ -211,11 +211,14 @@ enum OrderStatus {
   PAYMENT_IN_ANALYSIS
   PAYMENT_DECLINED
   PAYMENT_CONFIRMED
+  CHARGE_CANCELED
 }
 
 enum OrderPaymentType {
+  A_DEFINIR
   PIX
   CARTAO_CREDITO
+  DEBITO
   BOLETO
 }
 
@@ -228,7 +231,7 @@ model Order {
   deliveryFee               Float            @map("delivery_fee")
   status                    OrderStatus      @default(PENDING)
   deliveryIn                String           @map("delivery_in")
-  paymentType               OrderPaymentType @map("payment_type")
+  paymentType               OrderPaymentType @default(A_DEFINIR) @map("payment_type")
   createdAt                 DateTime         @default(now()) @map("created_at")
   updatedAt                 DateTime?        @updatedAt @map("updated_at")
 

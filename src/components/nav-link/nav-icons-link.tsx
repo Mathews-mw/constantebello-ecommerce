@@ -21,7 +21,11 @@ export function NavIconsLink({ showHome }: INavIconsLink) {
 
 	return (
 		<nav className="flex gap-2">
-			{showHome && <NavIconItem icon={Home} href="/" />}
+			{showHome && (
+				<div>
+					<NavIconItem icon={Home} href="/" />
+				</div>
+			)}
 
 			<div className="relative">
 				{items.length > 0 && (
@@ -33,7 +37,7 @@ export function NavIconsLink({ showHome }: INavIconsLink) {
 			</div>
 
 			{status === 'authenticated' && (
-				<div className="relative">
+				<div className="relative hidden lg:block">
 					{favoriteProducts.length > 0 && (
 						<div className="absolute -right-1 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
 							<span className="text-xs text-white">{favoriteProducts.length}</span>
@@ -44,7 +48,7 @@ export function NavIconsLink({ showHome }: INavIconsLink) {
 			)}
 
 			{status === 'authenticated' && (
-				<div className="relative">
+				<div className="relative hidden lg:block">
 					{amountUserNotifications > 0 && (
 						<div className="absolute -right-1 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
 							<span className="text-xs text-white">{amountUserNotifications}</span>

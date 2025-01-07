@@ -11,7 +11,7 @@ interface IProps {
 }
 
 export function OrderSummaryCard({ orderDetails }: IProps) {
-	const totalOrder = orderDetails.totalPrice + 40 - 120;
+	const totalOrder = orderDetails.subtotal + orderDetails.deliveryFee - orderDetails.discount;
 
 	let paymentType = '';
 
@@ -36,20 +36,21 @@ export function OrderSummaryCard({ orderDetails }: IProps) {
 
 			<Separator />
 
-			<div className="flex w-full justify-between">
+			<div className="flex w-full flex-col gap-2 lg:flex-row lg:justify-between lg:gap-0">
 				<div className="flex flex-col">
 					<span className="text-xs text-muted-foreground">Data</span>
 					<span className="text-sm font-semibold">{dayjs(orderDetails?.createdAt).format('DD MMM YYYY')}</span>
 				</div>
 
-				<Separator orientation="vertical" className="h-8" />
+				<Separator orientation="vertical" className="hidden h-8 lg:block" />
 
 				<div className="flex flex-col">
 					<span className="text-xs text-muted-foreground">ID do Pedido</span>
 					<span className="text-sm font-semibold">{orderDetails.id}</span>
 				</div>
 
-				<Separator orientation="vertical" className="h-8" />
+				<Separator orientation="vertical" className="hidden h-8 lg:block" />
+
 				<div className="flex flex-col">
 					<span className="text-xs text-muted-foreground">Método de pagamento</span>
 					<span className="text-sm font-semibold">{paymentType}</span>
@@ -95,15 +96,15 @@ export function OrderSummaryCard({ orderDetails }: IProps) {
 			<div className="space-y-2 text-xs">
 				<div className="flex w-full justify-between font-bold text-muted-foreground">
 					<span>Subtotal</span>
-					<span>{orderDetails.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+					<span>{orderDetails.subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
 				</div>
 				<div className="flex w-full justify-between font-bold text-muted-foreground">
 					<span>Descontos</span>
-					<span>- R$ 120,50</span>
+					<span>{orderDetails.discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
 				</div>
 				<div className="flex w-full justify-between font-bold text-muted-foreground">
 					<span>Entrega</span>
-					<span>R$ 40,00</span>
+					<span>{orderDetails.deliveryFee.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
 				</div>
 			</div>
 

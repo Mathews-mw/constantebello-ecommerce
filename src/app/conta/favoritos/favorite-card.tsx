@@ -30,23 +30,23 @@ export function FavoriteCard({ product, userId }: IFavoriteCardProps) {
 	}
 
 	return (
-		<div className="flex w-full justify-between gap-8 rounded-lg border bg-background p-4 shadow-sm">
+		<div className="flex w-full flex-col justify-between gap-8 rounded-lg border bg-background p-4 shadow-sm lg:flex-row">
 			<div className="flex flex-grow gap-8">
 				<Image
 					src={product.imageUrl}
 					alt=""
 					width={1020}
 					height={1020}
-					className="h-[140px] w-[140px] rounded-lg object-cover"
+					className="h-[100px] w-[100px] rounded-lg object-cover md:h-[140px] md:w-[140px]"
 				/>
 
 				<div className="space-y-4">
-					<h4 className="line-clamp-3 font-bold">{product.name}</h4>
+					<h4 className="line-clamp-3 text-sm font-bold md:text-base">{product.name}</h4>
 					<StarsRating />
 				</div>
 			</div>
 
-			<div className="flex flex-col items-center justify-between border-l-2 pl-8">
+			<div className="flex flex-col items-center justify-between gap-2 md:gap-0">
 				<div className="flex w-full items-center justify-between gap-2">
 					<span className="text-nowrap text-lg font-black">
 						{product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
