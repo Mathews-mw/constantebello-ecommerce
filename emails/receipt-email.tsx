@@ -67,13 +67,13 @@ export default function ReceiptEmail({
 				}}
 			>
 				<Body className="bg-offwhite font-sans text-base">
-					<Img
-						src="https://1drv.ms/i/s!AvTMsh8dt1IIt-gDjU3K4ONAbeC0Nw?embed=1&width=296&height=65"
-						width="296"
-						height="65"
-						alt="Costate Bello"
-						className="mx-auto my-20"
-					/>
+					<Section className="my-4 flex w-full items-center justify-center">
+						<Row align="center">
+							<span className="text-2xl font-bold">COSTANTE</span>
+							<span className="text-brand text-2xl font-bold">BELLO</span>
+						</Row>
+					</Section>
+
 					<Container className="p-45 bg-white">
 						<Heading className="my-0 text-center text-2xl leading-8">Obrigado(a) por comprar conosco!</Heading>
 
@@ -198,7 +198,7 @@ export default function ReceiptEmail({
 						</Section>
 
 						<Section className="mt-4 text-center">
-							<Button href="/#" className="bg-brand rounded-lg px-4 py-3 text-white">
+							<Button href={orderLink} className="bg-brand rounded-lg px-4 py-3 text-white">
 								Detalhes do Pedido
 							</Button>
 						</Section>

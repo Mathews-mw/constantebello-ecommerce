@@ -7,7 +7,6 @@ import {
 	Head,
 	Heading,
 	Html,
-	Img,
 	Link,
 	Row,
 	Section,
@@ -42,13 +41,13 @@ export default function WelcomeEmail({ name, siteLink }: WelcomeEmailProps) {
 				}}
 			>
 				<Body className="bg-offwhite font-sans text-base">
-					<Img
-						src="https://1drv.ms/i/s!AvTMsh8dt1IIt-gDjU3K4ONAbeC0Nw?embed=1&width=296&height=65"
-						width="296"
-						height="65"
-						alt="Costate Bello"
-						className="mx-auto my-20"
-					/>
+					<Section className="my-4 flex w-full items-center justify-center">
+						<Row align="center">
+							<span className="text-2xl font-bold">COSTANTE</span>
+							<span className="text-brand text-2xl font-bold">BELLO</span>
+						</Row>
+					</Section>
+
 					<Container className="p-45 bg-white">
 						<Heading className="my-0 text-center text-2xl leading-8">Bem-vindo(a) à Costante Bello!</Heading>
 
@@ -91,7 +90,7 @@ export default function WelcomeEmail({ name, siteLink }: WelcomeEmailProps) {
 						</Section>
 
 						<Section className="text-center">
-							<Button href="/#" className="bg-brand rounded-lg px-4 py-3 text-white">
+							<Button href={siteLink} className="bg-brand rounded-lg px-4 py-3 text-white">
 								Ir para o site
 							</Button>
 						</Section>
