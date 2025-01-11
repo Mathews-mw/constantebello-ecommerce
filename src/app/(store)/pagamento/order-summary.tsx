@@ -6,15 +6,14 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { useCart } from '../../../context/cart-context';
-import { saveOrder } from '../../api/@requests/orders/save-order';
-import { errorToasterHandler } from '../../utils/error-toaster-handler';
-import { createCheckout } from '../../api/@requests/checkouts/create-checkout';
-import { getUserAddressById } from '../../api/@requests/users/address/get-address-by-id';
-import { getCartDetailsByUserId } from '../../api/@requests/orders/get-cart-details-by-user-id';
-
-import { Button } from '../../../components/ui/button';
-import { Skeleton } from '../../../components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { useCart } from '@/context/cart-context';
+import { Skeleton } from '@/components/ui/skeleton';
+import { saveOrder } from '@/app/api/@requests/orders/save-order';
+import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+import { createCheckout } from '@/app/api/@requests/checkouts/create-checkout';
+import { getUserAddressById } from '@/app/api/@requests/users/address/get-address-by-id';
+import { getCartDetailsByUserId } from '@/app/api/@requests/orders/get-cart-details-by-user-id';
 
 import { ArrowRight, FileSearch, Loader2, Truck } from 'lucide-react';
 
@@ -47,7 +46,7 @@ export function OrderSummary() {
 			}, 0)
 		: 0;
 
-	const totalOrder = totalProductsPrice - 200 + 48;
+	const totalOrder = totalProductsPrice;
 
 	const { mutateAsync: createCheckoutFn, isPending } = useMutation({
 		mutationFn: createCheckout,

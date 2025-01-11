@@ -1,4 +1,4 @@
-import { Product, ProductModel, ProductSize } from "@prisma/client";
+import { Product, ProductImage, ProductModel, ProductSize } from "@prisma/client";
 
 interface IProductInfos extends ProductModel {
   productImages: ProductImage[];
@@ -8,6 +8,10 @@ interface IProductInfos extends ProductModel {
 interface IProductDetails extends Product {
   productModels: IProductInfos[];
   
+}
+
+interface IProductModelDetails extends ProductModel {
+  productImages: ProductImage[]
 }
 
 interface IProductToSetupCheckout {

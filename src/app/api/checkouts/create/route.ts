@@ -3,9 +3,9 @@ import dayjs from 'dayjs';
 import { AxiosError } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { env } from '../../../../env';
-import { prisma } from '../../../../lib/prisma';
-import { pagBankAPI } from '../../../../lib/pagbank/pagbank-api';
+import { env } from '@/env';
+import { prisma } from '@/lib/prisma';
+import { pagBankAPI } from '@/lib/pagbank/pagbank-api';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),

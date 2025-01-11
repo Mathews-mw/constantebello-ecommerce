@@ -332,6 +332,17 @@ model ProductReview {
   @@map("product_reviews")
 }
 
+model Cupom {
+  id        String    @id @default(uuid())
+  title     String    @unique
+  expiresIn DateTime?
+  available Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@map("cupons")
+}
+
 enum NotificationTag {
   GENERAL
   NEWS

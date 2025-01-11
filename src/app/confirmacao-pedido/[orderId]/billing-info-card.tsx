@@ -1,5 +1,5 @@
-import { IOrderDetails } from '../../../@types/order';
-import { phoneFormatter } from '../../utils/phone-formatter';
+import { IOrderDetails } from '@/@types/order';
+import { phoneFormatter } from '@/app/utils/phone-formatter';
 
 interface IProps {
 	orderDetails: IOrderDetails;

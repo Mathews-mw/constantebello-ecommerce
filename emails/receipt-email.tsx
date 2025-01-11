@@ -29,6 +29,7 @@ interface WelcomeEmailProps {
 		id: string;
 		img: string;
 		name: string;
+		color: string;
 		size: string;
 		quantity: number;
 		price: number;
@@ -130,6 +131,9 @@ export default function ReceiptEmail({
 											</Row>
 											<Row>
 												<Text className="m-0 p-0 text-xs">Qnt: {product.quantity}</Text>
+											</Row>
+											<Row>
+												<Text className="m-0 p-0 text-xs">Cor: {product.color}</Text>
 											</Row>
 											<Row>
 												<Text className="m-0 p-0 text-xs">{product.size}</Text>

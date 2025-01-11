@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import type { IOrderDetails } from '../../../@types/order';
+import type { IOrderDetails } from '@/@types/order';
 
-import { Separator } from '../../../components/ui/separator';
+import { Separator } from '@/components/ui/separator';
 
 import { FileSearch } from 'lucide-react';
 
@@ -12,20 +12,6 @@ interface IProps {
 
 export function OrderSummaryCard({ orderDetails }: IProps) {
 	const totalOrder = orderDetails.subtotal + orderDetails.deliveryFee - orderDetails.discount;
-
-	let paymentType = '';
-
-	switch (orderDetails?.paymentType) {
-		case 'CARTAO_CREDITO':
-			paymentType = 'Cartão de crédito';
-			break;
-		case 'BOLETO':
-			paymentType = 'Boleto bancário';
-			break;
-		case 'PIX':
-			paymentType = 'Pix';
-			break;
-	}
 
 	return (
 		<div className="space-y-4 rounded-lg border bg-background p-6">
@@ -53,7 +39,7 @@ export function OrderSummaryCard({ orderDetails }: IProps) {
 
 				<div className="flex flex-col">
 					<span className="text-xs text-muted-foreground">Método de pagamento</span>
-					<span className="text-sm font-semibold">{paymentType}</span>
+					<span className="text-sm font-semibold">{orderDetails.paymentTypeText}</span>
 				</div>
 			</div>
 
@@ -65,7 +51,9 @@ export function OrderSummaryCard({ orderDetails }: IProps) {
 						<li className="flex w-full justify-between gap-2" key={item.id}>
 							<div className="flex gap-4">
 								<Image
-									src={item.product.imageUrl}
+									src={
+										item.productModel.productImages.find((image) => image.mainImage)?.imageUrl ?? item.product.imageUrl
+									}
 									alt=""
 									width={1020}
 									height={1020}
@@ -76,8 +64,10 @@ export function OrderSummaryCard({ orderDetails }: IProps) {
 										{item.product.name}
 									</span>
 									<span className="text-xs text-muted-foreground">Quantidade: {item.quantity}</span>
-									<span className="text-xs text-muted-foreground">Cor: Stone</span>
-									<span className="text-xs text-muted-foreground">Tamanho: 165L X 90C</span>
+									<span className="text-xs text-muted-foreground">Cor: {item.productModel.color}</span>
+									<span className="text-xs text-muted-foreground">
+										Tamanho: {item.productSize.width}L X {item.productSize.height}H X {item.productSize.length}L
+									</span>
 								</div>
 							</div>
 

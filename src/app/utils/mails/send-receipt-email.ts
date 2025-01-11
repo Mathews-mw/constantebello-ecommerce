@@ -17,6 +17,7 @@ interface IProps {
 		id: string;
 		img: string;
 		name: string;
+		color: string;
 		size: string;
 		quantity: number;
 		price: number;

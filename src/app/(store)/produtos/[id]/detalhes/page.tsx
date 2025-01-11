@@ -111,6 +111,10 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 							</div>
 						</div>
 
+						<div>
+							<small className="text-muted-foreground">Cod.: {productModel?.cod}</small>
+						</div>
+
 						<p className="font-light text-muted-foreground">{product.description}</p>
 					</div>
 

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '../../../../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 
 interface IParamsProps {
 	params: {
@@ -31,6 +31,12 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 				orderItems: {
 					include: {
 						product: true,
+						productModel: {
+							include: {
+								productImages: true,
+							},
+						},
+						productSize: true,
 					},
 				},
 				user: {

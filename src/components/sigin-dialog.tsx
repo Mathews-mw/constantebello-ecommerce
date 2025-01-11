@@ -71,7 +71,7 @@ export function SigInDialog() {
 			<DialogTrigger asChild>
 				<Button variant="outline">Entrar</Button>
 			</DialogTrigger>
-			<DialogContent className="w-full max-w-[820px]">
+			<DialogContent className="w-full max-w-[820px] lg:w-[600px]">
 				<VisuallyHidden.Root>
 					<DialogTitle>Login</DialogTitle>
 				</VisuallyHidden.Root>

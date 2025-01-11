@@ -1,5 +1,7 @@
-import { Cart, CartItem, Order, OrderItem, Product, UserAddress } from "@prisma/client";
+import { Cart, CartItem, Order, OrderItem, Product, ProductSize, UserAddress } from "@prisma/client";
+
 import { IUserWithInfos } from "./user";
+import { IProductModelDetails } from "./product";
 
 interface ICartDetails extends Cart {
   cartItems: CartItem[]
@@ -7,6 +9,8 @@ interface ICartDetails extends Cart {
 
 interface IOrderItemsDetails extends OrderItem {
   product: Product;
+  productModel: IProductModelDetails
+  productSize: ProductSize
 }
 
 interface IOrderDetails extends Order {

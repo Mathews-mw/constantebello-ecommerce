@@ -1,19 +1,19 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 
-import { getOrderDetailsById } from '../../api/@requests/orders/get-order-details-by-id';
+import { useCart } from '@/context/cart-context';
+import { getOrderDetailsById } from '@/app/api/@requests/orders/get-order-details-by-id';
 
-import { Button } from '../../../components/ui/button';
+import { Button } from '@/components/ui/button';
 import { BillingInfoCard } from './billing-info-card';
 import { OrderSummaryCard } from './order-summary-card';
 import { BillingInfoCardSkeleton } from './billing-info-card-skeleton';
 import { OrderSummaryCardSkeleton } from './order-summary-card-skeleton';
 
 import { ArrowLeft } from 'lucide-react';
-import { useEffect } from 'react';
-import { useCart } from '../../../context/cart-context';
 
 interface IPageContentProps {
 	orderId: string;

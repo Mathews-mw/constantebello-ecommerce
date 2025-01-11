@@ -1,18 +1,17 @@
 import { NextRequest } from 'next/server';
-
-import { prisma } from '../../../../../lib/prisma';
 import { OrderPaymentType, OrderStatus } from '@prisma/client';
-import { createNotification } from '../../../@worker/notifications/create-notification';
-import { sendReceiptEmail } from '../../../../utils/mails/send-receipt-email';
-import { env } from '../../../../../env';
 
-// Os eventos transacionais ocorrem quando uma alteração do status do pagamento ocorre.
+import { env } from '@/env';
+import { prisma } from '@/lib/prisma';
+import { sendReceiptEmail } from '@/app/utils/mails/send-receipt-email';
+import { createNotification } from '@/app/api/@worker/notifications/create-notification';
+
+// Os eventos transacionais são chamados quando uma alteração do status do pagamento ocorre.
 
 export async function POST(request: NextRequest) {
 	const data: ITransactionalNotification = await request.json();
 
-	console.log('pagbank transactional webhook notification: ', data.charges[0]);
-	console.log('charges: ', data.charges[0]);
+	console.log('pagbank transactional webhook notification: ', data);
 
 	try {
 		let orderStatus: OrderStatus;
@@ -66,13 +65,13 @@ export async function POST(request: NextRequest) {
 			},
 		});
 
-		await prisma.cart.deleteMany();
-
 		const order = await prisma.order.findUnique({
 			include: {
 				orderItems: {
 					include: {
 						product: true,
+						productModel: true,
+						productSize: true,
 					},
 				},
 				userAddress: true,
@@ -144,7 +143,8 @@ export async function POST(request: NextRequest) {
 					id: item.productId,
 					img: item.product.imageUrl,
 					name: item.product.name,
-					size: '190x170x90',
+					color: item.productModel.color,
+					size: `${item.productSize.width} X ${item.productSize.height} X ${item.productSize.length}`,
 					quantity: item.quantity,
 					price: item.priceAtPurchase,
 				};
@@ -154,13 +154,21 @@ export async function POST(request: NextRequest) {
 				to: data.customer.email,
 				name: data.customer.name,
 				orderId: order.id,
-				orderLink: `https://www.google.com/`,
+				orderLink: `${env.NEXT_PUBLIC_APP_BASE_URL}/conta/meus-pedidos/${order.id}`,
 				address: orderAddress,
 				total: totalOrder,
 				subtotal: order.subtotal,
 				discount: order.discount,
 				deliveryFee: order.deliveryFee,
 				products: orderProducts,
+			});
+		}
+
+		if (order) {
+			await prisma.cart.deleteMany({
+				where: {
+					userId: order.userId,
+				},
 			});
 		}
 
