@@ -31,6 +31,7 @@ model User {
   orders               Order[]
   productReviews       ProductReview[]
   notifications        Notification[]
+  userCoupons          UserCoupon[]
 
   @@map("users")
 }
@@ -214,6 +215,7 @@ model Cart {
   userId     String    @unique @map("user_id")
   preOrderId String    @map("pre_order_id")
   deliveryIn String    @map("delivery_in")
+  discount   Float?
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime? @updatedAt @map("updated_at")
 
@@ -332,15 +334,36 @@ model ProductReview {
   @@map("product_reviews")
 }
 
-model Cupom {
-  id        String    @id @default(uuid())
-  title     String    @unique
-  expiresIn DateTime?
-  available Boolean   @default(true)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+enum CouponDiscountType {
+  CASH
+  PERCENTAGE
+}
 
-  @@map("cupons")
+model Coupon {
+  id           String             @id @default(uuid())
+  slug         String             @unique
+  discount     Float
+  discountType CouponDiscountType @default(PERCENTAGE) @map("discount_type")
+  expiresIn    DateTime?
+  available    Boolean            @default(true)
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime?          @updatedAt @map("updated_at")
+
+  userCoupons UserCoupon[]
+
+  @@map("coupons")
+}
+
+model UserCoupon {
+  id        String   @id @default(uuid())
+  couponId  String
+  userId    String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("users_coupons")
 }
 
 enum NotificationTag {

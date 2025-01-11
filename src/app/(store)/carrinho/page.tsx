@@ -29,7 +29,17 @@ import { getUserById } from '@/app/api/@requests/users/get-user-by-id';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { AddNewAddressDialog } from '@/components/add-new-address-dialog';
 
-import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
+import {
+	ArrowRight,
+	ChevronRight,
+	FileSearch,
+	Loader2,
+	ShoppingBasket,
+	ShoppingCart,
+	Trash2,
+	Truck,
+} from 'lucide-react';
+import { validateCoupon } from '@/app/api/@requests/coupons/validate-coupon';
 
 export default function CartPage() {
 	const { status, data } = useSession();
@@ -42,6 +52,8 @@ export default function CartPage() {
 	const [completeRegisterIsOpen, setCompleteRegisterIsOpen] = useState(false);
 	const [productSizesIds, setProductSizesIds] = useState<string[]>([]);
 	const [selectedAddress, setSelectedAddress] = useState('');
+	const [couponSlugValue, setCouponSlugValue] = useState('');
+	const [discount, setDiscount] = useState(0);
 
 	const { data: products } = useQuery({
 		queryKey: ['products', 'to-checkout', productSizesIds],
@@ -65,6 +77,10 @@ export default function CartPage() {
 				return (acc += product.price * quantity);
 			}, 0)
 		: 0;
+
+	const { mutateAsync: validateCouponFn, isPending: validateCouponIsPending } = useMutation({
+		mutationFn: validateCoupon,
+	});
 
 	const { mutateAsync: generatingOrderFn, isPending } = useMutation({
 		mutationFn: async () => {
@@ -96,6 +112,32 @@ export default function CartPage() {
 			await queryClient.invalidateQueries({ queryKey: ['user-cart', 'delivery-address'] });
 		},
 	});
+
+	async function handleValidateCoupon() {
+		try {
+			const { is_valid, message, coupon } = await validateCouponFn({
+				slug: couponSlugValue.trim(),
+			});
+
+			if (!is_valid) {
+				return toast.warning(message);
+			}
+
+			if (is_valid) {
+				if (coupon.discountType === 'PERCENTAGE') {
+					const discount = subtotal * (coupon.discount / 100) * -1;
+
+					setDiscount(discount);
+				} else {
+					setDiscount(coupon.discount * -1);
+				}
+
+				return toast.success(`O desconto do cupom "${coupon.slug}" foi aplicado com sucesso`);
+			}
+		} catch (error) {
+			errorToasterHandler(error);
+		}
+	}
 
 	async function handleGenerateOrder() {
 		if (!user?.userInfos) {
@@ -223,7 +265,9 @@ export default function CartPage() {
 									</div>
 									<div className="flex w-full justify-between">
 										<span className="text-muted-foreground">Descontos</span>
-										<span className="font-bold">0,00</span>
+										<span className="font-bold">
+											{discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+										</span>
 									</div>
 									<div className="flex w-full justify-between">
 										<span className="text-muted-foreground">Entrega</span>
@@ -241,9 +285,19 @@ export default function CartPage() {
 								</div>
 
 								<div className="flex gap-4">
-									<Input placeholder="Código promocional" disabled={cartItems.length <= 0} />
-									<Button variant="outline" disabled={cartItems.length <= 0}>
+									<Input
+										placeholder="Cupom promocional"
+										disabled={cartItems.length <= 0}
+										value={couponSlugValue}
+										onChange={(e) => setCouponSlugValue(e.target.value)}
+									/>
+									<Button
+										variant="outline"
+										disabled={cartItems.length <= 0 || validateCouponIsPending}
+										onClick={handleValidateCoupon}
+									>
 										Aplicar
+										{validateCouponIsPending && <Loader2 className="animate-spin" />}
 									</Button>
 								</div>
 							</div>

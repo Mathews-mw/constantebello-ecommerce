@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 interface IParamsProps {
 	params: {
-		id: string;
+		slug: string;
 	};
 }
 
@@ -19,19 +19,19 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 		);
 	}
 
-	const { id } = await params;
-	const notificationId = z.string().uuid().parse(id);
+	const { slug } = await params;
+	const couponSlug = z.string().parse(slug);
 
 	try {
-		const notifications = await prisma.notification.findUnique({
+		const coupon = await prisma.coupon.findUnique({
 			where: {
-				id: notificationId,
+				slug: couponSlug,
 			},
 		});
 
-		return Response.json(notifications);
+		return Response.json(coupon);
 	} catch (error) {
-		console.log('get notification by id route error: ', error);
+		console.log('get coupon by slug route error: ', error);
 		return new Response(JSON.stringify(error), {
 			status: 400,
 		});
