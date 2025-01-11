@@ -3,10 +3,10 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { env } from '@/env';
-import { api } from '@/lib/axios';
-import { prisma } from '@/lib/prisma';
-import { sendWelcomeEmail } from '@/app/utils/mails/send-welcome-email';
+import { env } from '../../../../env';
+import { api } from '../../../../lib/axios';
+import { prisma } from '../../../../lib/prisma';
+import { sendWelcomeEmail } from '../../../utils/mails/send-welcome-email';
 
 const nextAuthOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),

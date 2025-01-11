@@ -5,7 +5,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '@/components/ui/card';
+} from './ui/card';
 import { StarsRating } from './stars-rating';
 
 export function ReviewCard() {

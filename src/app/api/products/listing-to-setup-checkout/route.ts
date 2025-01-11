@@ -1,9 +1,9 @@
+import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
-import { z } from 'zod';
 
 const queryParamsSchema = z.object({
-	productIds: z.array(z.string()),
+	productSizesIds: z.array(z.string()),
 });
 
 export async function GET(request: NextRequest) {
@@ -18,22 +18,47 @@ export async function GET(request: NextRequest) {
 
 	const { searchParams } = request.nextUrl;
 
-	const { productIds } = queryParamsSchema.parse({
-		productIds: searchParams.getAll('productIds[]'),
+	const { productSizesIds } = queryParamsSchema.parse({
+		productSizesIds: searchParams.getAll('productSizesIds[]'),
 	});
 
+	console.log('productSizesIds: ', productSizesIds);
+
 	try {
-		const products = await prisma.product.findMany({
+		const products = await prisma.productSize.findMany({
 			where: {
 				id: {
-					in: productIds,
+					in: productSizesIds,
+				},
+			},
+			include: {
+				product: true,
+				productModel: {
+					include: {
+						productImages: {
+							where: {
+								mainImage: true,
+							},
+						},
+					},
 				},
 			},
 		});
 
-		return Response.json(products);
+		const response = products.map((item) => {
+			const { product, productModel, ...size } = item;
+
+			return {
+				...product,
+				model: productModel,
+				size,
+				mainImageUrl: item.productModel.productImages[0].imageUrl,
+			};
+		});
+
+		return Response.json(response);
 	} catch (error) {
-		console.error('Listing products route error: ', error);
+		console.error('Listing products to setup checkout route error: ', error);
 
 		return new Response(JSON.stringify(error), {
 			status: 400,

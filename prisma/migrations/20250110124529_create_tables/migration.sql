@@ -5,10 +5,10 @@ CREATE TYPE "UserRole" AS ENUM ('CUSTOMER', 'ADMIN');
 CREATE TYPE "ProductDepartment" AS ENUM ('GENERICO', 'COZINHA', 'ESCRITORIO', 'QUARTO', 'SALA', 'SALA_JANTA');
 
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'COMPLETED', 'CANCELED', 'AWAITING_PAYMENT', 'PAYMENT_IN_ANALYSIS', 'PAYMENT_DECLINED', 'PAYMENT_CONFIRMED');
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'COMPLETED', 'CANCELED', 'AWAITING_PAYMENT', 'PAYMENT_IN_ANALYSIS', 'PAYMENT_DECLINED', 'PAYMENT_CONFIRMED', 'CHARGE_CANCELED');
 
 -- CreateEnum
-CREATE TYPE "OrderPaymentType" AS ENUM ('PIX', 'CARTAO_CREDITO', 'BOLETO');
+CREATE TYPE "OrderPaymentType" AS ENUM ('A_DEFINIR', 'PIX', 'CARTAO_CREDITO', 'DEBITO', 'BOLETO');
 
 -- CreateEnum
 CREATE TYPE "NotificationTag" AS ENUM ('GENERAL', 'NEWS', 'REMINDS', 'NOTICES', 'OFFERS', 'OTHERS');
@@ -98,11 +98,11 @@ CREATE TABLE "user_addresses" (
 -- CreateTable
 CREATE TABLE "products" (
     "id" TEXT NOT NULL,
-    "cod" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "image_url" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+    "department" "ProductDepartment" NOT NULL DEFAULT 'GENERICO',
     "available" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
@@ -111,25 +111,36 @@ CREATE TABLE "products" (
 );
 
 -- CreateTable
-CREATE TABLE "product_details" (
+CREATE TABLE "product_models" (
     "id" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
-    "stock_quantity " INTEGER NOT NULL,
+    "cod" TEXT NOT NULL,
     "color" TEXT NOT NULL,
+    "hex_color" TEXT NOT NULL,
     "width" DOUBLE PRECISION NOT NULL,
     "height" DOUBLE PRECISION NOT NULL,
     "length" DOUBLE PRECISION NOT NULL,
-    "weight" DOUBLE PRECISION NOT NULL,
-    "depth" DOUBLE PRECISION,
+    "weight" DOUBLE PRECISION,
     "supported_load" DOUBLE PRECISION,
     "requires_assembly" BOOLEAN DEFAULT false,
+    "stock_quantity" INTEGER NOT NULL,
     "discount" DOUBLE PRECISION,
     "addition" DOUBLE PRECISION,
     "details" TEXT,
     "specifications" TEXT,
-    "department" "ProductDepartment" NOT NULL DEFAULT 'GENERICO',
 
-    CONSTRAINT "product_details_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "product_models_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "product_images" (
+    "id" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
+    "product_detail_id" TEXT NOT NULL,
+    "image_url" TEXT NOT NULL,
+    "main_image" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "product_images_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -155,6 +166,8 @@ CREATE TABLE "cart_items" (
     "id" TEXT NOT NULL,
     "cart_id" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
+    "product_detail_id" TEXT NOT NULL,
+    "product_dimension_id" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "quantity" INTEGER NOT NULL,
 
@@ -167,9 +180,11 @@ CREATE TABLE "orders" (
     "user_id" TEXT NOT NULL,
     "payment_institution_order_id" TEXT,
     "total_price" DOUBLE PRECISION NOT NULL,
+    "discount" DOUBLE PRECISION NOT NULL,
+    "delivery_fee" DOUBLE PRECISION NOT NULL,
     "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "delivery_in" TEXT NOT NULL,
-    "payment_type" "OrderPaymentType" NOT NULL,
+    "payment_type" "OrderPaymentType" NOT NULL DEFAULT 'A_DEFINIR',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
@@ -181,6 +196,8 @@ CREATE TABLE "order_items" (
     "id" TEXT NOT NULL,
     "order_id" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
+    "product_detail_id" TEXT NOT NULL,
+    "product_dimension_id" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "price_at_purchase" DOUBLE PRECISION NOT NULL,
 
@@ -244,7 +261,7 @@ CREATE UNIQUE INDEX "user_infos_user_id_key" ON "user_infos"("user_id");
 CREATE UNIQUE INDEX "user_infos_cpf_key" ON "user_infos"("cpf");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "products_cod_key" ON "products"("cod");
+CREATE UNIQUE INDEX "product_models_cod_key" ON "product_models"("cod");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_favorite_products_user_id_product_id_key" ON "user_favorite_products"("user_id", "product_id");
@@ -253,7 +270,7 @@ CREATE UNIQUE INDEX "user_favorite_products_user_id_product_id_key" ON "user_fav
 CREATE UNIQUE INDEX "carts_user_id_key" ON "carts"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "cart_items_cart_id_product_id_key" ON "cart_items"("cart_id", "product_id");
+CREATE UNIQUE INDEX "cart_items_cart_id_product_detail_id_key" ON "cart_items"("cart_id", "product_detail_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "orders_payment_institution_order_id_key" ON "orders"("payment_institution_order_id");
@@ -286,7 +303,13 @@ ALTER TABLE "user_infos" ADD CONSTRAINT "user_infos_user_id_fkey" FOREIGN KEY ("
 ALTER TABLE "user_addresses" ADD CONSTRAINT "user_addresses_user_info_id_fkey" FOREIGN KEY ("user_info_id") REFERENCES "user_infos"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "product_details" ADD CONSTRAINT "product_details_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "product_models" ADD CONSTRAINT "product_models_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "product_images" ADD CONSTRAINT "product_images_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "product_images" ADD CONSTRAINT "product_images_product_detail_id_fkey" FOREIGN KEY ("product_detail_id") REFERENCES "product_models"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_favorite_products" ADD CONSTRAINT "user_favorite_products_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -298,10 +321,13 @@ ALTER TABLE "user_favorite_products" ADD CONSTRAINT "user_favorite_products_prod
 ALTER TABLE "carts" ADD CONSTRAINT "carts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_cart_id_fkey" FOREIGN KEY ("cart_id") REFERENCES "carts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_cart_id_fkey" FOREIGN KEY ("cart_id") REFERENCES "carts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "cart_items" ADD CONSTRAINT "cart_items_product_detail_id_fkey" FOREIGN KEY ("product_detail_id") REFERENCES "product_models"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -314,6 +340,9 @@ ALTER TABLE "order_items" ADD CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "order_items" ADD CONSTRAINT "order_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_items" ADD CONSTRAINT "order_items_product_detail_id_fkey" FOREIGN KEY ("product_detail_id") REFERENCES "product_models"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "product_reviews" ADD CONSTRAINT "product_reviews_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

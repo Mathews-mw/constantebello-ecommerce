@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '../../../../components/ui/button';
+import { Skeleton } from '../../../../components/ui/skeleton';
+import { Separator } from '../../../../components/ui/separator';
 import { OrderProgressSkeleton } from './order-progress.skeleton';
 
 export function ProductSummarySkeleton() {

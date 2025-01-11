@@ -10,16 +10,20 @@ interface IParamsProps {
 	};
 }
 
-const bodySchema = z.object({
+export const bodySchema = z.object({
 	user_id: z.string().uuid(),
 	cart_items: z.array(
 		z.object({
 			product_id: z.string().uuid(),
+			product_model_id: z.string().uuid(),
+			product_size_id: z.string().uuid(),
 			price: z.coerce.number(),
 			quantity: z.coerce.number(),
 		})
 	),
 });
+
+export type SaveCartItemsRequestSchema = z.infer<typeof bodySchema>;
 
 export async function POST(request: NextRequest, { params }: IParamsProps) {
 	if (request.method !== 'POST') {
@@ -70,6 +74,8 @@ export async function POST(request: NextRequest, { params }: IParamsProps) {
 		const itemsToUpdate = cart_items.map((item) => {
 			return {
 				productId: item.product_id,
+				productModelId: item.product_model_id,
+				productSizeId: item.product_size_id,
 				quantity: item.quantity,
 				price: item.price,
 			};

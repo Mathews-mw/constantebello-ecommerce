@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge';
 import { UserAddress } from '@prisma/client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 import { DeleteAddressDialog } from './delete-address-dialog';
 import { MakeAddressPrincipalDialog } from './make-address-principal-dialog';
 

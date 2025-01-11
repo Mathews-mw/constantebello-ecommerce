@@ -8,7 +8,7 @@ import { PaymentSummary } from './payment-summary';
 import { ProductSummary } from './product-summary';
 import { PaymentSummarySkeleton } from './payment-summary-skeleton';
 import { ProductSummarySkeleton } from './product-summary-skeleton';
-import { getOrderDetailsById } from '@/app/api/@requests/orders/get-order-details-by-id';
+import { getOrderDetailsById } from '../../../api/@requests/orders/get-order-details-by-id';
 
 import { PackageSearch } from 'lucide-react';
 

@@ -3,6 +3,8 @@ import { Prisma } from '@prisma/client';
 
 interface Items {
 	productId: string;
+	productModelId: string;
+	productSizeId: string;
 	quantity: number;
 	price: number;
 }
@@ -31,26 +33,33 @@ export async function updateCartItemsHandler({ userId, updatedItems }: IRequest)
 		throw new Error('Carrinho não encontrado.');
 	}
 
-	const currentItemsMap = new Map(cart.cartItems.map((item) => [item.productId, item]));
+	const currentItemsMap = new Map(cart.cartItems.map((item) => [item.productSizeId, item]));
 
 	const itemsToUpdate: Array<{ id: string; quantity: number }> = [];
 	const itemsToCreate: Array<Prisma.CartItemUncheckedCreateInput> = [];
 	const itemsToDelete: string[] = [];
 
 	updatedItems.forEach((item) => {
-		const existingItem = currentItemsMap.get(item.productId);
+		const existingItem = currentItemsMap.get(item.productSizeId);
 
 		if (existingItem) {
 			itemsToUpdate.push({ id: existingItem.id, quantity: item.quantity });
 
 			// remove do map os itens que já foram processados (validos ou atualizados), garantindo que no final o currentItemsMap contenha apenas os itens que devem ser excluídos.
-			currentItemsMap.delete(item.productId);
+			currentItemsMap.delete(item.productSizeId);
 		} else {
-			itemsToCreate.push({ cartId: cart.id, productId: item.productId, quantity: item.quantity, price: item.price });
+			itemsToCreate.push({
+				cartId: cart.id,
+				productId: item.productId,
+				productModelId: item.productModelId,
+				productSizeId: item.productSizeId,
+				quantity: item.quantity,
+				price: item.price,
+			});
 		}
 	});
 
-	// Caso seja 0, significa que a o carrinho está sendo recém criado.
+	// Caso seja 0, significa que o carrinho está sendo recém criado.
 	if (currentItemsMap.size > 0) {
 		const currentItemsMapValuesArray = [...currentItemsMap.values()];
 		itemsToDelete.push(...currentItemsMapValuesArray.map((item) => item.id));
@@ -89,6 +98,8 @@ export async function updateCartItemsHandler({ userId, updatedItems }: IRequest)
 			})
 		);
 	}
+
+	console.log('prisma transactions: ', transactions[0]);
 
 	await prisma.$transaction(transactions);
 

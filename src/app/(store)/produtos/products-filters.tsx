@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import * as Slider from '@radix-ui/react-slider';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '../../../components/ui/checkbox';
+import { Separator } from '../../../components/ui/separator';
 
 import { SlidersHorizontal } from 'lucide-react';
-import { Label } from '@/components/ui/label';
+import { Label } from '../../../components/ui/label';
 
 const items = [
 	{

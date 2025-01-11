@@ -2,9 +2,9 @@ import dayjs from 'dayjs';
 
 import { ProductReview } from '@prisma/client';
 
-import { Button } from '@/components/ui/button';
-import { StarsRatingView } from '@/components/rating/stars-rating-view';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '../../../components/ui/button';
+import { StarsRatingView } from '../../../components/rating/stars-rating-view';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/ui/dialog';
 
 import { Eye } from 'lucide-react';
 

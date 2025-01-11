@@ -3,12 +3,12 @@
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import { IProductToUserReview } from '@/@types/review';
+import { IProductToUserReview } from '../../../@types/review';
 
 import { ReviewProductDialog } from './review-product-dialog';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '../../../components/ui/badge';
 import { Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 import { ViewReviewDialog } from './view-review-dialog';
 import { EditReviewDialog } from './edit-review-dialiog';
 

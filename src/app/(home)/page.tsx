@@ -1,8 +1,8 @@
 'use client';
 
-import { ReviewCard } from '@/components/review-card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { ReviewCard } from '../../components/review-card';
+import { Button } from '../../components/ui/button';
+import { Separator } from '../../components/ui/separator';
 import { MoveLeft, MoveRight } from 'lucide-react';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';

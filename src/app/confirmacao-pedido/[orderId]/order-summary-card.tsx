@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import type { IOrderDetails } from '@/@types/order';
+import type { IOrderDetails } from '../../../@types/order';
 
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '../../../components/ui/separator';
 
 import { FileSearch } from 'lucide-react';
 

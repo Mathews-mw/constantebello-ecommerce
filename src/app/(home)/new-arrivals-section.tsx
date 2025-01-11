@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { twMerge } from 'tailwind-merge';
 import { useQuery } from '@tanstack/react-query';
 
-import { useFavoriteProducts } from '@/context/favorite-products-context';
+import { useFavoriteProducts } from '../../context/favorite-products-context';
 import { listingNewArrivalsProducts } from '../api/@requests/products/listing-new-arrivals-products';
 
-import { Button } from '@/components/ui/button';
-import { ProductCard } from '@/components/product-card/product-card';
-import { ProductCardSkeleton } from '@/components/product-card/product-card-skeleton';
+import { Button } from '../../components/ui/button';
+import { ProductCard } from '../../components/product-card/product-card';
+import { ProductCardSkeleton } from '../../components/product-card/product-card-skeleton';
 
 export function NewArrivalsSection() {
 	const { favoriteProducts } = useFavoriteProducts();

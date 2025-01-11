@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../../../../lib/prisma';
 
 // Webhooks de checkout ocorrem quando o status do checkout muda.
 

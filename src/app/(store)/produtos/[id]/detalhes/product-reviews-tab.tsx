@@ -1,5 +1,5 @@
-import { ReviewCard } from '@/components/review-card';
-import { Button } from '@/components/ui/button';
+import { ReviewCard } from '../../../../../components/review-card';
+import { Button } from '../../../../../components/ui/button';
 
 export function ProductReviewsTab() {
 	return (

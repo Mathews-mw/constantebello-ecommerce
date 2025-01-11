@@ -1,8 +1,10 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../../lib/prisma';
 import { Prisma } from '@prisma/client';
 
 interface Items {
 	productId: string;
+	productModelId: string;
+	productSizeId: string;
 	quantity: number;
 	priceAtPurchase: number;
 }
@@ -24,24 +26,26 @@ export async function updateOrderItemsHandler({ orderId, updatedItems }: IReques
 		},
 	});
 
-	const currentItemsMap = new Map(orderItems.map((item) => [item.productId, item]));
+	const currentItemsMap = new Map(orderItems.map((item) => [item.productSizeId, item]));
 
 	const itemsToUpdate: Array<{ id: string; quantity: number }> = [];
 	const itemsToCreate: Array<Prisma.OrderItemUncheckedCreateInput> = [];
 	const itemsToDelete: string[] = [];
 
 	updatedItems.forEach((item) => {
-		const existingItem = currentItemsMap.get(item.productId);
+		const existingItem = currentItemsMap.get(item.productSizeId);
 
 		if (existingItem) {
 			itemsToUpdate.push({ id: existingItem.id, quantity: item.quantity });
 
 			// remove do map os itens que já foram processados (validos ou atualizados), garantindo que no final o currentItemsMap contenha apenas os itens que devem ser excluídos.
-			currentItemsMap.delete(item.productId);
+			currentItemsMap.delete(item.productSizeId);
 		} else {
 			itemsToCreate.push({
 				orderId,
 				productId: item.productId,
+				productModelId: item.productModelId,
+				productSizeId: item.productSizeId,
 				quantity: item.quantity,
 				priceAtPurchase: item.priceAtPurchase,
 			});

@@ -1,16 +1,17 @@
 import qs from 'qs';
-import { Product } from '@prisma/client';
-
 import { api } from '@/lib/axios';
+import { IProductToSetupCheckout } from '@/@types/product';
 
 interface IRequest {
-	productIds: Array<string>;
+	productSizesIds: Array<string>;
 }
 
-export async function listingProductsToSetupCheckout({ productIds }: IRequest): Promise<Product[]> {
+export async function listingProductsToSetupCheckout({
+	productSizesIds,
+}: IRequest): Promise<IProductToSetupCheckout[]> {
 	const { data: response } = await api.get('/products/listing-to-setup-checkout', {
 		params: {
-			productIds,
+			productSizesIds,
 		},
 		paramsSerializer: (params) => {
 			return qs.stringify(params, { arrayFormat: 'brackets' });

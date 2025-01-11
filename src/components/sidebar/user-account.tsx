@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 
-import { generateUserBadge } from '@/app/utils/generate-user-badge';
+import { generateUserBadge } from '../../app/utils/generate-user-badge';
 
 import { Skeleton } from '../ui/skeleton';
 import { Separator } from '../ui/separator';

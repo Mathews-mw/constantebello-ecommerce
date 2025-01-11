@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../../../lib/prisma';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),

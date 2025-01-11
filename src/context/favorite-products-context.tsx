@@ -4,9 +4,9 @@ import { useSession } from 'next-auth/react';
 import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { selectProductAsFavorite } from '@/app/api/@requests/users/favorites/select-product-as-favorite';
-import { uncheckProductAsFavorite } from '@/app/api/@requests/users/favorites/uncheck-product-as-favorite';
-import { listingUserFavoriteProducts } from '@/app/api/@requests/users/favorites/listing-user-favorite-products';
+import { selectProductAsFavorite } from '../app/api/@requests/users/favorites/select-product-as-favorite';
+import { uncheckProductAsFavorite } from '../app/api/@requests/users/favorites/uncheck-product-as-favorite';
+import { listingUserFavoriteProducts } from '../app/api/@requests/users/favorites/listing-user-favorite-products';
 
 interface IFavoriteProductsContextType {
 	favoriteProducts: Array<string>;

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
-import { generateUserBadge } from '@/app/utils/generate-user-badge';
+import { generateUserBadge } from '../app/utils/generate-user-badge';
 
 import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';

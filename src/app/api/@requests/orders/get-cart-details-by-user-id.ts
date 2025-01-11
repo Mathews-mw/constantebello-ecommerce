@@ -1,5 +1,5 @@
-import { api } from '@/lib/axios';
-import { ICartDetails } from '@/@types/order';
+import { api } from '../../../../lib/axios';
+import { ICartDetails } from '../../../../@types/order';
 
 interface IRequest {
 	userId: string;

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import { StoreFooter } from '@/components/footer/store-footer';
-import { CustomerAccountHeader } from '@/components/header/customer-account-header';
+import { StoreFooter } from '../../components/footer/store-footer';
+import { CustomerAccountHeader } from '../../components/header/customer-account-header';
 
 export default function AccountLayout({ children }: { children: ReactNode }) {
 	return (

@@ -5,10 +5,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import { listingNewArrivalsProducts } from '../api/@requests/products/listing-new-arrivals-products';
 
-import { Button } from '@/components/ui/button';
-import { ProductCard } from '@/components/product-card/product-card';
-import { useFavoriteProducts } from '@/context/favorite-products-context';
-import { ProductCardSkeleton } from '@/components/product-card/product-card-skeleton';
+import { Button } from '../../components/ui/button';
+import { ProductCard } from '../../components/product-card/product-card';
+import { useFavoriteProducts } from '../../context/favorite-products-context';
+import { ProductCardSkeleton } from '../../components/product-card/product-card-skeleton';
 import { twMerge } from 'tailwind-merge';
 
 export function BestSellingSection() {

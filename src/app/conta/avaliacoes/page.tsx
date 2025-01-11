@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 
 import { ReviewItemCard } from './review-item-card';
-import { listingProductsToUserReview } from '@/app/api/@requests/reviews/listing-products-to-user-review';
+import { listingProductsToUserReview } from '../../api/@requests/reviews/listing-products-to-user-review';
 
 import { ThumbsUp } from '@phosphor-icons/react/dist/ssr';
 

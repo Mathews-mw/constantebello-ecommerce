@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
-import { IOrderDetails } from '@/@types/order';
+import { IOrderDetails } from '../../../../@types/order';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../../components/ui/button';
 import { OrderProgress } from './order-progress';
-import { Separator } from '@/components/ui/separator';
-import { OrderStatusBadge } from '@/components/order-status-badge';
+import { Separator } from '../../../../components/ui/separator';
+import { OrderStatusBadge } from '../../../../components/order-status-badge';
 
 interface IProps {
 	order: IOrderDetails;

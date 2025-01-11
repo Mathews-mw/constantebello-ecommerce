@@ -6,12 +6,12 @@ import { Product } from '@prisma/client';
 import { twMerge } from 'tailwind-merge';
 import { useSession } from 'next-auth/react';
 
-import { useFavoriteProducts } from '@/context/favorite-products-context';
+import { useFavoriteProducts } from '../../context/favorite-products-context';
 
 import { LoginAlert } from './login-alert';
 import { StarsRating } from '../stars-rating';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '../ui/card';
 
 import { Heart, Loader2, ShoppingBasket } from 'lucide-react';
 

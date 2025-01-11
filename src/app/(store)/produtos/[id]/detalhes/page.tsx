@@ -1,9 +1,8 @@
 'use client';
 
-import Image from 'next/image';
-import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { use, useEffect, useMemo, useState } from 'react';
 
 import { useCart } from '@/context/cart-context';
 import { getProductDetails } from '@/app/api/@requests/products/get-product-details';
@@ -11,11 +10,14 @@ import { getProductDetails } from '@/app/api/@requests/products/get-product-deta
 import { ProductTabs } from './product-tabs';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { ProductImages } from './product-images';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { StarsRating } from '@/components/stars-rating';
+import { ProductImagesSkeleton } from './product-images-skeleton';
 
 import { ChevronRight, Minus, Plus } from 'lucide-react';
-import { ProductImages } from './product-images';
+import { toast } from 'sonner';
 
 interface IProductDetailsPageProps {
 	params: Promise<{
@@ -27,6 +29,8 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 	const { id } = use(params);
 
 	const [quantity, setQuantity] = useState(1);
+	const [selectedSizeId, setSelectedSizeId] = useState<string | undefined>();
+	const [selectedProductModelId, setSelectedProductModelId] = useState<string | undefined>();
 
 	const { addToCart } = useCart();
 	const router = useRouter();
@@ -37,12 +41,44 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 	});
 
 	function handleAddToCart() {
-		if (product) {
-			addToCart({ productId: product.id, price: product.price, quantity });
+		if (!selectedProductModelId) {
+			return toast.warning('Por favor, selecione a cor do produto.');
+		}
+
+		if (!selectedSizeId) {
+			return toast.warning('Por favor, selecione o tamanho do produto');
+		}
+
+		if (product && selectedProductModelId && selectedSizeId) {
+			addToCart({
+				productId: product.id,
+				productModelId: selectedProductModelId,
+				productSizeId: selectedSizeId,
+				price: product.price,
+				quantity,
+			});
 
 			router.push('/carrinho');
 		}
 	}
+
+	function handleSelectProductModel(productModelId: string) {
+		const productModel = product?.productModels.find((item) => item.id === productModelId);
+
+		return productModel;
+	}
+
+	const productModel = useMemo(() => {
+		if (selectedProductModelId) {
+			return handleSelectProductModel(selectedProductModelId);
+		}
+	}, [selectedProductModelId]);
+
+	useEffect(() => {
+		if (product) {
+			setSelectedProductModelId(product.productModels[0]?.id);
+		}
+	}, [product]);
 
 	if (!product) {
 		return <div>Carregando...</div>;
@@ -55,12 +91,12 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 				<ChevronRight className="h-4 w-4" /> <span className="font-semibold text-primary">Detalhes</span>
 			</div>
 
-			<div className="flex flex-col gap-8 lg:flex-row">
-				<ProductImages product={product} />
+			<div className="flex flex-col gap-8 sm:grid sm:grid-cols-2">
+				{productModel ? <ProductImages productImages={productModel.productImages} /> : <ProductImagesSkeleton />}
 
 				<div className="space-y-4">
 					<div className="flex flex-col gap-2">
-						<h2 className="text-2xl font-black">{product.name}</h2>
+						<h2 className="text-xl font-black">{product.name}</h2>
 
 						<StarsRating />
 
@@ -84,21 +120,22 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 						<h4 className="text-muted-foreground">Escolha a cor</h4>
 
 						<div className="space-x-2">
-							<button className="h-6 w-6 rounded-full bg-amber-800">
-								<span aria-readonly className="sr-only">
-									Zinc
-								</span>
-							</button>
-							<button className="h-6 w-6 rounded-full bg-stone-800">
-								<span aria-readonly className="sr-only">
-									Stone
-								</span>
-							</button>
-							<button className="h-6 w-6 rounded-full bg-slate-800">
-								<span aria-readonly className="sr-only">
-									Slate
-								</span>
-							</button>
+							{product.productModels.map((item) => {
+								return (
+									<button
+										key={item.id}
+										title={item.color}
+										onClick={() => setSelectedProductModelId(item.id)}
+										data-selected={item.id === selectedProductModelId}
+										style={{ backgroundColor: item.hexColor }}
+										className="h-6 w-6 rounded-full border data-[selected=true]:border-2 data-[selected=true]:border-primary"
+									>
+										<span aria-readonly className="sr-only">
+											{item.color}
+										</span>
+									</button>
+								);
+							})}
 						</div>
 					</div>
 
@@ -107,16 +144,34 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 					<div className="space-y-4">
 						<h4 className="text-muted-foreground">Escolha o tamanho</h4>
 
-						<div className="space-x-2">
-							<button className="rounded-lg border border-secondary bg-secondary px-2 py-1 text-sm hover:border-primary/50">
-								165L X 90C
-							</button>
-							<button className="rounded-lg border border-secondary bg-secondary px-2 py-1 text-sm hover:border-primary/50">
-								190L X 90C
-							</button>
-							<button className="rounded-lg border border-secondary bg-secondary px-2 py-1 text-sm hover:border-primary/50">
-								175L X 90C
-							</button>
+						<div className="flex flex-wrap gap-2">
+							{productModel ? (
+								productModel.productSizes.map((size) => {
+									return (
+										<Button
+											variant="outline"
+											size="sm"
+											key={size.id}
+											onClick={() => setSelectedSizeId(size.id)}
+											data-selected={size.id === selectedSizeId}
+											className="data-[selected=true]:border-primary data-[selected=true]:bg-secondary"
+										>
+											{size.width}L x {size.height}H x {size.length}C
+										</Button>
+									);
+								})
+							) : (
+								<div className="flex gap-2">
+									<Skeleton className="h-5 w-20" />
+									<Skeleton className="h-5 w-20" />
+									<Skeleton className="h-5 w-20" />
+								</div>
+							)}
+						</div>
+
+						<div className="flex flex-col">
+							<small className="text-muted-foreground">*Medidas em Centímetros</small>
+							<small className="text-muted-foreground">*L: Largura; H: Altura; C: Comprimento</small>
 						</div>
 					</div>
 
@@ -155,7 +210,14 @@ export default function ProductDetailsPage({ params }: IProductDetailsPageProps)
 
 			<Separator />
 
-			<ProductTabs />
+			{productModel ? (
+				<ProductTabs
+					model={productModel}
+					size={productModel.productSizes.find((item) => item.id === selectedSizeId) ?? productModel.productSizes[0]}
+				/>
+			) : (
+				<div>Carregando informações...</div>
+			)}
 		</div>
 	);
 }

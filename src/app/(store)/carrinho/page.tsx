@@ -11,7 +11,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useCart } from '@/context/cart-context';
 import { createCart } from '@/app/api/@requests/orders/create-cart';
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+import { errorToasterHandler } from '../../utils/error-toaster-handler';
 import { saveCartItems } from '@/app/api/@requests/orders/save-cart-items';
 import { getCartByUserId } from '@/app/api/@requests/orders/get-cart-by-user-id';
 import { listingProductsToSetupCheckout } from '@/app/api/@requests/products/listing-products-to-setup-checkout';
@@ -23,13 +23,13 @@ import { Button } from '@/components/ui/button';
 import { PageTitle } from '@/components/page-title';
 import { Separator } from '@/components/ui/separator';
 import { GeneratingOrderAlert } from './generating-order-alert';
+import { editCart } from '@/app/api/@requests/orders/edit-cart';
+import { CompleteRegisterAlert } from './complete-register-alert';
 import { getUserById } from '@/app/api/@requests/users/get-user-by-id';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { AddNewAddressDialog } from '@/components/add-new-address-dialog';
 
 import { ArrowRight, ChevronRight, FileSearch, ShoppingBasket, ShoppingCart, Trash2, Truck } from 'lucide-react';
-import { editCart } from '@/app/api/@requests/orders/edit-cart';
-import { AddNewAddressDialog } from '@/components/add-new-address-dialog';
-import { CompleteRegisterAlert } from './complete-register-alert';
 
 export default function CartPage() {
 	const { status, data } = useSession();
@@ -40,16 +40,16 @@ export default function CartPage() {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [completeRegisterIsOpen, setCompleteRegisterIsOpen] = useState(false);
-	const [productsId, setProductsId] = useState<string[]>([]);
+	const [productSizesIds, setProductSizesIds] = useState<string[]>([]);
 	const [selectedAddress, setSelectedAddress] = useState('');
 
 	const { data: products } = useQuery({
-		queryKey: ['products', 'to-checkout', productsId],
+		queryKey: ['products', 'to-checkout', productSizesIds],
 		queryFn: async () =>
 			listingProductsToSetupCheckout({
-				productIds: productsId,
+				productSizesIds,
 			}),
-		enabled: productsId.length > 0,
+		enabled: productSizesIds.length > 0,
 	});
 
 	const { data: user } = useQuery({
@@ -73,7 +73,9 @@ export default function CartPage() {
 
 				const itemsToBePurchased = cartItems.map((item) => {
 					return {
-						productId: item.productId,
+						product_id: item.productId,
+						product_model_id: item.productModelId,
+						product_size_id: item.productSizeId,
 						price: item.price,
 						quantity: item.quantity,
 					};
@@ -82,11 +84,11 @@ export default function CartPage() {
 				if (currentCart) {
 					// Case exista algum carrinho já criado (currentCart) para o usuário, apenas atualiza os itens desse carrinho
 					await editCart({ cartId: currentCart.id, deliveryIn: selectedAddress });
-					await saveCartItems({ userId: data.user.id, cartId: currentCart.id, cartItems: itemsToBePurchased });
+					await saveCartItems({ user_id: data.user.id, cartId: currentCart.id, cart_items: itemsToBePurchased });
 				} else {
 					// Se não, cria um novo carrinho e adiciona os itens nele
 					const { cart } = await createCart({ userId: data.user.id, deliveryIn: selectedAddress });
-					await saveCartItems({ userId: data.user.id, cartId: cart.id, cartItems: itemsToBePurchased });
+					await saveCartItems({ user_id: data.user.id, cartId: cart.id, cart_items: itemsToBePurchased });
 				}
 			}
 		},
@@ -101,7 +103,7 @@ export default function CartPage() {
 		}
 
 		if (!selectedAddress) {
-			return toast.error('Por favor, selecione o endereço de entrega');
+			return toast.warning('Por favor, selecione o endereço de entrega');
 		}
 
 		setIsOpen(true);
@@ -118,9 +120,9 @@ export default function CartPage() {
 	}
 
 	useEffect(() => {
-		const productsId = cartItems.map((item) => item.productId);
+		const productsSizesId = cartItems.map((item) => item.productSizeId);
 
-		setProductsId(productsId);
+		setProductSizesIds(productsSizesId);
 	}, [cartItems]);
 
 	useEffect(() => {
@@ -167,10 +169,15 @@ export default function CartPage() {
 								<ul role="list" className="divide-y">
 									{products?.map((product) => {
 										return (
-											<li key={product.id} className="py-4 first:pt-0 last:pb-0">
+											<li key={product.size.id} className="py-4 first:pt-0 last:pb-0">
 												<CartItem
 													product={product}
-													quantity={cartItems.find((item) => item.productId === product.id)?.quantity ?? 1}
+													quantity={
+														cartItems.find(
+															(item) =>
+																item.productModelId === product.model.id && item.productSizeId === product.size.id
+														)?.quantity ?? 1
+													}
 												/>
 											</li>
 										);
@@ -252,7 +259,10 @@ export default function CartPage() {
 								</div>
 
 								{user?.userInfos?.userAddress.length === 0 ? (
-									<p className="text-muted-foreground">Você ainda não tem nenhum endereço cadastrado</p>
+									<p className="text-muted-foreground">
+										Você ainda não tem nenhum endereço cadastrado. Por favor, cadastre um endereço para entregar o seu
+										pedido.
+									</p>
 								) : (
 									<p className="text-muted-foreground">Selecione o endereço que será feito a entrega do produto</p>
 								)}

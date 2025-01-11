@@ -1,5 +1,5 @@
-import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Label } from '../../../components/ui/label';
+import { Skeleton } from '../../../components/ui/skeleton';
 
 export function UpdateUserInfosFormSkeleton() {
 	return (

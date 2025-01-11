@@ -1,10 +1,10 @@
 import { NextRequest } from 'next/server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../../../../lib/prisma';
 import { OrderPaymentType, OrderStatus } from '@prisma/client';
-import { createNotification } from '@/app/api/@worker/notifications/create-notification';
-import { sendReceiptEmail } from '@/app/utils/mails/send-receipt-email';
-import { env } from '@/env';
+import { createNotification } from '../../../@worker/notifications/create-notification';
+import { sendReceiptEmail } from '../../../../utils/mails/send-receipt-email';
+import { env } from '../../../../../env';
 
 // Os eventos transacionais ocorrem quando uma alteração do status do pagamento ocorre.
 
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
 				to: data.customer.email,
 				name: data.customer.name,
 				orderId: order.id,
-				orderLink: `${env.NEXT_PUBLIC_APP_BASE_URL}/conta/meus-pedidos/${order.id}`,
+				orderLink: `https://www.google.com/`,
 				address: orderAddress,
 				total: totalOrder,
 				subtotal: order.subtotal,

@@ -4,10 +4,18 @@ import { useState } from 'react';
 import { TabItem } from './tab-item';
 import * as Tabs from '@radix-ui/react-tabs';
 
+import { IProductInfos } from '@/@types/product';
+
+import { ProductSize } from '@prisma/client';
 import { ProductDetailsTab } from './product-details-tab';
 import { ProductReviewsTab } from './product-reviews-tab';
 
-export function ProductTabs() {
+interface IProps {
+	model: IProductInfos;
+	size: ProductSize;
+}
+
+export function ProductTabs({ model, size }: IProps) {
 	const [currentTab, setCurrentTab] = useState('details');
 
 	return (
@@ -18,7 +26,7 @@ export function ProductTabs() {
 			</Tabs.List>
 
 			<Tabs.Content value="details" className="p-4">
-				<ProductDetailsTab />
+				<ProductDetailsTab details={model} size={size} />
 			</Tabs.Content>
 
 			<Tabs.Content value="review" className="p-4">

@@ -1,9 +1,9 @@
 import { z } from 'zod';
+import { NextApiResponse } from 'next';
+import { randomUUID } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
-import { NextApiResponse } from 'next';
-import { randomUUID } from 'node:crypto';
 
 const bodySchema = z.object({
 	user_id: z.string().uuid(),

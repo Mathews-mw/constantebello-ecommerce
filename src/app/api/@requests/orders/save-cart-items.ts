@@ -1,29 +1,18 @@
 import { api } from '@/lib/axios';
+import { SaveCartItemsRequestSchema } from '../../orders/carts/[id]/items/save/route';
 
-interface IRequest {
-	userId: string;
+interface IRequest extends SaveCartItemsRequestSchema {
 	cartId: string;
-	cartItems: Array<{
-		productId: string;
-		price: number;
-		quantity: number;
-	}>;
 }
 
 export interface IResponse {
 	message: string;
 }
 
-export async function saveCartItems({ userId, cartId, cartItems }: IRequest): Promise<IResponse> {
-	const { data: response } = await api.post<IResponse>(`/orders/carts/${cartId}/items/save`, {
-		user_id: userId,
-		cart_items: cartItems.map((item) => {
-			return {
-				product_id: item.productId,
-				price: item.price,
-				quantity: item.quantity,
-			};
-		}),
+export async function saveCartItems(data: IRequest): Promise<IResponse> {
+	const { data: response } = await api.post<IResponse>(`/orders/carts/${data.cartId}/items/save`, {
+		user_id: data.user_id,
+		cart_items: data.cart_items,
 	});
 
 	return response;

@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { listingUserNotifications } from '@/app/api/@requests/notifications/listing-user-notifications';
+import { listingUserNotifications } from '../app/api/@requests/notifications/listing-user-notifications';
 
 interface IUserNotificationsContextType {
 	amountUserNotifications: number;

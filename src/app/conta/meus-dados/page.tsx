@@ -4,11 +4,11 @@ import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-import { getUserById } from '@/app/api/@requests/users/get-user-by-id';
+import { getUserById } from '../../api/@requests/users/get-user-by-id';
 
 import { AddressCard } from './address-card';
 import { UpdateUserInfosForm } from './update-user-infos-form';
-import { AddNewAddressDialog } from '@/components/add-new-address-dialog';
+import { AddNewAddressDialog } from '../../../components/add-new-address-dialog';
 import { UpdateUserInfosFormSkeleton } from './update-user-infos-form-skeleton';
 
 import { FileText, MapPinHouse, UserRound } from 'lucide-react';

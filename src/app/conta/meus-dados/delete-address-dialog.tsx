@@ -4,10 +4,10 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { deleteUserAddress } from '@/app/api/@requests/users/address/delete-user-address';
+import { errorToasterHandler } from '../../utils/error-toaster-handler';
+import { deleteUserAddress } from '../../api/@requests/users/address/delete-user-address';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import {
 	Dialog,
@@ -17,7 +17,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '@/components/ui/dialog';
+} from '../../../components/ui/dialog';
 
 import { Loader2 } from 'lucide-react';
 

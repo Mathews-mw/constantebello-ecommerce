@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-import { Progress } from '@/components/ui/progress';
-import { PackageTrolleyIcon } from '@/components/custom-icons/package-trolley-icon';
+import { Progress } from '../../../../components/ui/progress';
+import { PackageTrolleyIcon } from '../../../../components/custom-icons/package-trolley-icon';
 
 import { PackageCheck, ShoppingCart, Truck } from 'lucide-react';
 

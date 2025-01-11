@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../../../lib/prisma';
 import { Notification, NotificationTag } from '@prisma/client';
 
 interface ICreateNotificationRequest {

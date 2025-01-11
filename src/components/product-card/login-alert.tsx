@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '../ui/button';
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -8,7 +8,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '../ui/alert-dialog';
 
 import { Heart } from 'lucide-react';
 

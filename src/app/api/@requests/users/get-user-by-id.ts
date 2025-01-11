@@ -1,5 +1,5 @@
-import { api } from '@/lib/axios';
-import { IUserDetails } from '@/@types/user';
+import { api } from '../../../../lib/axios';
+import { IUserDetails } from '../../../../@types/user';
 
 interface IRequest {
 	id: string;

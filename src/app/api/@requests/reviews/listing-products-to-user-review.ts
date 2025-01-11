@@ -1,5 +1,5 @@
-import { api } from '@/lib/axios';
-import { IProductToUserReview } from '@/@types/review';
+import { api } from '../../../../lib/axios';
+import { IProductToUserReview } from '../../../../@types/review';
 
 interface IRequest {
 	userId: string;

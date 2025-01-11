@@ -1,5 +1,5 @@
-import { Skeleton } from '@/components/ui/skeleton';
-import { PackageTrolleyIcon } from '@/components/custom-icons/package-trolley-icon';
+import { Skeleton } from '../../../../components/ui/skeleton';
+import { PackageTrolleyIcon } from '../../../../components/custom-icons/package-trolley-icon';
 
 import { PackageCheck, ShoppingCart, Truck } from 'lucide-react';
 

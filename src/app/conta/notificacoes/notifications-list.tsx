@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { INotificationsCursorModeResponse } from '@/app/api/@requests/notifications/listing-user-notifications-cursor-mode';
+import { INotificationsCursorModeResponse } from '../../api/@requests/notifications/listing-user-notifications-cursor-mode';
 import { Notification } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
 import { NotificationItemCard } from './notification-item-card';

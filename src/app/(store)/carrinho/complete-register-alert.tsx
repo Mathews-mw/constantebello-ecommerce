@@ -8,8 +8,8 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+} from '../../../components/ui/alert-dialog';
+import { Button } from '../../../components/ui/button';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';

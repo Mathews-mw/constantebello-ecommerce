@@ -29,7 +29,12 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 				id,
 			},
 			include: {
-				productDetails: true,
+				productModels: {
+					include: {
+						productImages: true,
+						productSizes: true,
+					},
+				},
 			},
 		});
 

@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '@/lib/prisma';
-import { updateCartItemsHandler } from '@/app/api/@handlers/update-cart-items-handler';
+import { prisma } from '../../../../../lib/prisma';
+import { updateCartItemsHandler } from '../../../@handlers/update-cart-items-handler';
 import { OrderStatus } from '@prisma/client';
 
 interface IParamsProps {

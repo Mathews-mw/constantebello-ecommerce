@@ -5,16 +5,16 @@ import { Notification } from '@prisma/client';
 import { ElementType, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { readUserNotification } from '@/app/api/@requests/notifications/read-user-notification';
-import { deleteUserNotification } from '@/app/api/@requests/notifications/delete-user-notification';
+import { readUserNotification } from '../../api/@requests/notifications/read-user-notification';
+import { deleteUserNotification } from '../../api/@requests/notifications/delete-user-notification';
 
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '../../../components/ui/button';
+import { ScrollArea } from '../../../components/ui/scroll-area';
 import { DialogDescription } from '@radix-ui/react-dialog';
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { useUserNotifications } from '@/context/user-notifications-context';
+import { errorToasterHandler } from '../../utils/error-toaster-handler';
+import { useUserNotifications } from '../../../context/user-notifications-context';
 import { NotificationContentDialogSkeleton } from './notification-content-dialog-skeleton';
-import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
 
 import { Loader2 } from 'lucide-react';
 

@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 
-import { useFavoriteProducts } from '@/context/favorite-products-context';
-import { listingProducts } from '@/app/api/@requests/products/listing-products';
+import { useFavoriteProducts } from '../../../context/favorite-products-context';
+import { listingProducts } from '../../api/@requests/products/listing-products';
 
 import { OrderByFilter } from './order-by-filter';
 import { ProductsFilters } from './products-filters';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '../../../components/ui/separator';
 import { ProductCard } from '../../../components/product-card/product-card';
 import {
 	Drawer,
@@ -20,12 +20,12 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 	DrawerTrigger,
-} from '@/components/ui/drawer';
+} from '../../../components/ui/drawer';
 
 import { ChevronRight, SlidersHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import useMediaQuery from '@/app/utils/hooks/use-media-query';
+import useMediaQuery from '../../utils/hooks/use-media-query';
 
 export default function PageContent() {
 	const searchParams = useSearchParams();

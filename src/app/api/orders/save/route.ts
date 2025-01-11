@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../../../lib/prisma';
 import { OrderPaymentType } from '@prisma/client';
 import { updateOrderItemsHandler } from '../../@handlers/update-order-items-handler';
 
@@ -100,6 +100,8 @@ export async function POST(request: NextRequest) {
 		const orderItemsToCreate = cartItems.map((item) => {
 			return {
 				productId: item.productId,
+				productModelId: item.productModelId,
+				productSizeId: item.productSizeId,
 				quantity: item.quantity,
 				priceAtPurchase: item.product.price,
 			};

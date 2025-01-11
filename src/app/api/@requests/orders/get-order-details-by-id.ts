@@ -1,5 +1,5 @@
-import { api } from '@/lib/axios';
-import { IOrderDetails } from '@/@types/order';
+import { api } from '../../../../lib/axios';
+import { IOrderDetails } from '../../../../@types/order';
 
 interface IRequest {
 	orderId: string;

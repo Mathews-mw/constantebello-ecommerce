@@ -5,8 +5,8 @@ import { Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { QueryName } from './query-name';
-import { Button } from '@/components/ui/button';
-import { PageTitle } from '@/components/page-title';
+import { Button } from '../../../../components/ui/button';
+import { PageTitle } from '../../../../components/page-title';
 
 export default function RegistrationConfirmationPage() {
 	const navigator = useRouter();

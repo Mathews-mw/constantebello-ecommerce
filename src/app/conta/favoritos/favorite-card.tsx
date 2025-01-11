@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { Product } from '@prisma/client';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useFavoriteProducts } from '@/context/favorite-products-context';
+import { useFavoriteProducts } from '../../../context/favorite-products-context';
 
-import { Button } from '@/components/ui/button';
-import { StarsRating } from '@/components/stars-rating';
+import { Button } from '../../../components/ui/button';
+import { StarsRating } from '../../../components/stars-rating';
 
 import { Heart, Loader2 } from 'lucide-react';
 

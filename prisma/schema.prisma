@@ -112,26 +112,6 @@ model UserAddress {
   @@map("user_addresses")
 }
 
-model Product {
-  id          String    @id @default(uuid())
-  cod         String    @unique
-  name        String
-  description String
-  imageUrl    String    @map("image_url")
-  price       Float
-  available   Boolean   @default(true)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @map("updated_at")
-
-  productDetails       ProductDetail[]
-  userFavoriteProducts UserFavoriteProduct[]
-  cartItems            CartItem[]
-  orderItems           OrderItem[]
-  productReviews       ProductReview[]
-
-  @@map("products")
-}
-
 enum ProductDepartment {
   GENERICO
   COZINHA
@@ -141,27 +121,81 @@ enum ProductDepartment {
   SALA_JANTA
 }
 
-model ProductDetail {
-  id               String            @id @default(uuid())
-  productId        String            @map("product_id")
-  stockQuantity    Int               @map("stock_quantity")
+model Product {
+  id          String            @id @default(uuid())
+  name        String
+  description String
+  imageUrl    String            @map("image_url")
+  price       Float
+  department  ProductDepartment @default(GENERICO)
+  available   Boolean           @default(true)
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime?         @map("updated_at")
+
+  productModels        ProductModel[]
+  productReviews       ProductReview[]
+  productImages        ProductImage[]
+  cartItems            CartItem[]
+  orderItems           OrderItem[]
+  userFavoriteProducts UserFavoriteProduct[]
+  productSizes         ProductSize[]
+
+  @@map("products")
+}
+
+model ProductModel {
+  id               String   @id @default(uuid())
+  productId        String   @map("product_id")
+  cod              String   @unique @default(cuid())
   color            String
-  width            Float
-  height           Float
-  length           Float
-  weight           Float
-  depth            Float?
-  supportedLoad    Float?            @map("supported_load")
-  requiresAssembly Boolean?          @default(false) @map("requires_assembly")
+  hexColor         String   @map("hex_color")
+  supportedLoad    Float?   @map("supported_load")
+  requiresAssembly Boolean? @default(false) @map("requires_assembly")
+  stockQuantity    Int      @map("stock_quantity")
   discount         Float?
   addition         Float?
   details          String?
   specifications   String?
-  department       ProductDepartment @default(GENERICO)
 
-  product Product @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@map("product_details")
+  productImages ProductImage[]
+  productSizes  ProductSize[]
+  cartItems     CartItem[]
+  orderItems    OrderItem[]
+
+  @@map("product_models")
+}
+
+model ProductSize {
+  id             String  @id @default(uuid())
+  productId      String  @map("product_id")
+  productModelId String  @map("product_model_id")
+  width          Float
+  height         Float
+  length         Float
+  weight         Float?
+  available      Boolean @default(true)
+
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productModel ProductModel @relation(fields: [productModelId], references: [id], onDelete: Cascade)
+  cartItems    CartItem[]
+  orderItems   OrderItem[]
+
+  @@map("product_sizes")
+}
+
+model ProductImage {
+  id             String  @id @default(uuid())
+  productId      String  @map("product_id")
+  productModelId String  @map("product_model_id")
+  imageUrl       String  @map("image_url")
+  mainImage      Boolean @default(false) @map("main_image")
+
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productModel ProductModel @relation(fields: [productModelId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
 }
 
 model UserFavoriteProduct {
@@ -190,16 +224,20 @@ model Cart {
 }
 
 model CartItem {
-  id        String @id @default(uuid())
-  cartId    String @map("cart_id")
-  productId String @map("product_id")
-  price     Float
-  quantity  Int
+  id             String @id @default(uuid())
+  cartId         String @map("cart_id")
+  productId      String @map("product_id")
+  productModelId String @map("product_model_id")
+  productSizeId  String @map("product_size_id")
+  price          Float
+  quantity       Int
 
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cart         Cart         @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productModel ProductModel @relation(fields: [productModelId], references: [id], onDelete: Cascade)
+  productSize  ProductSize  @relation(fields: [productSizeId], references: [id], onDelete: Cascade)
 
-  @@unique([cartId, productId])
+  @@unique([cartId, productModelId, productSizeId])
   @@map("cart_items")
 }
 
@@ -246,14 +284,18 @@ model OrderItem {
   id              String @id @default(uuid())
   orderId         String @map("order_id")
   productId       String @map("product_id")
+  productModelId  String @map("product_model_id")
+  productSizeId   String @map("product_size_id")
   quantity        Int
   priceAtPurchase Float  @map("price_at_purchase")
 
   order         Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productModel  ProductModel   @relation(fields: [productModelId], references: [id], onDelete: Cascade)
+  productSize   ProductSize    @relation(fields: [productSizeId], references: [id], onDelete: Cascade)
   productReview ProductReview?
 
-  @@unique([productId, orderId])
+  @@unique([orderId, productModelId, productSizeId])
   @@map("order_items")
 }
 

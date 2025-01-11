@@ -1,8 +1,8 @@
 'use client';
 
 import { Skeleton } from '../ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '../ui/card';
 
 import { ShoppingBasket } from 'lucide-react';
 

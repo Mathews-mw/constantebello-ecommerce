@@ -8,7 +8,7 @@ import {
 	AlertDialogDescription,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '../../../components/ui/alert-dialog';
 
 interface IProps {
 	isOpen: boolean;

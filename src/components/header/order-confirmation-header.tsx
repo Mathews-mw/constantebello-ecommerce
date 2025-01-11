@@ -1,4 +1,4 @@
-import { Logo } from '@/components/logo';
+import { Logo } from '../logo';
 import { HeaderUserAccount } from './components/header-user-account';
 
 export function OrderConfirmationHeader() {

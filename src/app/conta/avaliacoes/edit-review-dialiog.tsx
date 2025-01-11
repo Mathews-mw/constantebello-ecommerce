@@ -7,19 +7,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+import { errorToasterHandler } from '../../utils/error-toaster-handler';
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { ErrorMessage } from '@/components/error-message';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '../../../components/ui/input';
+import { Button } from '../../../components/ui/button';
+import { ErrorMessage } from '../../../components/error-message';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/ui/dialog';
 
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { StarsRating } from '@/components/rating/stars-rating';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Label } from '../../../components/ui/label';
+import { Textarea } from '../../../components/ui/textarea';
+import { StarsRating } from '../../../components/rating/stars-rating';
+import { ScrollArea } from '../../../components/ui/scroll-area';
 import { ProductReview } from '@prisma/client';
-import { updateUserReview } from '@/app/api/@requests/reviews/update-user-review';
+import { updateUserReview } from '../../api/@requests/reviews/update-user-review';
 
 import { ImagePlus, Loader2, SquarePen } from 'lucide-react';
 

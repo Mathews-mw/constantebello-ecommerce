@@ -12,7 +12,7 @@ https://www.figma.com/design/vKpQs4e5g8nLgvTlCbPfFc/E-commerce-Website-Template-
 https://www.magazineluiza.com.br/kit-armario-de-cozinha-viena-compacto-com-4-portas-e-1-gaveta-balcao-multiuso-madine/p/dc3195f0k3/mo/mocz/
 https://www.magazineluiza.com.br/armario-de-cozinha-completa-300cm-cinza-nice-madesa-01/p/gd30a22ef7/mo/mcoz/
 https://www.magazineluiza.com.br/guarda-roupa-casal-com-espelho-6-portas-4-gavetas-araplac-braga/p/237759800/mo/guro/
-https://www.magazineluiza.com.br/comoda-4-gavetas-2-portas-demobile-aurea/p/237139900/mo/como/]
+https://www.magazineluiza.com.br/comoda-4-gavetas-2-portas-demobile-aurea/p/237139900/mo/como/
 https://www.magazineluiza.com.br/escrivaninha-mesa-para-computador-office-9409-madesa-branco/p/hkgh1bb3ke/mo/meav/
 https://www.magazineluiza.com.br/escrivaninha-mesa-de-escritorio-de-canto-3-gavetas-branco-rustic-lisboa-madesa/p/dee9h2h494/mo/meav/
 https://www.magazineluiza.com.br/painel-para-tv-ate-65-polegadas-1-porta-e-prateleiras-multimoveis-mp1064/p/gd1469gg2d/mo/mopa/

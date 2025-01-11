@@ -12,11 +12,11 @@ import { Separator } from '../ui/separator';
 import { UserAccount } from './user-account';
 import { ScrollArea } from '../ui/scroll-area';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
 
 import { ChevronDown, PanelLeft } from 'lucide-react';
-import { useUserNotifications } from '@/context/user-notifications-context';
-import { useFavoriteProducts } from '@/context/favorite-products-context';
+import { useUserNotifications } from '../../context/user-notifications-context';
+import { useFavoriteProducts } from '../../context/favorite-products-context';
 
 export function AppSidebar() {
 	const [isOpen, setIsOpen] = useState(false);

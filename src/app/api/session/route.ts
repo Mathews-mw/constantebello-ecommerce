@@ -4,8 +4,8 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { env } from '@/env';
-import { prisma } from '@/lib/prisma';
+import { env } from '../../../env';
+import { prisma } from '../../../lib/prisma';
 
 const bodySchema = z.object({
 	email: z.string().email(),

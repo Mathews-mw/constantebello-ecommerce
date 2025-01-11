@@ -3,11 +3,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 
-import { useFavoriteProducts } from '@/context/favorite-products-context';
-import { listingProducts } from '@/app/api/@requests/products/listing-products';
+import { useFavoriteProducts } from '../../../context/favorite-products-context';
+import { listingProducts } from '../../api/@requests/products/listing-products';
 
-import { ProductCard } from '@/components/product-card/product-card';
-import { ProductCardSkeleton } from '@/components/product-card/product-card-skeleton';
+import { ProductCard } from '../../../components/product-card/product-card';
+import { ProductCardSkeleton } from '../../../components/product-card/product-card-skeleton';
 
 export default function SearchPage() {
 	const searchParams = useSearchParams();

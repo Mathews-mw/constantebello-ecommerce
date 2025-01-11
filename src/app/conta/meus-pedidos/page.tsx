@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 
-import { listingOrdersByUserId } from '@/app/api/@requests/orders/listing-orders-by-user-id';
+import { listingOrdersByUserId } from '../../api/@requests/orders/listing-orders-by-user-id';
 
 import { OrderItemCard } from './order-item-card';
 

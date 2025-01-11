@@ -7,22 +7,22 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { registerUserAddress } from '@/app/api/@requests/users/address/register-user-address';
+import { errorToasterHandler } from '../../utils/error-toaster-handler';
+import { registerUserAddress } from '../../api/@requests/users/address/register-user-address';
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { CepInput } from '@/components/cep-input';
-import { ErrorMessage } from '@/components/error-message';
+import { Input } from '../../../components/ui/input';
+import { Button } from '../../../components/ui/button';
+import { CepInput } from '../../../components/cep-input';
+import { ErrorMessage } from '../../../components/error-message';
 import { DialogDescription } from '@radix-ui/react-dialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../../components/ui/dialog';
 
 import { ImagePlus, Loader2, MapPinPlus, Star } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { StarsRating } from '@/components/rating/stars-rating';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { registerUserReview } from '@/app/api/@requests/reviews/register-user-review';
+import { Label } from '../../../components/ui/label';
+import { Textarea } from '../../../components/ui/textarea';
+import { StarsRating } from '../../../components/rating/stars-rating';
+import { ScrollArea } from '../../../components/ui/scroll-area';
+import { registerUserReview } from '../../api/@requests/reviews/register-user-review';
 
 interface IProps {
 	userId: string;

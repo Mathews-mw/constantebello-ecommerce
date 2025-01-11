@@ -75,14 +75,10 @@ export async function GET(request: NextRequest) {
 								lte: maxPrice,
 							}
 						: undefined,
-				productDetails:
+				department:
 					departments && departments.length >= 1
 						? {
-								some: {
-									department: {
-										in: departments,
-									},
-								},
+								in: departments,
 							}
 						: undefined,
 			},

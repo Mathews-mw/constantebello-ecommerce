@@ -6,7 +6,7 @@ import { InfiniteData, QueryKey, useInfiniteQuery } from '@tanstack/react-query'
 import {
 	INotificationsCursorModeResponse,
 	listingUserNotificationsCursorMode,
-} from '@/app/api/@requests/notifications/listing-user-notifications-cursor-mode';
+} from '../../api/@requests/notifications/listing-user-notifications-cursor-mode';
 
 import { NotificationsList } from './notifications-list';
 import { EmptyNotifications } from './empty-notifications';

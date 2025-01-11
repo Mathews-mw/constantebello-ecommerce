@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { api } from '@/lib/axios';
+import { api } from '../../../../lib/axios';
 import { Product } from '@prisma/client';
 
 interface IRequest {

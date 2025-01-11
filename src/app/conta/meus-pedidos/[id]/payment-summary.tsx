@@ -1,5 +1,5 @@
-import { IOrderDetails } from '@/@types/order';
-import { Separator } from '@/components/ui/separator';
+import { IOrderDetails } from '../../../../@types/order';
+import { Separator } from '../../../../components/ui/separator';
 
 interface IProps {
 	order: IOrderDetails;

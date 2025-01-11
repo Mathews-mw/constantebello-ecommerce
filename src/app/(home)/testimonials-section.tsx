@@ -1,5 +1,5 @@
-import { ReviewCard } from '@/components/review-card';
-import { Button } from '@/components/ui/button';
+import { ReviewCard } from '../../components/review-card';
+import { Button } from '../../components/ui/button';
 import { MoveLeft, MoveRight } from 'lucide-react';
 
 export function TestimonialsSection() {

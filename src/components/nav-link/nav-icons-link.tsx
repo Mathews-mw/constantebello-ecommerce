@@ -3,11 +3,11 @@
 import { useSession } from 'next-auth/react';
 
 import { NavIconItem } from './nav-icon-item';
-import { useCart } from '@/context/cart-context';
-import { useFavoriteProducts } from '@/context/favorite-products-context';
+import { useCart } from '../../context/cart-context';
+import { useFavoriteProducts } from '../../context/favorite-products-context';
 
 import { Bell, Heart, Home, ShoppingCart } from 'lucide-react';
-import { useUserNotifications } from '@/context/user-notifications-context';
+import { useUserNotifications } from '../../context/user-notifications-context';
 
 interface INavIconsLink {
 	showHome?: boolean;

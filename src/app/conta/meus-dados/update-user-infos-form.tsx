@@ -7,20 +7,20 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { cpfFormatter } from '@/app/utils/cpf-formatter';
-import { phoneFormatter } from '@/app/utils/phone-formatter';
-import { updateUser } from '@/app/api/@requests/users/update-user';
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
+import { cpfFormatter } from '../../utils/cpf-formatter';
+import { phoneFormatter } from '../../utils/phone-formatter';
+import { updateUser } from '../../api/@requests/users/update-user';
+import { errorToasterHandler } from '../../utils/error-toaster-handler';
 
-import { IUserDetails } from '@/@types/user';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { CpfInput } from '@/components/cpf-input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { DateInput } from '@/components/date-input';
-import { PhoneInput } from '@/components/phone-input';
-import { ErrorMessage } from '@/components/error-message';
+import { IUserDetails } from '../../../@types/user';
+import { Label } from '../../../components/ui/label';
+import { Input } from '../../../components/ui/input';
+import { Button } from '../../../components/ui/button';
+import { CpfInput } from '../../../components/cpf-input';
+import { Checkbox } from '../../../components/ui/checkbox';
+import { DateInput } from '../../../components/date-input';
+import { PhoneInput } from '../../../components/phone-input';
+import { ErrorMessage } from '../../../components/error-message';
 
 import { Loader2 } from 'lucide-react';
 

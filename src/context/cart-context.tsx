@@ -4,22 +4,31 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 interface ICartItems {
 	productId: string;
+	productModelId: string;
+	productSizeId: string;
 	quantity: number;
 	price: number;
 }
 
 interface IAddToCartRequest {
 	productId: string;
+	productModelId: string;
+	productSizeId: string;
 	price: number;
 	quantity?: number;
+}
+
+interface IRemoveRequest {
+	productModelId: string;
+	productSizeId: string;
 }
 
 interface CartContextType {
 	items: ICartItems[];
 	clearCart: () => void;
 	addToCart: (params: IAddToCartRequest) => void;
-	removeFromCart: (productId: string) => void;
-	decrementProductFromCart: (productId: string) => void;
+	removeFromCart: (params: IRemoveRequest) => void;
+	decrementProductFromCart: (params: IRemoveRequest) => void;
 }
 
 export const CartContext = createContext({} as CartContextType);
@@ -35,32 +44,46 @@ export function CartContextProvider({ children }: { children: React.ReactNode })
 		return [];
 	});
 
-	function addToCart({ productId, price, quantity }: IAddToCartRequest) {
+	function addToCart({ productId, productModelId, productSizeId, price, quantity }: IAddToCartRequest) {
+		console.log('add to cart productId:', productId);
+		console.log('add to cart productModelId:', productModelId);
+		console.log('add to cart productSizeId:', productSizeId);
+		console.log('add to cart price:', price);
+		console.log('add to cart quantity:', quantity);
+
 		setCartItems((state) => {
-			const productInCart = state.some((item) => item.productId === productId);
+			const productInCart = state.some(
+				(item) => item.productModelId === productModelId && productSizeId === item.productSizeId
+			);
 
 			if (productInCart) {
 				return state.map((item) => {
-					if (item.productId === productId) {
-						return { ...item, quantity: quantity ?? item.quantity + 1, price: item.price };
+					if (item.productModelId === productModelId && productSizeId === item.productSizeId) {
+						return {
+							...item,
+							quantity: quantity ?? item.quantity + 1,
+							price: item.price,
+						};
 					} else {
 						return item;
 					}
 				});
 			} else {
-				return [...state, { productId, quantity: quantity ?? 1, price }];
+				return [...state, { productId, productModelId, productSizeId, quantity: quantity ?? 1, price }];
 			}
 		});
 	}
 
-	function removeFromCart(productId: string) {
-		setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+	function removeFromCart({ productModelId, productSizeId }: IRemoveRequest) {
+		setCartItems((prev) =>
+			prev.filter((item) => !(item.productModelId === productModelId && item.productSizeId === productSizeId))
+		);
 	}
 
-	function decrementProductFromCart(productId: string) {
+	function decrementProductFromCart({ productModelId, productSizeId }: IRemoveRequest) {
 		setCartItems((prev) => {
 			return prev.map((item) => {
-				if (item.productId === productId) {
+				if (item.productModelId === productModelId && item.productSizeId === productSizeId) {
 					return { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 };
 				} else {
 					return item;

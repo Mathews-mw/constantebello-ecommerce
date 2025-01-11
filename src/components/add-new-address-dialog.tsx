@@ -7,15 +7,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { errorToasterHandler } from '@/app/utils/error-toaster-handler';
-import { registerUserAddress } from '@/app/api/@requests/users/address/register-user-address';
+import { errorToasterHandler } from '../app/utils/error-toaster-handler';
+import { registerUserAddress } from '../app/api/@requests/users/address/register-user-address';
 
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { CepInput } from '@/components/cep-input';
-import { ErrorMessage } from '@/components/error-message';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { CepInput } from './cep-input';
+import { ErrorMessage } from './error-message';
 import { DialogDescription } from '@radix-ui/react-dialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 
 import { Loader2, MapPinPlus } from 'lucide-react';
 

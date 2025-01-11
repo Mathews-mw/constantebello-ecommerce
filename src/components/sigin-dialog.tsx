@@ -16,7 +16,7 @@ import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import { PasswordInput } from './password-input';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from './ui/dialog';
 
 import { Loader2 } from 'lucide-react';
 import { ErrorMessage } from './error-message';

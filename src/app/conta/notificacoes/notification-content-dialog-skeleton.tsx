@@ -1,7 +1,7 @@
 'use client';
 
-import { Skeleton } from '@/components/ui/skeleton';
-import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Skeleton } from '../../../components/ui/skeleton';
+import { DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
 
 export function NotificationContentDialogSkeleton() {
 	return (
