@@ -54,6 +54,7 @@ export default function CartPage() {
 	const [selectedAddress, setSelectedAddress] = useState('');
 	const [couponSlugValue, setCouponSlugValue] = useState('');
 	const [discount, setDiscount] = useState(0);
+	const [validCouponId, setValidCouponID] = useState<string | undefined>(undefined);
 
 	const { data: products } = useQuery({
 		queryKey: ['products', 'to-checkout', productSizesIds],
@@ -99,11 +100,16 @@ export default function CartPage() {
 
 				if (currentCart) {
 					// Case exista algum carrinho já criado (currentCart) para o usuário, apenas atualiza os itens desse carrinho
-					await editCart({ cartId: currentCart.id, deliveryIn: selectedAddress });
+					await editCart({ cartId: currentCart.id, deliveryIn: selectedAddress, discount, couponId: validCouponId });
 					await saveCartItems({ user_id: data.user.id, cartId: currentCart.id, cart_items: itemsToBePurchased });
 				} else {
 					// Se não, cria um novo carrinho e adiciona os itens nele
-					const { cart } = await createCart({ userId: data.user.id, deliveryIn: selectedAddress });
+					const { cart } = await createCart({
+						userId: data.user.id,
+						deliveryIn: selectedAddress,
+						discount,
+						couponId: validCouponId,
+					});
 					await saveCartItems({ user_id: data.user.id, cartId: cart.id, cart_items: itemsToBePurchased });
 				}
 			}
@@ -120,21 +126,24 @@ export default function CartPage() {
 			});
 
 			if (!is_valid) {
+				setValidCouponID(undefined);
 				return toast.warning(message);
 			}
 
 			if (is_valid) {
 				if (coupon.discountType === 'PERCENTAGE') {
-					const discount = subtotal * (coupon.discount / 100) * -1;
+					const discount = subtotal * (coupon.discount / 100);
 
 					setDiscount(discount);
 				} else {
-					setDiscount(coupon.discount * -1);
+					setDiscount(coupon.discount);
 				}
 
+				setValidCouponID(coupon.id);
 				return toast.success(`O desconto do cupom "${coupon.slug}" foi aplicado com sucesso`);
 			}
 		} catch (error) {
+			setValidCouponID(undefined);
 			errorToasterHandler(error);
 		}
 	}
@@ -266,7 +275,7 @@ export default function CartPage() {
 									<div className="flex w-full justify-between">
 										<span className="text-muted-foreground">Descontos</span>
 										<span className="font-bold">
-											{discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+											{(discount * -1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
 										</span>
 									</div>
 									<div className="flex w-full justify-between">

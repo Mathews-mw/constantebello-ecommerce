@@ -1,5 +1,5 @@
-import { api } from '../../../../lib/axios';
-import { Checkout, Order, OrderPaymentType } from '@prisma/client';
+import { api } from '@/lib/axios';
+import { Checkout } from '@prisma/client';
 
 interface IRequest {
 	userId: string;

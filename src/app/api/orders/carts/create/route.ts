@@ -8,6 +8,8 @@ import { prisma } from '@/lib/prisma';
 const bodySchema = z.object({
 	user_id: z.string().uuid(),
 	delivery_in: z.string(),
+	discount: z.coerce.number().optional().default(0),
+	coupon_id: z.optional(z.string()),
 });
 
 export async function POST(request: NextRequest, response: NextApiResponse) {
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 		);
 	}
 
-	const { user_id, delivery_in } = dataParse.data;
+	const { user_id, delivery_in, discount, coupon_id } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -47,6 +49,8 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 				userId: user_id,
 				preOrderId: randomUUID(),
 				deliveryIn: delivery_in,
+				discount,
+				couponId: coupon_id,
 			},
 		});
 

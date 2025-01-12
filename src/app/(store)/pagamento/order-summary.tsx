@@ -65,12 +65,15 @@ export function OrderSummary() {
 				cartId: userCartResponse.userCart.id,
 				userId: userCartResponse.userCart.userId,
 				deliveryIn: userCartResponse.userCart.deliveryIn,
+				delivery_fee: 0,
+				discount: userCartResponse.userCart.discount ?? 0,
 			});
 
 			await saveOrder({
-				userId: userCartResponse.userCart.userId,
-				cartId: userCartResponse.userCart.id,
-				deliveryIn: userCartResponse.userCart.deliveryIn,
+				user_id: userCartResponse.userCart.userId,
+				cart_id: userCartResponse.userCart.id,
+				delivery_in: userCartResponse.userCart.deliveryIn,
+				delivery_fee: 0,
 			});
 
 			clearCart();

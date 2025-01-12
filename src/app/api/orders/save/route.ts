@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '../../../../lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { OrderPaymentType } from '@prisma/client';
 import { updateOrderItemsHandler } from '../../@handlers/update-order-items-handler';
 
@@ -9,11 +9,12 @@ const bodySchema = z.object({
 	user_id: z.string().uuid(),
 	cart_id: z.string().uuid(),
 	delivery_in: z.string(),
-	discount: z.coerce.number().optional().default(0),
 	delivery_fee: z.coerce.number().optional().default(0),
 	payment_institution_order_id: z.string().optional(),
 	payment_type: z.nativeEnum(OrderPaymentType).optional(),
 });
+
+export type SaveOrderRequestBodySchema = z.infer<typeof bodySchema>;
 
 export async function POST(request: NextRequest) {
 	if (request.method !== 'POST') {
@@ -39,8 +40,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const { user_id, cart_id, payment_type, delivery_in, discount, delivery_fee, payment_institution_order_id } =
-		dataParse.data;
+	const { user_id, cart_id, payment_type, delivery_in, delivery_fee, payment_institution_order_id } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -77,20 +77,22 @@ export async function POST(request: NextRequest) {
 				id: cart.preOrderId,
 				userId: user_id,
 				subtotal: subtotalOrder,
-				discount,
+				discount: cart.discount ?? 0,
 				deliveryFee: delivery_fee,
 				paymentInstitutionOrderId: payment_institution_order_id,
 				paymentType: payment_type,
 				deliveryIn: delivery_in,
+				couponId: cart.couponId,
 			},
 			update: {
 				userId: user_id,
 				subtotal: subtotalOrder,
-				discount,
+				discount: cart.discount ?? 0,
 				deliveryFee: delivery_fee,
 				paymentType: payment_type,
 				paymentInstitutionOrderId: payment_institution_order_id,
 				deliveryIn: delivery_in,
+				couponId: cart.couponId,
 			},
 			where: {
 				id: cart.preOrderId,

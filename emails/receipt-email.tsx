@@ -169,7 +169,7 @@ export default function ReceiptEmail({
 								</Column>
 								<Column align="right">
 									<Text className="m-0 p-0 font-semibold">
-										{discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+										{(discount * -1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
 									</Text>
 								</Column>
 							</Row>

@@ -216,10 +216,13 @@ model Cart {
   preOrderId String    @map("pre_order_id")
   deliveryIn String    @map("delivery_in")
   discount   Float?
+  couponId   String?
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime? @updatedAt @map("updated_at")
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon Coupon? @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
   cartItems CartItem[]
 
   @@map("carts")
@@ -272,12 +275,15 @@ model Order {
   status                    OrderStatus      @default(PENDING)
   deliveryIn                String           @map("delivery_in")
   paymentType               OrderPaymentType @default(A_DEFINIR) @map("payment_type")
+  couponId                  String?
   createdAt                 DateTime         @default(now()) @map("created_at")
   updatedAt                 DateTime?        @updatedAt @map("updated_at")
 
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon      Coupon?     @relation(fields: [couponId], references: [id], onDelete: Cascade)
   userAddress UserAddress @relation(fields: [deliveryIn], references: [id], onDelete: Cascade)
-  orderItems  OrderItem[]
+
+  orderItems OrderItem[]
 
   @@map("orders")
 }
@@ -350,6 +356,8 @@ model Coupon {
   updatedAt    DateTime?          @updatedAt @map("updated_at")
 
   userCoupons UserCoupon[]
+  carts       Cart[]
+  orders      Order[]
 
   @@map("coupons")
 }

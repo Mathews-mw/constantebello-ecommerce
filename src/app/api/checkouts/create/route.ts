@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
 	}
 
 	const data = await request.json();
+	console.log('checkout body request: ', data);
 
 	const dataParse = bodySchema.safeParse(data);
 
@@ -124,7 +125,7 @@ export async function POST(request: NextRequest) {
 				address_modifiable: false,
 			},
 			items: checkoutItems,
-			discount_amount: discount,
+			discount_amount: cart.discount ? cart.discount * 100 : 0,
 			payment_methods: [
 				{
 					type: 'CREDIT_CARD',
