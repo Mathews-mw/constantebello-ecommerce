@@ -35,8 +35,6 @@ export async function GET(request: NextRequest) {
 		departments: searchParams.getAll('departments[]'),
 	});
 
-	console.log('search: ', search);
-
 	try {
 		let orderByQuery: Prisma.ProductOrderByWithAggregationInput | undefined = { name: 'desc' };
 

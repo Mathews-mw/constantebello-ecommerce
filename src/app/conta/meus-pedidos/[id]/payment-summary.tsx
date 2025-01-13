@@ -47,7 +47,7 @@ export function PaymentSummary({ order }: IProps) {
 				<div className="flex w-full justify-between">
 					<span>Descontos</span>
 					<span className="font-semibold">
-						{order.discount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+						{(order.discount * -1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
 					</span>
 				</div>
 				<div className="flex w-full justify-between">

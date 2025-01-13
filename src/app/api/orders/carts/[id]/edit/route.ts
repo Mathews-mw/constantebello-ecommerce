@@ -11,6 +11,8 @@ interface IParamsProps {
 
 const bodySchema = z.object({
 	delivery_in: z.string(),
+	discount: z.coerce.number().optional(),
+	coupon_id: z.optional(z.string()),
 });
 
 export async function PUT(request: NextRequest, { params }: IParamsProps) {
@@ -34,12 +36,14 @@ export async function PUT(request: NextRequest, { params }: IParamsProps) {
 		);
 	}
 
-	const { delivery_in } = dataParse.data;
+	const { delivery_in, discount, coupon_id } = dataParse.data;
 
 	try {
 		const cart = await prisma.cart.update({
 			data: {
 				deliveryIn: delivery_in,
+				discount,
+				couponId: coupon_id,
 			},
 			where: {
 				id: cartId,

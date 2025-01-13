@@ -2,14 +2,21 @@ import { z } from 'zod';
 import { hash } from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '../../../../lib/prisma';
 import { randomUUID } from 'node:crypto';
+import { prisma } from '@/lib/prisma';
 
 const bodySchema = z.object({
 	name: z.string(),
 	email: z.string().email(),
 	password: z.string(),
+	phone: z.string(),
+	cpf: z.string(),
+	birthday: z.string(),
+	policy_consent: z.coerce.boolean(),
+	advertising_consent: z.optional(z.coerce.boolean()),
 });
+
+export type ICreateUserBodyRequest = z.infer<typeof bodySchema>;
 
 export async function POST(request: NextRequest) {
 	if (request.method !== 'POST') {
@@ -35,7 +42,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	const { email, password, name } = dataParse.data;
+	const { email, password, name, phone, cpf, birthday, policy_consent, advertising_consent } = dataParse.data;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -46,6 +53,16 @@ export async function POST(request: NextRequest) {
 
 		if (user) {
 			return NextResponse.json({ message: `Usuário como e-mail "${email}" já está cadastrado.` }, { status: 400 });
+		}
+
+		const userInfos = await prisma.userInfo.findUnique({
+			where: {
+				cpf,
+			},
+		});
+
+		if (userInfos) {
+			return NextResponse.json({ message: `Usuário como CPF "${cpf}" já está cadastrado.` }, { status: 400 });
 		}
 
 		const hashPassword = await hash(password, 8);
@@ -64,6 +81,17 @@ export async function POST(request: NextRequest) {
 				type: 'credentials',
 				provider: 'credentials',
 				providerAccountId: randomUUID(),
+			},
+		});
+
+		await prisma.userInfo.create({
+			data: {
+				userId: newUser.id,
+				phone: phone.trim().replace(' ', '').replace('-', '').replace('(', '').replace(')', ''),
+				cpf: cpf.trim().replaceAll('.', '').replace('-', ''),
+				birthday,
+				policyConsent: policy_consent,
+				advertisingConsent: advertising_consent,
 			},
 		});
 

@@ -1,14 +1,18 @@
 import { z } from 'zod';
+import dayjs from 'dayjs';
 import { NextRequest } from 'next/server';
 
 import { prisma } from '@/lib/prisma';
-import dayjs from 'dayjs';
 
 interface IParamsProps {
 	params: {
 		slug: string;
 	};
 }
+
+const queryParamsSchema = z.object({
+	userId: z.optional(z.string()).nullish(),
+});
 
 export async function GET(request: NextRequest, { params }: IParamsProps) {
 	if (request.method !== 'GET') {
@@ -21,9 +25,15 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 	}
 
 	const { slug } = await params;
+	const { searchParams } = request.nextUrl;
+
+	console.log('userId: ', searchParams.get('userId'));
+
 	const couponSlug = z.string().parse(slug);
 
-	console.log('couponSlug: ', couponSlug);
+	const { userId } = queryParamsSchema.parse({
+		userId: searchParams.get('userId'),
+	});
 
 	try {
 		const coupon = await prisma.coupon.findUnique({
@@ -48,9 +58,22 @@ export async function GET(request: NextRequest, { params }: IParamsProps) {
 			return Response.json({ is_valid: false, message: 'Cupom não está mais ativo!', coupon });
 		}
 
+		if (userId && coupon.singleUse) {
+			const isSingleUse = await prisma.userCoupon.findMany({
+				where: {
+					userId,
+					couponId: coupon.id,
+				},
+			});
+
+			if (isSingleUse.length > 0) {
+				return Response.json({ is_valid: false, message: 'Você já usou este cupom!', coupon });
+			}
+		}
+
 		return Response.json({ is_valid: true, message: 'Cupom está ativo!', coupon });
 	} catch (error) {
-		console.log('get coupon by slug route error: ', error);
+		console.log('validate coupon route error: ', error);
 		return new Response(JSON.stringify(error), {
 			status: 400,
 		});

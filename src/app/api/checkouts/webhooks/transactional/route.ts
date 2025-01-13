@@ -130,13 +130,22 @@ export async function POST(request: NextRequest) {
 				tag: 'GENERAL',
 			});
 
+			if (order.couponId) {
+				await prisma.userCoupon.create({
+					data: {
+						couponId: order.couponId,
+						userId: order.userId,
+					},
+				});
+			}
+
 			const addressComplement = order.userAddress.addressComplement ? `, ${order.userAddress.addressComplement}` : '';
 
 			const addressReference = order.userAddress.addressReference ? `, ${order?.userAddress.addressReference}` : '';
 
 			const orderAddress = `${order.userAddress.street}, N ${order.userAddress.number}${addressComplement}${addressReference}, ${order.userAddress.neighborhood}. CEP: ${order.userAddress.cep} | ${order.userAddress.city} - ${order.userAddress.state}`;
 
-			const totalOrder = order.subtotal + order.discount + order.deliveryFee;
+			const totalOrder = order.subtotal - order.discount + order.deliveryFee;
 
 			const orderProducts = order.orderItems.map((item) => {
 				return {
