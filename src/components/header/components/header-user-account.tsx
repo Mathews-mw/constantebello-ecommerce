@@ -2,9 +2,9 @@
 
 import { useSession } from 'next-auth/react';
 import { AccountMenu } from '../../account-menu';
-import { SigInDialog } from '../../sigin-dialog';
 
 import { Loader2 } from 'lucide-react';
+import { SigInDialog } from '@/components/sigin/sigin-dialog';
 
 export function HeaderUserAccount() {
 	const { status } = useSession();

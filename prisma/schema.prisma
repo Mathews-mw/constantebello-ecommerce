@@ -350,6 +350,7 @@ model Coupon {
   slug         String             @unique
   discount     Float
   discountType CouponDiscountType @default(PERCENTAGE) @map("discount_type")
+  singleUse    Boolean            @default(false) @map("single_use")
   expiresIn    DateTime?
   available    Boolean            @default(true)
   createdAt    DateTime           @default(now()) @map("created_at")
@@ -364,8 +365,8 @@ model Coupon {
 
 model UserCoupon {
   id        String   @id @default(uuid())
-  couponId  String
-  userId    String
+  couponId  String   @map("coupon_id")
+  userId    String   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)

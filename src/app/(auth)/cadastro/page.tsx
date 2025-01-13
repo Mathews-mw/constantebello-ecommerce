@@ -7,22 +7,21 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { env } from '../../../env';
-import { registerUser } from '../../api/@requests/users/register-user';
-import { sendWelcomeEmail } from '../../api/@requests/emails/send-welcome-email';
-import { insertUserInfos } from '../../api/@requests/users/infos/insert-user-infos';
+import { env } from '@/env';
+import { registerUser } from '@/app/api/@requests/users/register-user';
+import { sendWelcomeEmail } from '@/app/api/@requests/emails/send-welcome-email';
 
-import { Input } from '../../../components/ui/input';
-import { Label } from '../../../components/ui/label';
-import { Button } from '../../../components/ui/button';
-import { CpfInput } from '../../../components/cpf-input';
-import { PageTitle } from '../../../components/page-title';
-import { Checkbox } from '../../../components/ui/checkbox';
-import { DateInput } from '../../../components/date-input';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { CpfInput } from '@/components/cpf-input';
+import { PageTitle } from '@/components/page-title';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DateInput } from '@/components/date-input';
 import { useMutation } from '@tanstack/react-query';
-import { PhoneInput } from '../../../components/phone-input';
-import { ErrorMessage } from '../../../components/error-message';
-import { PasswordInput } from '../../../components/password-input';
+import { PhoneInput } from '@/components/phone-input';
+import { ErrorMessage } from '@/components/error-message';
+import { PasswordInput } from '@/components/password-input';
 
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -70,14 +69,10 @@ export default function Cadastro() {
 				name: data.name,
 				email: data.email,
 				password: data.password,
-			});
-
-			await insertUserInfos({
-				userId: response.user.id,
 				phone: data.phone,
 				cpf: data.cpf,
 				birthday: data.birthday,
-				policyConsent: data.policyConsent,
+				policy_consent: data.policyConsent,
 			});
 
 			await sendWelcomeEmail({

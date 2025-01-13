@@ -32,14 +32,18 @@ import { AddNewAddressDialog } from '@/components/add-new-address-dialog';
 import {
 	ArrowRight,
 	ChevronRight,
+	CircleCheckBig,
 	FileSearch,
 	Loader2,
 	ShoppingBasket,
 	ShoppingCart,
+	Tag,
 	Trash2,
 	Truck,
 } from 'lucide-react';
 import { validateCoupon } from '@/app/api/@requests/coupons/validate-coupon';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { SigInDialogContent } from '@/components/sigin/sigin-dialog-content';
 
 export default function CartPage() {
 	const { status, data } = useSession();
@@ -49,6 +53,7 @@ export default function CartPage() {
 	const queryClient = useQueryClient();
 
 	const [isOpen, setIsOpen] = useState(false);
+	const [isOpenLogin, setIsOpenLogin] = useState(false);
 	const [completeRegisterIsOpen, setCompleteRegisterIsOpen] = useState(false);
 	const [productSizesIds, setProductSizesIds] = useState<string[]>([]);
 	const [selectedAddress, setSelectedAddress] = useState('');
@@ -120,9 +125,14 @@ export default function CartPage() {
 	});
 
 	async function handleValidateCoupon() {
+		if (status !== 'authenticated') {
+			return toast.warning('Por favor, faça o login para aplicar cupons!', { duration: 1000 * 10 });
+		}
+
 		try {
 			const { is_valid, message, coupon } = await validateCouponFn({
 				slug: couponSlugValue.trim(),
+				userId: data.user.id,
 			});
 
 			if (!is_valid) {
@@ -293,21 +303,32 @@ export default function CartPage() {
 									</div>
 								</div>
 
-								<div className="flex gap-4">
-									<Input
-										placeholder="Cupom promocional"
-										disabled={cartItems.length <= 0}
-										value={couponSlugValue}
-										onChange={(e) => setCouponSlugValue(e.target.value)}
-									/>
-									<Button
-										variant="outline"
-										disabled={cartItems.length <= 0 || validateCouponIsPending}
-										onClick={handleValidateCoupon}
-									>
-										Aplicar
-										{validateCouponIsPending && <Loader2 className="animate-spin" />}
-									</Button>
+								<div className="flex items-center gap-4">
+									<div className="flex h-10 w-full max-w-[420px] items-center gap-2 rounded-lg border bg-secondary px-2 has-[:focus]:ring-1 has-[:focus]:ring-primary">
+										<input
+											placeholder="Cupom promocional"
+											disabled={cartItems.length <= 0}
+											value={couponSlugValue}
+											onChange={(e) => setCouponSlugValue(e.target.value)}
+											className="w-full bg-transparent text-sm outline-none ring-0"
+										/>
+										<Tag className="h-5 w-5 text-muted-foreground" />
+									</div>
+
+									{validCouponId ? (
+										<div className="flex h-9 w-[78px] items-center justify-center">
+											<CircleCheckBig className="h-6 w-6 text-emerald-500" />
+										</div>
+									) : (
+										<Button
+											variant="outline"
+											disabled={cartItems.length <= 0 || validateCouponIsPending}
+											onClick={handleValidateCoupon}
+										>
+											Aplicar
+											{validateCouponIsPending && <Loader2 className="animate-spin" />}
+										</Button>
+									)}
 								</div>
 							</div>
 
@@ -342,7 +363,7 @@ export default function CartPage() {
 															data-selected={selectedAddress === address.id}
 															className={twMerge([
 																'w-full cursor-pointer rounded border border-l-4 p-2 text-muted-foreground',
-																'data-[selected=true]:border-primary data-[selected=true]:bg-primary/10 data-[selected=true]:text-foreground',
+																'data-[selected=true]:border-emerald-500 data-[selected=true]:bg-emerald-50 data-[selected=true]:text-foreground',
 															])}
 														>
 															<div className="flex flex-col gap-1 text-sm">
@@ -371,7 +392,16 @@ export default function CartPage() {
 										<ArrowRight className="h-6 w-6" />
 									</Button>
 								) : (
-									<LoginAlert disabled={cartItems.length <= 0} />
+									<Dialog modal open={isOpenLogin} onOpenChange={setIsOpenLogin}>
+										<DialogTrigger asChild>
+											<Button variant="secondary" className="w-full" disabled={cartItems.length <= 0}>
+												Continuar
+												<ArrowRight className="h-6 w-6" />
+											</Button>
+										</DialogTrigger>
+
+										<SigInDialogContent onOpen={setIsOpen} />
+									</Dialog>
 								)}
 
 								<Button variant="outline" className="w-full" onClick={() => router.push('/produtos')}>

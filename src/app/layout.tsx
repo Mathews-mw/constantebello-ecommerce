@@ -52,7 +52,7 @@ export default function RootLayout({
 					</NextAuthSessionProvider>
 				</TanstackQueryClientProvider>
 
-				<Toaster richColors closeButton />
+				<Toaster richColors closeButton duration={1000 * 10} />
 			</body>
 		</html>
 	);
